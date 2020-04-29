@@ -22,3 +22,11 @@ Route::get('/home', 'PagesController@home');
 
 Route::get('/about', 'PagesController@about');
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

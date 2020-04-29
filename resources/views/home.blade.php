@@ -1,31 +1,23 @@
-@extends('master')
+@extends('layouts.app')
 
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Dashboard</div>
 
-@section('head')
-@endsection
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
-@section('title') 
-    This is the home-page..
-@endsection
-
-@section('nav')
-@endsection
-
-@section('header')  
-    <h3>This is the header of the page</h3>
-@endsection
-
-@section('footer')  
-    <h3>Ypostirixis</h3>  
-@endsection
-
-@section('container')    
-    <h2>This is the content for the HOME page</h2>
-    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Omnis, pariatur quae ducimus laborum libero minus possimus ea ex inventore repudiandae sint,
-       hic quas eius magni repellendus sequi, voluptatum reiciendis accusantium totam quasi? Praesentium perspiciatis perferendis illum deleniti doloremque,
-       voluptatum eaque in earum totam ullam minus cumque aspernatur laborum! Aperiam, possimus?
-    </p>
-@endsection
-
-@section('sidebar')    
+                    You are logged in!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
