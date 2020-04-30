@@ -11,6 +11,7 @@ class Employee extends Model
 
     protected $primaryKey = 'employee_id';
 
+    
     public function warehouse(){
         return $this->hasMany('App/Warehouse');
     }
