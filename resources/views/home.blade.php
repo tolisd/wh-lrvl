@@ -15,6 +15,16 @@
                     @endif
 
                     You are logged in!
+                    <br/>
+
+                    @can('isSuperAdmin')
+                        <a href="/admin/dashboard">Go to dashboard</a>
+                    @endcan
+
+                    @can('isCompanyCEO')
+                        <a href="/manager/dashboard">Go to dashboard</a>
+                    @endcan
+
                 </div>
             </div>
         </div>

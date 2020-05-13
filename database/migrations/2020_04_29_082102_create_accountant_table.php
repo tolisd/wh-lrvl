@@ -14,10 +14,10 @@ class CreateAccountantTable extends Migration
     public function up()
     {
         Schema::create('accountant', function (Blueprint $table) {
-            $table->id('accountant_id');
-            $table->string('accountant_name');
-            $table->string('accountant_email');
-            $table->string('accountant_phone_no');
+            $table->id('id');
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone_number');
             $table->timestamps();
         });
     }

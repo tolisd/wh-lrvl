@@ -14,18 +14,28 @@ class CreateImportsTable extends Migration
     public function up()
     {
         Schema::create('imports', function (Blueprint $table) {
-            $table->id('import_id');
-            $table->string('import_recipient', 255);
-            $table->dateTime('import_delivered_on');
-            $table->string('import_shipping_company', 255);
-            $table->string('import_delivery_address', 255);
-            $table->mediumText('import_discrete_description');
-            $table->float('import_hours_worked');
-            $table->float('import_chargeable_hours_worked');
-            $table->string('import_shipment_bulletin', 255);
-            $table->string('import_shipment_address', 255);
-            $table->string('import_vehicle_plate_reg_no', 20);
+            $table->id('id');
+            $table->string('recipient', 255);
+            $table->dateTime('delivered_on');
+            $table->string('shipping_company', 255);
+            $table->string('delivery_address', 255);
+            $table->mediumText('discrete_description');
+            $table->float('hours_worked');
+            $table->float('chargeable_hours_worked');
+            $table->string('shipment_bulletin', 255);
+            $table->string('shipment_address', 255);
+            $table->string('vehicle_reg_no', 20);
             $table->timestamps();
+
+            /*
+            $table->integer('product_id')->unsigned();
+
+            $table->foreign('product_id')
+                    ->references('id')
+                    ->on('products')
+                    ->onDelete('cascade');
+            */
+                    
         });
     }
 

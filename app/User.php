@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'user_type',
     ];
 
     /**
@@ -36,4 +36,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    //checks if the user belongs to a particular group
+    public function user_type($user_type){
+        $user_type = (array)$user_type;
+        return in_array($this->user_type, $user_type);
+    }
+
+    
+
+
 }

@@ -20,5 +20,4 @@ class Assignment extends Model
         return $this->hasOne('App/Export');
     }
 
-
 }

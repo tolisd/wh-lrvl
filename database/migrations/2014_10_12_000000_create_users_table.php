@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            //added next line for ACL
+            $table->enum('user_type', ['super_admin','company_ceo','accountant','warehouse_foreman','warehouse_worker', 'normal_user'])->default('normal_user'); 
             $table->rememberToken();
             $table->timestamps();
         });

@@ -14,11 +14,28 @@ class CreateAssignmentsTable extends Migration
     public function up()
     {
         Schema::create('assignments', function (Blueprint $table) {
-            $table->id('assignment_id');
-            $table->string('assignment_type', 6); //import or export
-            $table->string('assignment_assignee', 255);
-            $table->dateTime('assignment_time_date_assigned');            
+            $table->id('id');
+            $table->string('type', 6); //import or export
+            $table->string('assignee', 255);
+            $table->dateTime('time_date_assigned');            
             $table->timestamps();
+
+            /*
+            $table->integer('import_id')->unsigned();
+
+            $table->foreign('import_id')
+                    ->references('id')
+                    ->on('imports')
+                    ->onDelete('cascade');                    
+
+
+            $table->integer('export_id')->unsigned();
+
+            $table->foreign('export_id')
+                    ->references('id')
+                    ->on('exports')
+                    ->onDelete('cascade');   
+            */                 
         });
     }
 

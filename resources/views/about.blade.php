@@ -2,6 +2,7 @@
 
 
 @section('head')
+
 @endsection
 
 @section('title') 
@@ -27,5 +28,23 @@
     </p>
 @endsection
 
-@section('sidebar')    
-@endsection
+
+@can('isSuperAdmin')
+	<h4>Administrator access!</h4>
+	<a href="/admin/dashboard">Go to dashboard</a>
+@endcan
+
+@can('isWarehouseForeman')
+	<h4>Warehouse-Foreman access!</h4>
+@endcan
+
+@can('isWarehouseWorker')
+	<h4>Warehouse-Worker access!</h4>
+@endcan
+
+
+
+ 
+
+
+
