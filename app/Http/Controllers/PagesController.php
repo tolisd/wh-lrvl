@@ -28,14 +28,14 @@ class PagesController extends Controller
         } 
     }
 
-    public function dashboard(){          
+    public function dashboard(){ 
+        //Administrator, Company-CEO        
         if (\Gate::denies(['isSuperAdmin','isCompanyCEO'], \Auth::user())){
             abort(403,'Sorry you cannot view this webpage');
         }
 
-        if (\Gate::allows(['isSuperAdmin', 'isCompanyCEO'], \Auth::user())){            
+        if (\Gate::allows(['isSuperAdmin','isCompanyCEO'], \Auth::user())){            
             return view('dashboard'); 
-        }          
+        }  
     }
-
 }

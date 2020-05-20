@@ -8,7 +8,15 @@ class CompanyCEOController extends Controller
 {
     //
     public function index(){
-        return view('dashboard');
+       // return view('dashboard');
+        
+        if (\Gate::allows('isCompanyCEO', \Auth::user())){
+            return view('dashboard');            
+        }   
+        
+        if (\Gate::denies('isCompanyCEO', \Auth::user())){
+            return abort('403');
+        }
     }
 
     public function home(){

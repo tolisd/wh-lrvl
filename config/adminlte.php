@@ -208,23 +208,175 @@ return [
     */
 
     'menu' => [
+
+        [
+            'text' => 'Αρχική Σελίδα',
+            'url' => '/home',
+            'can' => ['isSuperAdmin', 'isCompanyCEO'],	
+            'icon' => 'fas fa-globe',	
+        ],
+    
+        'ΓΕΝΙΚΕΣ ΕΠΙΛΟΓΕΣ',
+        [
+            'text' => 'Δες Διαθεσιμότητα Στοκ',
+            'url' => '/stock/view',
+            'can' => ['isSuperAdmin', 'isCompanyCEO'],	
+            'icon' => 'fas fa-eye',	
+        ],
+    
+        [
+            'text' => 'Χρέωση Εργαλείων',
+            'url' => '/charge-toolkit',
+            'can' => ['isSuperAdmin', 'isCompanyCEO'],
+            'icon' => 'fas fa-wrench',		
+        ],
+    
+        [
+            'text' => 'Δημιουργία Τιμολογίου',
+            'url' => '/invoice/create',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant'],
+            'icon' => 'fas fa-plus',		
+        ],
+    
+    
+        'ΔΙΑΧΕΙΡΙΣΗ ΑΝΑΘΕΣΕΩΝ',
+        [
+            'text' => 'Δες Ανοιχτές Αναθέσεις',
+            'url' => '/assignments/view',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'icon' => 'far fa-fw fa-eye',
+        ],
+    
+        [
+            'text' => 'Δημιουργία Ανάθεσης',            
+            'url' => '/assignment/create',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'icon' => 'fas fa-plus',
+            
+            'submenu' => [
+                                    [
+                                        'text' => 'Δημ.Ανάθεσης Εισαγωγής',
+                                        'url'  => '/assignment/import/create',
+                                        'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+                                        'icon' => 'fas fa-fw fa-arrow-left',
+                                    ],
+                                    [
+                                        'text' => 'Δημ.Ανάθεσης Εξαγωγής',
+                                        'url'  => '/assignment/export/create',
+                                        'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+                                        'icon' => 'fas fa-fw fa-arrow-right',
+                                    ],
+                          ],
+            
+        ],
+    
+        [
+            'text' => 'Μεταβολή Ανάθεσης',
+            'url' => '/assignment/update',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'icon' => 'far fa-fw fa-circle',
+        ],
+    
+        [
+            'text' => 'Διαγραφή Ανάθεσης',
+            'url' => '/assignment/delete',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+    
+    
+    
+        'ΔΙΑΧΕΙΡΙΣΗ ΣΤΟΚ',
+        [
+            'text' => 'Δες Όλα τα Προϊόντα',
+            'url' => '/products/view',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'icon' => 'fas fa-fw fa-eye',
+        ],
+    
+        [
+            'text' => 'Δες Προϊόν',
+            'url' => '/product/view/',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'icon' => 'far fa-fw fa-eye',
+        ],
+    
+    
+        [
+            'text' => 'Δημιουργία Νέου Προϊόντος',
+            'url' => '/product/create',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'icon' => 'fas fa-fw fa-plus',
+        ],
+    
+        [
+            'text' => 'Μεταβολή Προϊόντος',
+            'url' => '/product/update',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'icon' => 'far fa-fw fa-circle',
+        ],
+    
+        [
+            'text' => 'Διαγραφή Προϊόντος',
+            'url' => '/product/delete',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+      
+    
+    
+        'ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ',
+        [
+            'text' => 'Δημιουργία Νέου Χρήστη',
+            'url' => '/profile/create',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'icon' => 'fas fa-fw fa-plus',
+        ],
+        [
+            'text' => 'Μεταβολή Χρήστη',
+            'url' => '/profile/edit',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'icon' => 'fas fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Διαγραφή Χρήστη',
+            'url' => '/profile/delete',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'icon' => 'fas fa-fw fa-minus',
+        ],         
+        [
+            'text' => 'Δες Προφίλ Χρήστη',
+            'url'  => '/profile/view',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
+            'text' => 'Αλλαγή Κωδικού Χρήστη',
+            'url'  => 'profile/change-password',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'icon' => 'fas fa-fw fa-lock',
+        ],
+        
+
+        /*
         [
             'text' => 'search',
             'search' => true,
             'topnav' => true,
-        ],
+        ],          
         [
             'text' => 'blog',
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
+        
         [
             'text'        => 'pages',
             'url'         => 'admin/pages',
             'icon'        => 'far fa-fw fa-file',
             'label'       => 4,
             'label_color' => 'success',
-        ],
+        ],        
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
@@ -287,6 +439,7 @@ return [
             'text'       => 'information',
             'icon_color' => 'cyan',
         ],
+        */
     ],
 
     /*

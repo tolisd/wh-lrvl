@@ -14,15 +14,23 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    You are logged in successfully!
                     <br/>
 
                     @can('isSuperAdmin')
-                        <a href="/admin/dashboard">Go to dashboard</a>
+                        <a href="/admin/dashboard">Go to Admin Dashboard</a>
                     @endcan
 
                     @can('isCompanyCEO')
-                        <a href="/manager/dashboard">Go to dashboard</a>
+                        <a href="/manager/dashboard">Go to Manager Dashboard</a>
+                    @endcan
+
+                    @can('isAccountant')
+                        <a href="/accountant/dashboard">Go to Accountant Dashboard</a>
+                    @endcan
+
+                    @can('isWarehouseForeman')
+                        <a href="/foreman/dashboard">Go to Warehouse Foreman Dashboard</a>
                     @endcan
 
                 </div>

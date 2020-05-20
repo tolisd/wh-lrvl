@@ -44,7 +44,26 @@ class User extends Authenticatable
         return in_array($this->user_type, $user_type);
     }
 
+    //added roles
     
+    public function isAdmin(){
+        return \Auth::check() && \Auth::user()->user_type === 'super_admin';
+    }
 
+    public function isManager(){
+        return \Auth::check() && \Auth::user()->user_type === 'company_ceo';
+    }   
 
+    public function isAccountant(){
+        return \Auth::check() && \Auth::user()->user_type === 'accountant';
+    }
+
+    public function isWarehouseForeman(){
+        return \Auth::check() && \Auth::user()->user_type === 'warehouse_foreman';
+    }
+
+    public function isWarehouseWorker(){
+        return \Auth::check() && \Auth::user()->user_type === 'warehouse_worker';
+    }
+    
 }

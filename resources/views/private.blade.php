@@ -23,6 +23,7 @@
                         <div class="btn btn-primary btn-lg">
                           You have Manager Access!
                         </div>
+                        <br/>
                         <a href="/manager/dashboard">Go to dashboard</a>
                     @endcan
 
