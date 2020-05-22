@@ -5,7 +5,7 @@
 @section('title', 'Αποθήκη - Dashboard')
 
 @section('content_header')
-    <h1>Warehouse / Stock Availability</h1>
+    <h1>Warehouse / Δημιουργία Τιμολογίου</h1>
 @stop
 
 
@@ -13,8 +13,7 @@
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
-            <p>Δες Διαθεσιμότητα του Στοκ</p>  
-            <p>Τρέχων # προϊόντων σε Στοκ</p> 
+            <p>Δημιουργία Τιμολογίου</p>              
 
             @can('isSuperAdmin')
                 <a href="{{ route('admin.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
@@ -22,6 +21,10 @@
 
             @can('isCompanyCEO')
                 <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
+            @endcan
+
+            @can('isAccountant')
+                <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
             @endcan
 
         </div>

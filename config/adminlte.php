@@ -212,148 +212,468 @@ return [
         [
             'text' => 'Αρχική Σελίδα',
             'url' => '/home',
-            'can' => ['isSuperAdmin', 'isCompanyCEO'],	
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker', 'isNormalUser'],	
             'icon' => 'fas fa-globe',	
         ],
     
-        'ΓΕΝΙΚΕΣ ΕΠΙΛΟΓΕΣ',
         [
-            'text' => 'Δες Διαθεσιμότητα Στοκ',
-            'url' => '/stock/view',
-            'can' => ['isSuperAdmin', 'isCompanyCEO'],	
+            'header' => 'ΓΕΝΙΚΕΣ ΕΠΙΛΟΓΕΣ',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant']
+        ],
+        [
+            'text' => 'Δες Διαθεσιμότητα Στοκ',                    
+            'route' => 'admin.stock.view',                    
+            'can' => 'isSuperAdmin',	
+            'icon' => 'fas fa-eye',	
+        ],
+        [
+            'text' => 'Δες Διαθεσιμότητα Στοκ',                    
+            'route' => 'manager.stock.view',                    
+            'can' =>   'isCompanyCEO',	
             'icon' => 'fas fa-eye',	
         ],
     
         [
             'text' => 'Χρέωση Εργαλείων',
-            'url' => '/charge-toolkit',
-            'can' => ['isSuperAdmin', 'isCompanyCEO'],
+            'route' => 'admin.chargetoolkit',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-wrench',		
+        ],
+        [
+            'text' => 'Χρέωση Εργαλείων',
+            'route' => 'manager.chargetoolkit',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-wrench',		
+        ],
+        [
+            'text' => 'Χρέωση Εργαλείων',
+            'route' => 'foreman.chargetoolkit',
+            'can' => 'isWarehouseForeman',
             'icon' => 'fas fa-wrench',		
         ],
     
         [
             'text' => 'Δημιουργία Τιμολογίου',
-            'url' => '/invoice/create',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant'],
+            'route' => 'admin.invoicecreate',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-plus',		
+        ],
+        [
+            'text' => 'Δημιουργία Τιμολογίου',
+            'route' => 'manager.invoicecreate',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-plus',		
+        ],
+        [
+            'text' => 'Δημιουργία Τιμολογίου',
+            'route' => 'accountant.invoicecreate',
+            'can' =>  'isAccountant',
             'icon' => 'fas fa-plus',		
         ],
     
     
-        'ΔΙΑΧΕΙΡΙΣΗ ΑΝΑΘΕΣΕΩΝ',
+        [
+            'header' => 'ΔΙΑΧΕΙΡΙΣΗ ΑΝΑΘΕΣΕΩΝ',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+        ],
         [
             'text' => 'Δες Ανοιχτές Αναθέσεις',
-            'url' => '/assignments/view',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'route' => 'admin.assignments.view',
+            'can' => 'isSuperAdmin',
             'icon' => 'far fa-fw fa-eye',
         ],
+        [
+            'text' => 'Δες Ανοιχτές Αναθέσεις',
+            'route' => 'manager.assignments.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Ανοιχτές Αναθέσεις',
+            'route' => 'accountant.assignments.view',
+            'can' => 'isAccountant',
+            'icon' => 'far fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Ανοιχτές Αναθέσεις',
+            'route' => 'foreman.assignments.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'far fa-fw fa-eye',
+        ],
+
+       
     
         [
-            'text' => 'Δημιουργία Ανάθεσης',            
-            'url' => '/assignment/create',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'text' => 'Δημιουργία Ανάθεσης',  
+            'url' => '',
+            'can' => 'isSuperAdmin',
             'icon' => 'fas fa-plus',
-            
+
             'submenu' => [
                                     [
-                                        'text' => 'Δημ.Ανάθεσης Εισαγωγής',
-                                        'url'  => '/assignment/import/create',
-                                        'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+                                        'text' => 'Δημ. Ανάθεσης Εισαγωγής',
+                                        'route'  => 'admin.assignment.import.create',
+                                        'can' => 'isSuperAdmin',
                                         'icon' => 'fas fa-fw fa-arrow-left',
                                     ],
                                     [
-                                        'text' => 'Δημ.Ανάθεσης Εξαγωγής',
-                                        'url'  => '/assignment/export/create',
-                                        'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+                                        'text' => 'Δημ. Ανάθεσης Εξαγωγής',
+                                        'route'  => 'admin.assignment.export.create',
+                                        'can' => 'isSuperAdmin',
                                         'icon' => 'fas fa-fw fa-arrow-right',
                                     ],
                           ],
             
         ],
+        [
+            'text' => 'Δημιουργία Ανάθεσης',  
+            'url' => '',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-plus',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Δημ. Ανάθεσης Εισαγωγής',
+                                        'route'  => 'manager.assignment.import.create',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-fw fa-arrow-left',
+                                    ],
+                                    [
+                                        'text' => 'Δημ. Ανάθεσης Εξαγωγής',
+                                        'route'  => 'manager.assignment.export.create',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-fw fa-arrow-right',
+                                    ],
+                          ],
+            
+        ],
+        [
+            'text' => 'Δημιουργία Ανάθεσης',  
+            'url' => '',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-plus',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Δημ. Ανάθεσης Εισαγωγής',
+                                        'route'  => 'accountant.assignment.import.create',
+                                        'can' => 'isAccountant',
+                                        'icon' => 'fas fa-fw fa-arrow-left',
+                                    ],
+                                    [
+                                        'text' => 'Δημ. Ανάθεσης Εξαγωγής',
+                                        'route'  => 'accountant.assignment.export.create',
+                                        'can' => 'isAccountant',
+                                        'icon' => 'fas fa-fw fa-arrow-right',
+                                    ],
+                          ],
+            
+        ],
+        [
+            'text' => 'Δημιουργία Ανάθεσης',  
+            'url' => '',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-plus',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Δημ. Ανάθεσης Εισαγωγής',
+                                        'route'  => 'foreman.assignment.import.create',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'fas fa-fw fa-arrow-left',
+                                    ],
+                                    [
+                                        'text' => 'Δημ. Ανάθεσης Εξαγωγής',
+                                        'route'  => 'foreman.assignment.export.create',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'fas fa-fw fa-arrow-right',
+                                    ],
+                          ],
+            
+        ],
+
+
+
+
     
         [
             'text' => 'Μεταβολή Ανάθεσης',
-            'url' => '/assignment/update',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'route' => 'admin.assignment.update',
+            'can' => 'isSuperAdmin',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Μεταβολή Ανάθεσης',
+            'route' => 'manager.assignment.update',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Μεταβολή Ανάθεσης',
+            'route' => 'accountant.assignment.update',
+            'can' => 'isAccountant',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Μεταβολή Ανάθεσης',
+            'route' => 'foreman.assignment.update',
+            'can' => 'isWarehouseForeman',
             'icon' => 'far fa-fw fa-circle',
         ],
     
+
         [
             'text' => 'Διαγραφή Ανάθεσης',
-            'url' => '/assignment/delete',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'route' => 'admin.assignment.delete',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+        [
+            'text' => 'Διαγραφή Ανάθεσης',
+            'route' => 'manager.assignment.delete',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+        [
+            'text' => 'Διαγραφή Ανάθεσης',
+            'route' => 'accountant.assignment.delete',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+        [
+            'text' => 'Διαγραφή Ανάθεσης',
+            'route' => 'foreman.assignment.delete',
+            'can' => 'isWarehouseForeman',
             'icon' => 'fas fa-fw fa-minus',
         ],
     
     
     
-        'ΔΙΑΧΕΙΡΙΣΗ ΣΤΟΚ',
+        [
+            'header' => 'ΔΙΑΧΕΙΡΙΣΗ ΣΤΟΚ',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+        ],
+
         [
             'text' => 'Δες Όλα τα Προϊόντα',
-            'url' => '/products/view',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'route' => 'admin.products.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Όλα τα Προϊόντα',
+            'route' => 'manager.products.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Όλα τα Προϊόντα',
+            'route' => 'foreman.products.view',
+            'can' => 'isWarehouseForeman', 
+            'icon' => 'fas fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Όλα τα Προϊόντα',
+            'route' => 'worker.products.view',
+            'can' => 'isWarehouseWorker',
             'icon' => 'fas fa-fw fa-eye',
         ],
     
+        
         [
             'text' => 'Δες Προϊόν',
-            'url' => '/product/view/',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'route' => 'admin.product.view',
+            'can' => 'isSuperAdmin', 
             'icon' => 'far fa-fw fa-eye',
         ],
+        [
+            'text' => 'Δες Προϊόν',
+            'route' => 'manager.product.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Προϊόν',
+            'route' => 'foreman.product.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'far fa-fw fa-eye',
+        ],
+        [
+            'text' => 'Δες Προϊόν',
+            'route' => 'worker.product.view',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'far fa-fw fa-eye',
+        ],
+
     
     
         [
             'text' => 'Δημιουργία Νέου Προϊόντος',
-            'url' => '/product/create',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'route' => 'admin.product.create',
+            'can' => 'isSuperAdmin',
             'icon' => 'fas fa-fw fa-plus',
         ],
+        [
+            'text' => 'Δημιουργία Νέου Προϊόντος',
+            'route' => 'manager.product.create',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-plus',
+        ],
+        [
+            'text' => 'Δημιουργία Νέου Προϊόντος',
+            'route' => 'foreman.product.create',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-fw fa-plus',
+        ],
+        [
+            'text' => 'Δημιουργία Νέου Προϊόντος',
+            'route' => 'worker.product.create',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-fw fa-plus',
+        ],
+
+
     
         [
             'text' => 'Μεταβολή Προϊόντος',
-            'url' => '/product/update',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'route' => 'admin.product.update',
+            'can' => 'isSuperAdmin', 
             'icon' => 'far fa-fw fa-circle',
         ],
+        [
+            'text' => 'Μεταβολή Προϊόντος',
+            'route' => 'manager.product.update',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Μεταβολή Προϊόντος',
+            'route' => 'foreman.product.update',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Μεταβολή Προϊόντος',
+            'route' => 'worker.product.update',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+
     
         [
             'text' => 'Διαγραφή Προϊόντος',
-            'url' => '/product/delete',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
+            'route' => 'admin.product.delete',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+        [
+            'text' => 'Διαγραφή Προϊόντος',
+            'route' => 'manager.product.delete',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+        [
+            'text' => 'Διαγραφή Προϊόντος',
+            'route' => 'foreman.product.delete',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-fw fa-minus',
+        ],
+        [
+            'text' => 'Διαγραφή Προϊόντος',
+            'route' => 'worker.product.delete',
+            'can' => 'isWarehouseWorker',
             'icon' => 'fas fa-fw fa-minus',
         ],
       
+
     
-    
-        'ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ',
+        [
+            'header' => 'ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ',
+            'can' => ['isSuperAdmin', 'isCompanyCEO'],
+        ],
+
         [
             'text' => 'Δημιουργία Νέου Χρήστη',
-            'url' => '/profile/create',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'route' => 'admin.user.create',
+            'can' => 'isSuperAdmin', 
             'icon' => 'fas fa-fw fa-plus',
         ],
         [
+            'text' => 'Δημιουργία Νέου Χρήστη',
+            'route' => 'manager.user.create',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-plus',
+        ],
+
+
+        [
             'text' => 'Μεταβολή Χρήστη',
-            'url' => '/profile/edit',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'route' => 'admin.user.update',
+            'can' => 'isSuperAdmin', 
             'icon' => 'fas fa-fw fa-circle',
         ],
         [
+            'text' => 'Μεταβολή Χρήστη',
+            'route' => 'manager.user.update',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-circle',
+        ],
+
+
+        [
             'text' => 'Διαγραφή Χρήστη',
-            'url' => '/profile/delete',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'route' => 'admin.user.delete',
+            'can' => 'isSuperAdmin',
             'icon' => 'fas fa-fw fa-minus',
-        ],         
+        ],  
+        [
+            'text' => 'Διαγραφή Χρήστη',
+            'route' => 'manager.user.delete',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-minus',
+        ],       
+        
+        
+        [
+            'text' => 'Δες Χρήστες',
+            'route'  => 'admin.users.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-users',
+        ],
+        [
+            'text' => 'Δες Χρήστες',
+            'route'  => 'manager.users.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-users',
+        ],
+
+
         [
             'text' => 'Δες Προφίλ Χρήστη',
-            'url'  => '/profile/view',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'route'  => 'admin.user.view',
+            'can' => 'isSuperAdmin',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Δες Προφίλ Χρήστη',
+            'route'  => 'manager.user.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+
+
+
+
+        [
             'text' => 'Αλλαγή Κωδικού Χρήστη',
-            'url'  => 'profile/change-password',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'],
+            'route'  => 'admin.user.change-password',
+            'can' => 'isSuperAdmin', 
+            'icon' => 'fas fa-fw fa-lock',
+        ],
+        [
+            'text' => 'Αλλαγή Κωδικού Χρήστη',
+            'route'  => 'manager.user.change-password',
+            'can' => 'isCompanyCEO',
             'icon' => 'fas fa-fw fa-lock',
         ],
         

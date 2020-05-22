@@ -12,6 +12,8 @@ class AccountantController extends Controller
         return view('home');
     }
 
+    
+
     public function create(){
         $user = Auth::user();
         

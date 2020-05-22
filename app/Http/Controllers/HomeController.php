@@ -38,7 +38,7 @@ class HomeController extends Controller
         }
         */
 
-        $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
+        $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo', 'warehouse_foreman', 'accountant']);
 
         if($authenticatedUser){
             return view('home');
