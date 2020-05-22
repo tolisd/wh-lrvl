@@ -16,7 +16,7 @@
         <div class="col-lg-3 col-xs-6">
 
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isForeman', 'isAccountant'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
               <!-- small box -->
               <div class="small-box bg-yellow"> 
                 <div class="inner">
@@ -26,9 +26,26 @@
                 <div class="icon">                
                   <i class="fas fa-briefcase fa-sm" aria-hidden="true"></i>                
                 </div>
-                <a href="/assignments/view" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @can('isSuperAdmin')
+                  <a href="{{ route('admin.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isCompanyCEO')
+                  <a href="{{ route('manager.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isWarehouseForeman')
+                  <a href="{{ route('foreman.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isAccountant')
+                  <a href="{{ route('accountant.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+                
               </div>
+            @endcanany
           
+            @canany(['isSuperAdmin', 'isCompanyCEO'])
               <!-- small box -->
               <div class="small-box bg-lightblue"> <!-- changed from bg-aqua and it works -->
                 <div class="inner">
@@ -48,10 +65,12 @@
 
                 @can('isCompanyCEO')
                   <a href="{{ route('manager.users.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                @endcan
+                @endcan               
+                
               </div>              
             @endcanany
 
+            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman'])
             <!-- small box -->
             <div class="small-box bg-green"> 
                 <div class="inner">
@@ -61,8 +80,19 @@
                 <div class="icon">                
                   <i class="fas fa-server fa-sm" aria-hidden="true"></i>                
                 </div>
-                <a href="/products/view" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
+                @can('isSuperAdmin')
+                  <a href="{{ route('admin.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isCompanyCEO')
+                  <a href="{{ route('manager.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isWarehouseForeman')
+                  <a href="{{ route('foreman.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan                
+            </div>
+            @endcanany
 
          
         </div>
