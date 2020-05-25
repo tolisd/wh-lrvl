@@ -65,5 +65,9 @@ class User extends Authenticatable
     public function isWarehouseWorker(){
         return \Auth::check() && \Auth::user()->user_type === 'warehouse_worker';
     }
+
+    public function isNormalUser(){
+        return \Auth::check() && \Auth::user()->user_type === 'normal_user';
+    }
     
 }

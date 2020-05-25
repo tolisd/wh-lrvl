@@ -13,7 +13,13 @@
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
-            <p>Δες Χρήστες</p>              
+            <p>Δες Χρήστες</p>    
+
+            @foreach($users as $user)
+            <ul>
+                <li>{{ $user-> name }}</li>
+            </ul>
+            @endforeach          
     
             @can('isSuperAdmin')
                 <a href="{{ route('admin.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; //added for DB retrieval
 use App\User;
 use Auth; //added for Auth
 
@@ -229,11 +230,16 @@ class DashboardController extends Controller
         //2 user types -> Admin, CEO.
         $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
                 
-        if ($authenticatedUser){              
-            return view('users_view');     
+        if ($authenticatedUser){ 
+            $users = DB::table('users')->get(); //get all users from database via Facade
+            return view('users_view', ['users' => $users]);     //pass in the view, the $users var.
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }  
+
+        
+
+
     }
 
     public function change_user_password(){
