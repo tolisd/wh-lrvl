@@ -168,7 +168,7 @@ Route::group(['middleware' => 'can:isCompanyCEO'], function(){
 
 
 Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(){
-    Route::get('/home', 'AccountantController@home');
+    Route::get('/home', 'AccountantController@index');
     Route::get('/dashboard', 'DashboardController@index')->name('accountant.dashboard');
 
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('accountant.invoicecreate');

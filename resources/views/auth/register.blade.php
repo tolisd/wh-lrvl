@@ -39,6 +39,23 @@
                             </div>
                         </div>
 
+                        <!-- added this div for User Type-->
+                        <div class="form-group row">
+                            <label for="user_type" class="col-md-4 col-form-label text-md-right">User Type</label>
+
+                            <div class="col-md-6">
+                                <select name="user_type" class="form-control" required>
+                                    <option value="super_admin">Administrator</option>
+                                    <option value="company_ceo">Manager</option>
+                                    <option value="accountant">Accountant</option>
+                                    <option value="warehouse_foreman">Foreman</option>
+                                    <option value="warehouse_worker">Worker</option>
+                                    <option value="normal_user">Normal User</option>
+                                </select> 
+                            </div>
+                        </div>
+
+
                         <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
