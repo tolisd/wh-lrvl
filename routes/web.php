@@ -47,15 +47,15 @@ Route::group(['middleware' => 'can:isSuperAdmin'], function(){
 
 Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     //mention all the administrator routes in here
-    
+
     Route::get('/home', 'AdministratorController@home');
     //Route::get('/dashboard', 'AdministratorController@dashboard');
     Route::get('/private', 'AdministratorController@private');
     Route::get('/about', 'AdministratorController@about');
-    Route::get('/dashboard', 'DashboardController@index')->name('admin.dashboard'); 
-    
-    Route::get('/stock/view', 'DashboardController@view_stock')->name('admin.stock.view'); //view stock availability    
-    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit    
+    Route::get('/dashboard', 'DashboardController@index')->name('admin.dashboard');
+
+    Route::get('/stock/view', 'DashboardController@view_stock')->name('admin.stock.view'); //view stock availability
+    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('admin.invoicecreate');  //create invoice (should be ::post NOT ::get)
     Route::get('/assignments/view', 'DashboardController@view_assignments')->name('admin.assignments.view'); //view assignments
     Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('admin.assignment.import.create'); //create import assignment
@@ -69,17 +69,19 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::put('/product/update', 'DashboardController@update_product')->name('admin.product.update'); //update a product
     Route::delete('/product/delete', 'DashboardController@delete_product')->name('admin.product.delete'); //delete a product
 
-    Route::post('/user/create', 'DashboardController@create_user')->name('admin.user.create'); //create a new user
-    Route::put('/user/update', 'DashboardController@update_user')->name('admin.user.update'); //update a user
-    Route::delete('/user/delete', 'DashboardController@delete_user')->name('admin.user.delete'); //delete an existing user
-    Route::get('/user/view', 'DashboardController@view_user')->name('admin.user.view'); //view a single user    
-    Route::get('/users/view', 'DashboardController@view_users')->name('admin.users.view'); //view all users 
-    Route::put('/user/change-password', 'DashboardController@change_user_password')->name('admin.user.change-password'); //change user password
+
+    Route::post('/users/create', 'UserController@create_user')->name('admin.user.create'); //create a new user
+    Route::put('/users/update/{id}', 'UserController@update_user')->name('admin.user.update'); //update a user
+    Route::delete('/users/delete/{id}', 'UserController@delete_user')->name('admin.user.delete'); //delete an existing user
+
+    Route::get('/users/view', 'DashboardController@view_user')->name('admin.user.view'); //view a single user
+    Route::get('/users/view', 'DashboardController@view_users')->name('admin.users.view'); //view all users
+    Route::put('/users/change-password', 'DashboardController@change_user_password')->name('admin.user.change-password'); //change user password
 
     //uncomment the following routes, after implementing them in the AdministratorController!
     /*
-    Route::get('/view/assignment/{id}', 'AdministratorController@view_assignment_by_id'); //view assignment         
-    
+    Route::get('/view/assignment/{id}', 'AdministratorController@view_assignment_by_id'); //view assignment
+
     Route::put('/user/{id}/password','AdministratorController@update_password');  //change user password
     */
 });
@@ -91,7 +93,7 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
 Route::group(['middleware' => 'can:isCompanyCEO'], function(){
    //all the Company CEO routes in here
    Route::get('/home', 'CompanyCEOController@home');
-   Route::get('/dashboard', 'CompanyCEOController@index');     
+   Route::get('/dashboard', 'CompanyCEOController@index');
    Route::get('/private', 'CompanyCEOController@private');
 });
 */
@@ -99,15 +101,15 @@ Route::group(['middleware' => 'can:isCompanyCEO'], function(){
 
 Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function(){  //was middleware('can:isCompanyCEO')
     //all the Company CEO routes in here
-    
+
    Route::get('/home', 'CompanyCEOController@home');
    Route::get('/dashboard', 'DashboardController@index')->name('manager.dashboard');    //<-- it worked. It's a common route with Super-Administrator.
    Route::get('/private', 'CompanyCEOController@private');
    Route::get('/about', 'CompanyCEOController@about');
-      
-   Route::get('/stock/view', 'DashboardController@view_stock')->name('manager.stock.view'); //view stock availability   
+
+   Route::get('/stock/view', 'DashboardController@view_stock')->name('manager.stock.view'); //view stock availability
    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('manager.chargetoolkit'); //charge toolkit
-   
+
    Route::post('/invoice/create', 'DashboardController@create_invoice')->name('manager.invoicecreate');  //create invoice
    Route::get('/assignments/view', 'DashboardController@view_assignments')->name('manager.assignments.view'); //view assignments
    Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('manager.assignment.import.create'); //create import assignment
@@ -121,19 +123,20 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::put('/product/update', 'DashboardController@update_product')->name('manager.product.update'); //update product
    Route::delete('/product/delete', 'DashboardController@delete_product')->name('manager.product.delete'); //delete product
 
-   Route::post('/user/create', 'DashboardController@create_user')->name('manager.user.create'); //create a new user
-   Route::put('/user/update', 'DashboardController@update_user')->name('manager.user.update'); //update a user
-   Route::delete('/user/delete', 'DashboardController@delete_user')->name('manager.user.delete'); //delete an existing user
-   Route::get('/user/view', 'DashboardController@view_user')->name('manager.user.view'); //view a single user   
-   Route::get('/users/view', 'DashboardController@view_users')->name('manager.users.view'); //view all users  
+   Route::post('/users/create', 'DashboardController@create_user')->name('manager.user.create'); //create a new user
+   Route::put('/users/update', 'UserController@update_user')->name('manager.user.update'); //update a user
+   Route::delete('/users/delete', 'UserController@delete_user')->name('manager.user.delete'); //delete an existing user
+
+   Route::get('/user/view', 'DashboardController@view_user')->name('manager.user.view'); //view a single user
+   Route::get('/users/view', 'DashboardController@view_users')->name('manager.users.view'); //view all users
    Route::put('/user/change-password', 'DashboardController@change_user_password')->name('manager.user.change-password'); //change user password
 
-   //uncomment the following routes and implement the in the CompanyCEOController!   
+   //uncomment the following routes and implement the in the CompanyCEOController!
    /*
-    Route::get('/view/assignment/{id}', 'CompanyCEOController@view_assignment_by_id'); //view 1 assignment    
-    
+    Route::get('/view/assignment/{id}', 'CompanyCEOController@view_assignment_by_id'); //view 1 assignment
+
     Route::delete('/user/delete/{id}', 'CompanyCEOController@delete_user_by_id'); //delete an existing user
-    Route::get('/user/view', 'CompanyCEOController@view_user'); //view a single user    
+    Route::get('/user/view', 'CompanyCEOController@view_user'); //view a single user
     Route::put('/user/{id}/password','CompanyCEOController@update_password');  //change user password
     */
 });
@@ -143,7 +146,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
 //Web routes group logic, for both super-roles
 Route::group(['middleware' => 'can:isSuperAdmin,isCompanyCEO'], function(){
     Route::get('/admin/dashboard', 'AdministratorController@dashboard');
-    Route::get('/manager/dashboard', 'CompanyCEOController@index');      
+    Route::get('/manager/dashboard', 'CompanyCEOController@index');
     //Route::get('/dashboard', 'PagesController@dashboard');
 });
 */
@@ -153,7 +156,7 @@ Route::group(['middleware' => 'can:isSuperAdmin,isCompanyCEO'], function(){
 Route::group(['middleware' => 'can:isCompanyCEO'], function(){
     Route::get('/dashboard', 'PagesController@dashboard');
     Route::get('/manager/home', 'CompanyCEOController@home');
-    Route::get('/manager/dashboard', 'CompanyCEOController@index');     
+    Route::get('/manager/dashboard', 'CompanyCEOController@index');
     Route::get('/manager/private', 'CompanyCEOController@private');
     Route::get('/manager/about', 'CompanyCEOController@about');
 
@@ -177,7 +180,7 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('accountant.assignment.import.create'); //create import assignment
     Route::post('/assignment/export/create', 'DashboardController@create_export_assignment')->name('accountant.assignment.export.create'); //create export assignment
     Route::put('/assignment/update', 'DashboardController@update_assignment')->name('accountant.assignment.update'); //update assignment details
-    Route::delete('/assignment/delete', 'DashboardController@delete_assignment')->name('accountant.assignment.delete'); //delete assignment    
+    Route::delete('/assignment/delete', 'DashboardController@delete_assignment')->name('accountant.assignment.delete'); //delete assignment
 });
 
 
@@ -205,7 +208,7 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     Route::get('/home', 'WarehouseWorkerController@home');
     Route::get('/dashboard', 'DashboardController@index')->name('worker.dashboard');
 
-    Route::get('/products/view', 'DashboardController@view_products')->name('worker.products.view'); //view products   
+    Route::get('/products/view', 'DashboardController@view_products')->name('worker.products.view'); //view products
     Route::get('/product/view', 'DashboardController@view_product')->name('worker.product.view'); //view products
     Route::post('/product/create', 'DashboardController@create_product')->name('worker.product.create'); //create new product
     Route::put('/product/update', 'DashboardController@update_product')->name('worker.product.update'); //update product
@@ -237,7 +240,7 @@ Route::group(['middleware' => 'can:isSuperAdmin,isCompanyCEO'], function(){
     //Route::get('/admin/dashboard', 'AdministratorController@dashboard');
     Route::get('/private', 'PagesController@private');
     Route::get('/about', 'PagesController@about');
-        
+
     Route::get('/stock/view', 'PagesController@view_stock'); //view stock availability
     Route::get('/charge-toolkit', 'PagesController@charge_toolkit'); //charge toolkit
     Route::post('/invoice/create', 'PagesController@create_invoice');  //create invoice
@@ -258,7 +261,7 @@ Route::group(['middleware' => 'can:isSuperAdmin,isCompanyCEO'], function(){
     Route::post('/profile/create', 'PagesController@create_new_user'); //create new user
     Route::put('/profile/{id}/update', 'PagesController@update_user_by_id'); //update a user
     Route::delete('/profile/{id}/delete', 'PagesController@delete_user_by_id'); //delete an existing user
-    Route::get('/profile/view', 'PagesController@view_user'); //view a single user    
+    Route::get('/profile/view', 'PagesController@view_user'); //view a single user
     Route::put('/profile/{id}/change-password','PagesController@update_password');  //change user password
 });
 */

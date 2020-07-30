@@ -218,19 +218,19 @@ return [
     
         [
             'header' => 'ΓΕΝΙΚΕΣ ΕΠΙΛΟΓΕΣ',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant']
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman']
         ],
         [
             'text' => 'Δες Διαθεσιμότητα Στοκ',                    
             'route' => 'admin.stock.view',                    
             'can' => 'isSuperAdmin',	
-            'icon' => 'fas fa-eye',	
+            'icon' => 'fas fa-server',	
         ],
         [
             'text' => 'Δες Διαθεσιμότητα Στοκ',                    
             'route' => 'manager.stock.view',                    
             'can' =>   'isCompanyCEO',	
-            'icon' => 'fas fa-eye',	
+            'icon' => 'fas fa-server',	
         ],
     
         [
@@ -252,6 +252,7 @@ return [
             'icon' => 'fas fa-wrench',		
         ],
     
+        /*
         [
             'text' => 'Δημιουργία Τιμολογίου',
             'route' => 'admin.invoicecreate',
@@ -270,6 +271,7 @@ return [
             'can' =>  'isAccountant',
             'icon' => 'fas fa-plus',		
         ],
+        */
     
     
         [
@@ -280,25 +282,25 @@ return [
             'text' => 'Δες Ανοιχτές Αναθέσεις',
             'route' => 'admin.assignments.view',
             'can' => 'isSuperAdmin',
-            'icon' => 'far fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-briefcase',
         ],
         [
             'text' => 'Δες Ανοιχτές Αναθέσεις',
             'route' => 'manager.assignments.view',
             'can' => 'isCompanyCEO',
-            'icon' => 'far fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-briefcase',
         ],
         [
             'text' => 'Δες Ανοιχτές Αναθέσεις',
             'route' => 'accountant.assignments.view',
             'can' => 'isAccountant',
-            'icon' => 'far fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-briefcase',
         ],
         [
             'text' => 'Δες Ανοιχτές Αναθέσεις',
             'route' => 'foreman.assignments.view',
             'can' => 'isWarehouseForeman',
-            'icon' => 'far fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-briefcase',
         ],
 
        
@@ -395,7 +397,7 @@ return [
 
 
 
-    
+    /*
         [
             'text' => 'Μεταβολή Ανάθεσης',
             'route' => 'admin.assignment.update',
@@ -420,7 +422,8 @@ return [
             'can' => 'isWarehouseForeman',
             'icon' => 'far fa-fw fa-circle',
         ],
-    
+    */
+    /*
 
         [
             'text' => 'Διαγραφή Ανάθεσης',
@@ -446,7 +449,7 @@ return [
             'can' => 'isWarehouseForeman',
             'icon' => 'fas fa-fw fa-minus',
         ],
-    
+    */
     
     
         [
@@ -458,28 +461,28 @@ return [
             'text' => 'Δες Όλα τα Προϊόντα',
             'route' => 'admin.products.view',
             'can' => 'isSuperAdmin',
-            'icon' => 'fas fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-server',
         ],
         [
             'text' => 'Δες Όλα τα Προϊόντα',
             'route' => 'manager.products.view',
             'can' => 'isCompanyCEO',
-            'icon' => 'fas fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-server',
         ],
         [
             'text' => 'Δες Όλα τα Προϊόντα',
             'route' => 'foreman.products.view',
             'can' => 'isWarehouseForeman', 
-            'icon' => 'fas fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-server',
         ],
         [
             'text' => 'Δες Όλα τα Προϊόντα',
             'route' => 'worker.products.view',
             'can' => 'isWarehouseWorker',
-            'icon' => 'fas fa-fw fa-eye',
+            'icon' => 'fas fa-fw fa-server',
         ],
     
-        
+        /*
         [
             'text' => 'Δες Προϊόν',
             'route' => 'admin.product.view',
@@ -504,7 +507,7 @@ return [
             'can' => 'isWarehouseWorker',
             'icon' => 'far fa-fw fa-eye',
         ],
-
+        */
     
     
         [
@@ -533,7 +536,7 @@ return [
         ],
 
 
-    
+    /*
         [
             'text' => 'Μεταβολή Προϊόντος',
             'route' => 'admin.product.update',
@@ -558,8 +561,8 @@ return [
             'can' => 'isWarehouseWorker',
             'icon' => 'far fa-fw fa-circle',
         ],
-
-    
+    */
+    /*
         [
             'text' => 'Διαγραφή Προϊόντος',
             'route' => 'admin.product.delete',
@@ -584,13 +587,28 @@ return [
             'can' => 'isWarehouseWorker',
             'icon' => 'fas fa-fw fa-minus',
         ],
-      
+    */ 
 
     
         [
             'header' => 'ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ',
             'can' => ['isSuperAdmin', 'isCompanyCEO'],
         ],
+
+
+        [
+            'text' => 'Δες Χρήστες',
+            'route'  => 'admin.users.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-users',
+        ],
+        [
+            'text' => 'Δες Χρήστες',
+            'route'  => 'manager.users.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-users',
+        ],
+
 
         [
             'text' => 'Δημιουργία Νέου Χρήστη',
@@ -605,7 +623,7 @@ return [
             'icon' => 'fas fa-fw fa-plus',
         ],
 
-
+/*
         [
             'text' => 'Μεταβολή Χρήστη',
             'route' => 'admin.user.update',
@@ -634,18 +652,7 @@ return [
         ],       
         
         
-        [
-            'text' => 'Δες Χρήστες',
-            'route'  => 'admin.users.view',
-            'can' => 'isSuperAdmin',
-            'icon' => 'fas fa-fw fa-users',
-        ],
-        [
-            'text' => 'Δες Χρήστες',
-            'route'  => 'manager.users.view',
-            'can' => 'isCompanyCEO',
-            'icon' => 'fas fa-fw fa-users',
-        ],
+        
 
 
         [
@@ -676,7 +683,10 @@ return [
             'can' => 'isCompanyCEO',
             'icon' => 'fas fa-fw fa-lock',
         ],
-        
+ */
+
+ 
+
 
         /*
         [
@@ -800,25 +810,44 @@ return [
     'plugins' => [
         [
             'name' => 'Datatables',
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js',
                 ],
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js',
                 ],
                 [
                     'type' => 'css',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
                 ],
             ],
         ],
+
+        [
+            'name' => 'Buttons',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js',
+                ],               
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css',
+                ],
+            ],
+        ],
+
+
         [
             'name' => 'Select2',
             'active' => false,

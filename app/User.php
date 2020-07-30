@@ -6,9 +6,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Illuminate\Support\Facades\DB; //added this line for db retrieval user_type
+
 class User extends Authenticatable
 {
     use Notifiable;
+
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'user_type', 'password', 
+        'name', 'email', 'user_type', 'password',
     ];
 
     /**
@@ -44,15 +49,17 @@ class User extends Authenticatable
         return in_array($this->user_type, $user_type);
     }
 
+
+
     //added roles
-    
+
     public function isAdmin(){
         return \Auth::check() && \Auth::user()->user_type === 'super_admin';
     }
 
     public function isManager(){
         return \Auth::check() && \Auth::user()->user_type === 'company_ceo';
-    }   
+    }
 
     public function isAccountant(){
         return \Auth::check() && \Auth::user()->user_type === 'accountant';
@@ -69,5 +76,5 @@ class User extends Authenticatable
     public function isNormalUser(){
         return \Auth::check() && \Auth::user()->user_type === 'normal_user';
     }
-    
+
 }

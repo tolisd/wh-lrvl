@@ -21,7 +21,7 @@ class DashboardController extends Controller
         
         //---or this? it seems to do the job!
         if ($authenticatedUser){
-            $users = User::count();      
+            $users = User::count();
             return view('dashboard', ['users' => $users]);        //pass the value of $users into the view
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -186,33 +186,28 @@ class DashboardController extends Controller
         //2 user types -> Admin, CEO.
         $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
                 
-        if ($authenticatedUser){              
-            return view('user_create');     
+        if ($authenticatedUser){
+
+
+
+
+            
+            return redirect()->back();            
+            //return view('user_create');     
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }  
    }
 
-   public function update_user(){
-       //2 user types -> Admin, CEO.
-       $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
-                
-       if ($authenticatedUser){              
-           return view('user_update');     
-       } else {
-           return abort(403, 'Sorry you cannot view this page');
-       }  
+   
+   public function update_user(Request $request, $uid){
+      
    }
+   
 
-   public function delete_user(){
-       //2 user types -> Admin, CEO.
-       $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
-                
-       if ($authenticatedUser){              
-           return view('user_delete');     
-       } else {
-           return abort(403, 'Sorry you cannot view this page');
-       }  
+   public function delete_user(Request $request, $uid){
+    
+             
    }
 
    public function view_user(){
@@ -231,7 +226,9 @@ class DashboardController extends Controller
         $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
                 
         if ($authenticatedUser){ 
+
             $users = DB::table('users')->get(); //get all users from database via Facade
+
             return view('users_view', ['users' => $users]);     //pass in the view, the $users var.
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -244,8 +241,9 @@ class DashboardController extends Controller
 
     public function change_user_password(){
         //2 user types -> Admin, CEO.
-        $authenticatedUser = Auth::user()->user_type(['super_admin', 'company_ceo']);
-                
+        $authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo']);
+         
+
         if ($authenticatedUser){              
             return view('user_change_password');     
         } else {
