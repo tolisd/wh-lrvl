@@ -57,18 +57,24 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::get('/stock/view', 'DashboardController@view_stock')->name('admin.stock.view'); //view stock availability
     Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('admin.invoicecreate');  //create invoice (should be ::post NOT ::get)
-    Route::get('/assignments/view', 'DashboardController@view_assignments')->name('admin.assignments.view'); //view assignments
-    Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('admin.assignment.import.create'); //create import assignment
-    Route::post('/assignment/export/create', 'DashboardController@create_export_assignment')->name('admin.assignment.export.create'); //create export assignment
-    Route::put('/assignment/update', 'DashboardController@update_assignment')->name('admin.assignment.update'); //update assignment details
-    Route::delete('/assignment/delete', 'DashboardController@delete_assignment')->name('admin.assignment.delete'); //delete assignment
 
-    Route::get('/products/view', 'DashboardController@view_products')->name('admin.products.view'); //view products
+    Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('admin.assignments.view'); //view assignments
+    Route::get('/assignments/import/view', 'AssignmentController@view_import_assignments')->name('admin.assignments.import.view');
+    Route::get('/assignments/export/view', 'AssignmentController@view_export_assignments')->name('admin.assignments.export.view');
+    Route::get('/assignments/import/view/{id}', 'AssignmentController@view_import_assignment_byId')->name('admin.assignment.import.view');
+    Route::get('/assignments/export/view/{id}', 'AssignmentController@view_export_assignment_byId')->name('admin.assignment.export.view');
+    Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('admin.assignment.import.create'); //create import assignment
+    Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('admin.assignment.export.create'); //create export assignment
+    Route::put('/assignments/import/update/{id}', 'AssignmentController@update_import_assignment')->name('admin.assignment.import.update'); //update assignment details
+    Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('admin.assignment.export.update');
+    Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('admin.assignment.import.delete'); //delete assignment
+    Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('admin.assignment.export.delete');
+
+    Route::get('/products/view', 'ProductController@view_products')->name('admin.products.view'); //view products
     Route::get('/product/view', 'DashboardController@view_product')->name('admin.product.view'); //view single product
-    Route::post('/product/create', 'DashboardController@create_product')->name('admin.product.create'); //create new product
-    Route::put('/product/update', 'DashboardController@update_product')->name('admin.product.update'); //update a product
-    Route::delete('/product/delete', 'DashboardController@delete_product')->name('admin.product.delete'); //delete a product
-
+    Route::post('/products/create', 'ProductController@create_product')->name('admin.product.create'); //create new product
+    Route::put('/products/update/{id}', 'ProductController@update_product')->name('admin.product.update'); //update a product
+    Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('admin.product.delete'); //delete a product
 
     Route::post('/users/create', 'UserController@create_user')->name('admin.user.create'); //create a new user
     Route::put('/users/update/{id}', 'UserController@update_user')->name('admin.user.update'); //update a user
@@ -109,23 +115,30 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
 
    Route::get('/stock/view', 'DashboardController@view_stock')->name('manager.stock.view'); //view stock availability
    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('manager.chargetoolkit'); //charge toolkit
-
    Route::post('/invoice/create', 'DashboardController@create_invoice')->name('manager.invoicecreate');  //create invoice
-   Route::get('/assignments/view', 'DashboardController@view_assignments')->name('manager.assignments.view'); //view assignments
-   Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('manager.assignment.import.create'); //create import assignment
-   Route::post('/assignment/export/create', 'DashboardController@create_export_assignment')->name('manager.assignment.export.create'); //create export assignment
-   Route::put('/assignment/update', 'DashboardController@update_assignment')->name('manager.assignment.update'); //update assignment details
-   Route::delete('/assignment/delete', 'DashboardController@delete_assignment')->name('manager.assignment.delete'); //delete assignment
 
-   Route::get('/products/view', 'DashboardController@view_products')->name('manager.products.view'); //view products
+   Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('manager.assignments.view'); //view assignments
+   Route::get('/assignments/import/view', 'AssignmentController@view_import_assignments')->name('manager.assignments.import.view');
+   Route::get('/assignments/export/view', 'AssignmentController@view_export_assignments')->name('manager.assignments.export.view');
+   Route::get('/assignments/import/view/{id}', 'AssignmentController@view_import_assignment_byId')->name('manager.assignment.import.view');
+   Route::get('/assignments/export/view/{id}', 'AssignmentController@view_export_assignment_byId')->name('manager.assignment.export.view');
+   Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('manager.assignment.import.create'); //create import assignment
+   Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('manager.assignment.export.create'); //create export assignment
+   Route::put('/assignments/import/update/{id}', 'AssignmentController@update_import_assignment')->name('manager.assignment.import.update'); //update assignment details
+   Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('manager.assignment.export.update');
+   Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('manager.assignment.import.delete'); //delete assignment
+   Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('manager.assignment.export.delete');
+
+   Route::get('/products/view', 'ProductController@view_products')->name('manager.products.view'); //view products
    Route::get('/product/view', 'DashboardController@view_product')->name('manager.product.view'); //view single product
-   Route::post('/product/create', 'DashboardController@create_product')->name('manager.product.create'); //create new product
-   Route::put('/product/update', 'DashboardController@update_product')->name('manager.product.update'); //update product
-   Route::delete('/product/delete', 'DashboardController@delete_product')->name('manager.product.delete'); //delete product
 
-   Route::post('/users/create', 'DashboardController@create_user')->name('manager.user.create'); //create a new user
-   Route::put('/users/update', 'UserController@update_user')->name('manager.user.update'); //update a user
-   Route::delete('/users/delete', 'UserController@delete_user')->name('manager.user.delete'); //delete an existing user
+   Route::post('/products/create', 'ProductController@create_product')->name('manager.product.create'); //create new product
+   Route::put('/products/update/{id}', 'ProductController@update_product')->name('manager.product.update'); //update product
+   Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('manager.product.delete'); //delete product
+
+   Route::post('/users/create', 'UserController@create_user')->name('manager.user.create'); //create a new user
+   Route::put('/users/update/{id}', 'UserController@update_user')->name('manager.user.update'); //update a user
+   Route::delete('/users/delete/{id}', 'UserController@delete_user')->name('manager.user.delete'); //delete an existing user
 
    Route::get('/user/view', 'DashboardController@view_user')->name('manager.user.view'); //view a single user
    Route::get('/users/view', 'DashboardController@view_users')->name('manager.users.view'); //view all users
@@ -176,11 +189,17 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
 
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('accountant.invoicecreate');
 
-    Route::get('/assignments/view', 'DashboardController@view_assignments')->name('accountant.assignments.view');
-    Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('accountant.assignment.import.create'); //create import assignment
-    Route::post('/assignment/export/create', 'DashboardController@create_export_assignment')->name('accountant.assignment.export.create'); //create export assignment
-    Route::put('/assignment/update', 'DashboardController@update_assignment')->name('accountant.assignment.update'); //update assignment details
-    Route::delete('/assignment/delete', 'DashboardController@delete_assignment')->name('accountant.assignment.delete'); //delete assignment
+    Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('accountant.assignments.view'); //view assignments
+    Route::get('/assignments/import/view', 'AssignmentController@view_import_assignments')->name('accountant.assignments.import.view');
+    Route::get('/assignments/export/view', 'AssignmentController@view_export_assignments')->name('accountant.assignments.export.view');
+    Route::get('/assignments/import/view/{id}', 'AssignmentController@view_import_assignment_byId')->name('accountant.assignment.import.view');
+    Route::get('/assignments/export/view/{id}', 'AssignmentController@view_export_assignment_byId')->name('accountant.assignment.export.view');
+    Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('accountant.assignment.import.create'); //create import assignment
+    Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('accountant.assignment.export.create'); //create export assignment
+    Route::put('/assignments/import/update/{id}', 'AssignmentController@update_import_assignment')->name('accountant.assignment.import.update'); //update assignment details
+    Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('accountant.assignment.export.update');
+    Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('accountant.assignment.import.delete'); //delete assignment
+    Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('accountant.assignment.export.delete');
 });
 
 
@@ -190,17 +209,24 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
 
     Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('foreman.chargetoolkit');
 
-    Route::get('/assignments/view', 'DashboardController@view_assignments')->name('foreman.assignments.view');
-    Route::post('/assignment/import/create', 'DashboardController@create_import_assignment')->name('foreman.assignment.import.create'); //create import assignment
-    Route::post('/assignment/export/create', 'DashboardController@create_export_assignment')->name('foreman.assignment.export.create'); //create export assignment
-    Route::put('/assignment/update', 'DashboardController@update_assignment')->name('foreman.assignment.update'); //update assignment details
-    Route::delete('/assignment/delete', 'DashboardController@delete_assignment')->name('foreman.assignment.delete'); //delete assignment
+    Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('foreman.assignments.view'); //view assignments
+    Route::get('/assignments/import/view', 'AssignmentController@view_import_assignments')->name('foreman.assignments.import.view');
+    Route::get('/assignments/export/view', 'AssignmentController@view_export_assignments')->name('foreman.assignments.export.view');
+    Route::get('/assignments/import/view/{id}', 'AssignmentController@view_import_assignment_byId')->name('foreman.assignment.import.view');
+    Route::get('/assignments/export/view/{id}', 'AssignmentController@view_export_assignment_byId')->name('foreman.assignment.export.view');
+    Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('foreman.assignment.import.create'); //create import assignment
+    Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('foreman.assignment.export.create'); //create export assignment
+    Route::put('/assignments/import/update/{id}', 'AssignmentController@update_import_assignment')->name('foreman.assignment.import.update'); //update assignment details
+    Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('foreman.assignment.export.update');
+    Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('foreman.assignment.import.delete'); //delete assignment
+    Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('foreman.assignment.export.delete');
 
-    Route::get('/products/view', 'DashboardController@view_products')->name('foreman.products.view'); //view products
+    Route::get('/products/view', 'ProductController@view_products')->name('foreman.products.view'); //view products
     Route::get('/product/view', 'DashboardController@view_product')->name('foreman.product.view'); //view products
-    Route::post('/product/create', 'DashboardController@create_product')->name('foreman.product.create'); //create new product
-    Route::put('/product/update', 'DashboardController@update_product')->name('foreman.product.update'); //update product
-    Route::delete('/product/delete', 'DashboardController@delete_product')->name('foreman.product.delete'); //delete product
+
+    Route::post('/products/create', 'ProductController@create_product')->name('foreman.product.create'); //create new product
+    Route::put('/products/update/{id}', 'ProductController@update_product')->name('foreman.product.update'); //update product
+    Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('foreman.product.delete'); //delete product
 });
 
 
@@ -208,11 +234,12 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     Route::get('/home', 'WarehouseWorkerController@home');
     Route::get('/dashboard', 'DashboardController@index')->name('worker.dashboard');
 
-    Route::get('/products/view', 'DashboardController@view_products')->name('worker.products.view'); //view products
+    Route::get('/products/view', 'ProductController@view_products')->name('worker.products.view'); //view products
     Route::get('/product/view', 'DashboardController@view_product')->name('worker.product.view'); //view products
-    Route::post('/product/create', 'DashboardController@create_product')->name('worker.product.create'); //create new product
-    Route::put('/product/update', 'DashboardController@update_product')->name('worker.product.update'); //update product
-    Route::delete('/product/delete', 'DashboardController@delete_product')->name('worker.product.delete'); //delete product
+
+    Route::post('/products/create', 'ProductController@create_product')->name('worker.product.create'); //create new product
+    Route::put('/products/update/{id}', 'ProductController@update_product')->name('worker.product.update'); //update product
+    Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('worker.product.delete'); //delete product
 });
 
 

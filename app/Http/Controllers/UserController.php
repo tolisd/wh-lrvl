@@ -123,7 +123,7 @@ class UserController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO'])){
 
-            $u_id = $request->input("data-uid");   //take ALL input values into $input, as an assoc.array
+            //$u_id = $request->input("data-uid");   //take ALL input values into $input, as an assoc.array
             //$u_id = $arr['data-uid'];
 
             $user = User::findOrFail($id); //was findOrFail($u_id);

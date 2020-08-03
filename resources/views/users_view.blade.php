@@ -17,6 +17,7 @@
 
             <br/>
 
+            @canany(['isSuperAdmin', 'isCompanyCEO'])
             <table class="table data-table display table-striped table-bordered"
                      data-order='[[ 0, "asc" ]]' data-page-length="5">
                 <thead>
@@ -48,6 +49,8 @@
                                 </button>
                             </td>
                             <td>
+                            <!-- no need for other checks here, as other types Accountant etc, CANNOT see this screen -->
+                            @if(!($user->id == \Auth::user()->id)) <!-- The User CANNOT delete SELF -->
                                 <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-uid="{{ $user->id }}"
@@ -55,6 +58,7 @@
                                     <!-- <span class="glyphicon glyphicon-trash"></span> Διαγραφή -->
                                     <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                                 </button>
+                            @endif
                             </td>
                         </tr>
                     @endforeach
@@ -67,6 +71,7 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Χρήστη</button>
 
             <br/><br/>
+            @endcanany
 
 
             @can('isSuperAdmin')
@@ -106,10 +111,10 @@
                                 -->
                                 <div class="card-body">
 
-                                        <!-- added hidden input for ID -->
-                                        <div class="form-group">
+                                    <!-- added hidden input for ID -->
+                                    <div class="form-group">
                                         <input type="hidden" id="modal-input-uid-edit" name="modal-input-uid-edit" value="">
-                                        </div>
+                                    </div>
 
                                     <!-- name -->
                                     <div class="form-group">

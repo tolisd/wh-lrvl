@@ -21,7 +21,7 @@
               <div class="small-box bg-yellow">
 
                 <div class="inner">
-                      <h3>6</h3>
+                      <h3>{{ $assignCount }}</h3>
                       <p>Ανοιχτές Αναθέσεις</p>
                 </div>
 
@@ -52,8 +52,8 @@
               <!-- small box -->
               <div class="small-box bg-lightblue"> <!-- changed from bg-aqua and it works -->
                 <div class="inner">
-                      <h3>{{ $users }}</h3>
-                      <p>Χρήστες</p>
+                      <h3>{{ $usersCount }}</h3>
+                      <p>Χρήστες Συστήματος</p>
                 </div>
                 <div class="icon">
                   <!--<i class="ion ion-stats-bars"></i> -->
@@ -77,8 +77,8 @@
             <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
-                      <h3>1000</h3>
-                      <p>Προϊόντα</p>
+                      <h3>{{ $prodCount }}</h3>
+                      <p>Προϊόντα στην Αποθήκη</p>
                 </div>
                 <div class="icon">
                   <i class="fas fa-server fa-sm" aria-hidden="true"></i>

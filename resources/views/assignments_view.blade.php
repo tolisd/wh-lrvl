@@ -9,26 +9,47 @@
 @stop
 
 
-@section('content')    
+@section('content')
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
-            <p>Ανοιχτές Αναθέσεις</p>              
+            <p>Ανοιχτές Αναθέσεις</p>
+
 
             @can('isSuperAdmin')
-                <a href="{{ route('admin.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
+                <ul>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                </ul>
+                <br/><br/>
+                <a href="{{ route('admin.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
             @can('isCompanyCEO')
-                <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
+                <ul>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                </ul>
+                <br/><br/>
+                <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
             @can('isAccountant')
-                <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
+                <ul>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                </ul>
+                <br/><br/>
+                <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
             @can('isWarehouseForeman')
-                <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a> 
+                <ul>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                </ul>
+                <br/><br/>
+                <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
