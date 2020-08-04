@@ -9,9 +9,9 @@ class Category extends Model
     //
     protected $table = "category";
 
-    protected $primaryKey = 'category_id';
+    //protected $primaryKey = 'category_id';
 
     public function product(){
-        return $this->hasOne('App/Product');
+        return $this->hasMany('App/Product');
     }
 }

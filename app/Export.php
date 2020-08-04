@@ -9,7 +9,7 @@ class Export extends Model
     //
     protected $table = "exports";
 
-    protected $primaryKey = 'export_id';
+    //protected $primaryKey = 'export_id';
 
     public function product(){
         return $this->belongsTo('App/Product');

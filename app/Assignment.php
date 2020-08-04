@@ -9,15 +9,15 @@ class Assignment extends Model
     //
     protected $table = "assignments";
 
-    protected $primaryKey = 'assignment_id';
+    //protected $primaryKey = 'assignment_id';
 
 
     public function import(){
-        return $this->hasOne('App/Import');
+        return $this->hasMany('App/Import');
     }
 
     public function export(){
-        return $this->hasOne('App/Export');
+        return $this->hasMany('App/Export');
     }
 
 }

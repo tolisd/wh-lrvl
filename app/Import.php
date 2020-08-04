@@ -9,7 +9,7 @@ class Import extends Model
     //
     protected $table = "imports";
 
-    protected $primaryKey = 'import_id';
+    //protected $primaryKey = 'import_id';
 
     public function product(){
         return $this->belongsTo('App/Product');
@@ -18,5 +18,5 @@ class Import extends Model
     public function assignment(){
         return $this->belongsTo('App/Assignment');
     }
-    
+
 }
