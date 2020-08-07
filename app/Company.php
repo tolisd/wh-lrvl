@@ -13,7 +13,7 @@ class Company extends Model
 
 
     public function warehouse(){
-        return $this->hasMany('App/Warehouse');
+        return $this->hasMany('App\Warehouse');
     }
 
 }

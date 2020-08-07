@@ -14,23 +14,27 @@
                         </div>
                     @endif
 
-                    You are logged in successfully!
+                    Κάνατε επιτυχές Log-In!
                     <br/>
 
                     @can('isSuperAdmin')
-                        <a href="/admin/dashboard">Go to Admin Dashboard</a>
+                        <a href="/admin/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Διαχειριστή</a>
                     @endcan
 
                     @can('isCompanyCEO')
-                        <a href="/manager/dashboard">Go to Manager Dashboard</a>
+                        <a href="/manager/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Διευθυντή</a>
                     @endcan
 
                     @can('isAccountant')
-                        <a href="/accountant/dashboard">Go to Accountant Dashboard</a>
+                        <a href="/accountant/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Λογιστή</a>
                     @endcan
 
                     @can('isWarehouseForeman')
-                        <a href="/foreman/dashboard">Go to Warehouse Foreman Dashboard</a>
+                        <a href="/foreman/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Προϊσταμένου Αποθήκης</a>
+                    @endcan
+
+                    @can('isWarehouseWorker')
+                        <a href="/worker/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Εργαζόμενου Αποθήκης</a>
                     @endcan
 
                 </div>

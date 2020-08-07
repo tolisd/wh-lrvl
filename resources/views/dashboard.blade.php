@@ -5,13 +5,13 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Warehouse / Dashboard</h1>
+    <h1>Warehouse/Αποθήκη // Πίνακας Ελέγχου</h1>
 @stop
 
 <!-- Originally, NO sidebar section in this file! I added this section! Beware! -->
 
 @section('content')
-    <p>Welcome, this is the Warehouse Application by Ypostirixis Group.</p>
+    <p>Καλώς ήλθατε, αυτή είναι η εφαρμογή Warehouse της Ypostirixis Group.</p>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
@@ -73,7 +73,7 @@
               </div>
             @endcanany
 
-            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman'])
+            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
             <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
@@ -93,6 +93,10 @@
 
                 @can('isWarehouseForeman')
                   <a href="{{ route('foreman.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isWarehouseWorker')
+                  <a href="{{ route('worker.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
             </div>
             @endcanany

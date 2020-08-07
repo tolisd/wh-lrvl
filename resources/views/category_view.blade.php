@@ -10,8 +10,10 @@
 
 
 @section('content')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <div class="row">
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-12 col-xs-6">
 
             <p>Κατηγορίες Προϊόντων</p>
 
@@ -43,7 +45,7 @@
                             </button>
                         </td>
                         <td>
-                            <button class="delete-modal btn btn-info"
+                            <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-cid="{{ $categ->id }}"
                                     data-name="{{ $categ->name }}">
@@ -58,7 +60,7 @@
 
             <br/><br/>
 
-            <!--Create New User button -->
+            <!--Create New Products Category button -->
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Κατηγορίας Προϊόντος</button>
 
             <br/><br/>
@@ -86,7 +88,7 @@
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
             <!-- The 3 Modals, Add/Update/Delete -->
 
-            <!-- the Add/Create new Product, Modal popup window -->
+            <!-- the Add/Create new products Category, Modal popup window -->
             <div class="modal fade" id="add-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -151,7 +153,7 @@
 
 
 
-            <!-- the Edit/Update existing Product, Modal popup window -->
+            <!-- the Edit/Update existing Products Category, Modal popup window -->
             <div class="modal fade" id="edit-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -164,7 +166,7 @@
 
                         <form id="edit-form" class="form-horizontal" method="POST">
                         @csrf <!-- necessary fields for CSRF & Method type-->
-                        @method('POST')
+                        @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
@@ -203,7 +205,7 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-product-button"
+                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-category-button"
                                 data-target="#edit-modal" data-toggle="modal" data-cid="">Διόρθωσε Κατηγορία Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
@@ -217,7 +219,7 @@
 
 
 
-            <!-- the Delete existing Product, Modal popup window -->
+            <!-- the Delete existing Products Category, Modal popup window -->
             <div class="modal modal-danger fade" id="delete-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -264,7 +266,7 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger" id="delete-button" name="delete-product-button"
+                            <button type="submit" class="btn btn-danger" id="delete-button" name="delete-category-button"
                                 data-target="#delete-modal" data-toggle="modal" data-cid="">Διέγραψε Κατηγορία Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
@@ -296,9 +298,9 @@
 
     $(document).ready(function(){
 
-         //configure & initialise the (Products) DataTable
+         //configure & initialise the (Products Categories) DataTable
          $('.table').DataTable({
-            //autoWidth: true,
+            autoWidth: true,
             ordering: true,
             searching: true,
             select: true,
@@ -312,9 +314,17 @@
                 'print',
             ],
             */
-        })
+        });
+
+        //for all 3 modals/actions, POST, PUT, DELETE
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
     });
+
 
 
 
@@ -335,26 +345,27 @@
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-description-edit').val(description);
 
-            modal.find('.modal-footer #edit-button').attr("data-cid", cid);  //SET user id value in data-pid attribute
+            modal.find('.modal-footer #edit-button').attr("data-cid", cid);  //SET category id value in data-cid attribute
 
 
 
-            //AJAX Update/Edit User
+            //AJAX Update/Edit Products Category
             //event delegation here...
             $(document).on("submit", "#edit-form", function(evt){
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                console.log(cid);
                 console.log(formData);
 
                 $.ajax({
-                    method: "POST",
+                    type: "POST",
                     data: formData,
                     cache: false,
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
-                    url: "update/" + pid, //where to send the ajax request
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/product_category/update/" + cid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -365,7 +376,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Send Request ..");
-                                window.location.href = "view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_category/view/";
                             }
                         });
                     },
@@ -406,25 +417,26 @@
             modal.find('.modal-body .card .card-body #modal-input-cid-del').val(cid); //change the value to...
             modal.find('.modal-body .card .card-body #modal-input-name-del').val(name);
 
-            modal.find('.modal-footer #delete-button').attr("data-cid", cid); //SET user id value in data-pid attribute
+            modal.find('.modal-footer #delete-button').attr("data-cid", cid); //SET category id value in data-cid attribute
 
 
-            //AJAX Delete existing Product
+            //AJAX Delete existing Products Category
             //event delegation here..
             $(document).on("submit", "#delete-form", function(evt){
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                console.log(cid);
                 console.log(formData);
 
                 $.ajax({
-                    method: "POST",
+                    method: "DELETE",
                     data: formData,
                     cache: false,
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
-                    url: "delete/" + pid, //where to send the ajax request
+                    dataType: "json", //added for debugging purposes...
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/product_category/delete/"+ cid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -434,8 +446,8 @@
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
-                                console.log("Sent Request ..");
-                                window.location.href = "view/";
+                                console.log("Sent DELETE Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_category/view/";
                             }
                         });
                     },
@@ -466,7 +478,7 @@
 
 
 
-        //AJAX for Add/Create New Product submit
+        //AJAX for Add/Create New Products Category submit
         //event delegation here..
         $(document).on("submit", "#add-form", function(evt){
             evt.preventDefault();
@@ -480,7 +492,8 @@
                 cache: false,
                 contentType: false, //do not set any content type header
                 processData: false, //send non-processed data
-                url: "create/", //where to send the ajax request
+                dataType: "json",
+                url: "{{ url(request()->route()->getPrefix()) }}" + "/product_category/create/", //where to send the ajax request
                 success: function(){
                     Swal.fire({
                             icon: "success",
@@ -491,7 +504,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent Request ..");
-                                window.location.href = "view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_category/view/";
                             }
                         });
                 },

@@ -16,9 +16,11 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id('id');
             $table->string('name', 255);
+
             $table->mediumText('description');
-            $table->string('type', 255);            
             $table->float('quantity');
+            //$table->string('meas_unit', 20);
+            $table->enum('measure_unit', ['τμχ', 'm', 'm2', 'm3', 'kg'])->default('τμχ');
             $table->mediumText('comments');
             $table->timestamps();
 
@@ -28,8 +30,17 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')
                     ->references('id')
                     ->on('category')
-                    ->onDelete('cascade');  
-            */                  
+                    ->onDelete('cascade');
+            */
+
+            /*
+            $table->unsignedBigInteger('type_id');
+
+            $table->foreign('type_id')
+                    ->references('id')
+                    ->on('types')
+                    ->onDelete('cascade');
+             */
         });
     }
 

@@ -10,10 +10,12 @@
 
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-            <p>Δες Χρήστες</p>
+    <div class="row">
+        <div class="col-lg-9 col-xs-6">  <!-- was col-lg-3, too narrow table... -->
+
+            <p>Δες Χρήστες Συστήματος</p>
 
             <br/>
 
@@ -401,7 +403,7 @@
         $(document).ready(function(){
 
             $('.table').DataTable({
-                //autoWidth: true,
+                autoWidth: true,
                 ordering: true,
                 searching: true,
                 select: true,
@@ -424,6 +426,14 @@
                     'print',
                 ],
                 */
+            });
+
+
+            //for all 3 modals/actions, POST, PUT, DELETE
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
 
         });//end document-ready
@@ -469,7 +479,7 @@
                     cache: false,
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
-                    url: "update/" + uid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/users/update/" + uid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -480,7 +490,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Send Request ..");
-                                window.location.href = "view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/users/view/";
                             }
                         });
                     },
@@ -539,7 +549,7 @@
                     cache: false,
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
-                    url: "delete/" + uid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/users/delete/" + uid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -550,7 +560,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Send Request ..");
-                                window.location.href = "view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/users/view/";
                             }
                         });
                     },
@@ -595,7 +605,7 @@
                 cache: false,
                 contentType: false, //do not set any content type header
                 processData: false, //send non-processed data
-                url: "create/", //where to send the ajax request
+                url: "{{ url(request()->route()->getPrefix()) }}" + "/users/create/", //where to send the ajax request
                 success: function(){
                     Swal.fire({
                             icon: "success",
@@ -606,7 +616,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Send Request ..");
-                                window.location.href = "view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/users/view/";
                             }
                         });
                 },

@@ -15,9 +15,10 @@ class CreateAssignmentsTable extends Migration
     {
         Schema::create('assignments', function (Blueprint $table) {
             $table->id('id');
-            $table->string('type', 6); //import or export
-            $table->string('assignee', 255);
-            $table->dateTime('time_date_assigned');            
+            $table->string('assignment_code', 255);
+            $table->enum('assignment_type', ['import_assignment', 'export_assignment']);  //Was: $table->string('type', 6); //import or export
+            $table->string('assigner', 255);  //eg Lidl.
+            $table->dateTime('time_date_assigned');
             $table->timestamps();
 
             /*
@@ -26,7 +27,7 @@ class CreateAssignmentsTable extends Migration
             $table->foreign('import_id')
                     ->references('id')
                     ->on('imports')
-                    ->onDelete('cascade');                    
+                    ->onDelete('cascade');
 
 
             $table->integer('export_id')->unsigned();
@@ -34,8 +35,8 @@ class CreateAssignmentsTable extends Migration
             $table->foreign('export_id')
                     ->references('id')
                     ->on('exports')
-                    ->onDelete('cascade');   
-            */                 
+                    ->onDelete('cascade');
+            */
         });
     }
 

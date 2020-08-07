@@ -11,15 +11,15 @@
 
 @section('content')
     <div class="row">
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-6 col-xs-6">
 
             <p>Ανοιχτές Αναθέσεις</p>
 
 
             @can('isSuperAdmin')
                 <ul>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('admin.assignments.import.view') }}">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('admin.assignments.export.view') }}">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
                 </ul>
                 <br/><br/>
                 <a href="{{ route('admin.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
@@ -27,8 +27,8 @@
 
             @can('isCompanyCEO')
                 <ul>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('manager.assignments.import.view') }}">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('manager.assignments.export.view') }}">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
                 </ul>
                 <br/><br/>
                 <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
@@ -36,8 +36,8 @@
 
             @can('isAccountant')
                 <ul>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('accountant.assignments.import.view') }}">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('accountant.assignments.export.view') }}">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
                 </ul>
                 <br/><br/>
                 <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
@@ -45,8 +45,8 @@
 
             @can('isWarehouseForeman')
                 <ul>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
-                    <li><h4><a href="#">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('foreman.assignments.import.view') }}">Ανοιχτές Αναθέσεις Εισαγωγής ({{ $imp_assignments_count }})</a></h4></li>
+                    <li><h4><a href="{{ route('foreman.assignments.export.view') }}">Ανοιχτές Αναθέσεις Εξαγωγής ({{ $exp_assignments_count }})</a></h4></li>
                 </ul>
                 <br/><br/>
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>

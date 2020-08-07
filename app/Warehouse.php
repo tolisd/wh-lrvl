@@ -13,11 +13,11 @@ class Warehouse extends Model
 
 
     public function employee(){
-        return $this->belongsTo('App/Employee');
+        return $this->belongsTo('App\Employee');
     }
 
     public function company(){
-        return $this->belongsTo('App/Company');
+        return $this->belongsTo('App\Company', 'company_id'); //added the FK
     }
 
 }

@@ -11,7 +11,6 @@ use Datatables;
 
 class UserController extends Controller
 {
-
     /*
     public function get_all_usertypes(){
 
@@ -30,9 +29,6 @@ class UserController extends Controller
         return $ut;
     }
     */
-
-
-
 
     public function update_user(Request $request, $id){
         //2 user types -> Admin, CEO.
@@ -61,6 +57,11 @@ class UserController extends Controller
             $user->user_type = $request->input('modal-input-usertype-edit');
 
             $user->update($request->all());
+
+
+            if ($request->ajax()){
+                return \Response::json();
+            }
 
             /*
             if ($request()->ajax()){
@@ -119,8 +120,6 @@ class UserController extends Controller
 
     public function delete_user(Request $request, $id){
         //2 user types -> Admin, CEO.
-
-
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO'])){
 
             //$u_id = $request->input("data-uid");   //take ALL input values into $input, as an assoc.array
@@ -130,11 +129,10 @@ class UserController extends Controller
             $user->delete();
 
             //$json_user = json_encode($user);
-            /*
-            if ($request()->ajax()){
-                return Response::json();
+
+            if ($request->ajax()){
+                return \Response::json();
             }
-            */
 
             return back();
         }
@@ -149,8 +147,6 @@ class UserController extends Controller
          //$this->authorize('isSuperAdmin', User::class);
          //$user = User::find($id);
          //dd($user);
-
-
 
         if ($authenticatedUser){
 
@@ -180,19 +176,18 @@ class UserController extends Controller
             return abort(403, 'Sorry you cannot view this page');
         }
         */
-
-
     }
 
 
     //Add a new user to the database
     public function create_user(Request $request){
 
-        $authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo']);
+        //$authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo']);
 
         //this, if(\Gate(...)){ does not work for a reason... }
         //if(\Gate::allows(['isSuperAdmin', 'isCompanyCEO'])){
-        if($authenticatedUser){
+        //if($authenticatedUser){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO'])){
 
             /*
             $request->validate([
@@ -215,11 +210,10 @@ class UserController extends Controller
 
             $user->save(); //Save the new user into the database
 
-            /*
-            if ($request()->ajax()){
-                return Response::json();
+
+            if ($request->ajax()){
+                return \Response::json();
             }
-            */
 
             return back();
 

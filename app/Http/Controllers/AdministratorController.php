@@ -14,21 +14,21 @@ class AdministratorController extends Controller
     public function dashboard(){
        //user must be logged-in (as a super administrator!), for this view to display...
        if (\Gate::allows('isSuperAdmin', \Auth::user())){
-           return view('dashboard');            
-       }      
-    
+           return view('dashboard');
+       }
+
         //user is not logged-in OR is NOT a super administrator, so it's a 403 Forbidden..!
         if(\Gate::denies('isSuperAdmin', \Auth::user())){
             return abort('403');
-        } 
+        }
     }
 
     public function home(){
         //user must be logged-in (as a super administrator!), for this view to display...
         if (\Gate::allows('isSuperAdmin', \Auth::user())){
-            return view('home');            
-        }      
-        
+            return view('home');
+        }
+
         //user is not logged-in OR is NOT a super administrator, so it's a 403 Forbidden..!
         if(\Gate::denies('isSuperAdmin', \Auth::user())){
             return abort('403');
@@ -39,14 +39,14 @@ class AdministratorController extends Controller
 
         //user must be logged-in (as a super administrator!), for this view to display...
         if (\Gate::allows('isSuperAdmin', \Auth::user())){
-            return view('private');            
-        }      
-        
+            return view('private');
+        }
+
         //user is not logged-in OR is NOT a super administrator, so it's a 403 Forbidden..!
         if (\Gate::denies('isSuperAdmin', \Auth::user())){
             return abort('403');
         }
-           
+
     }
 
     public function about(){
@@ -54,18 +54,18 @@ class AdministratorController extends Controller
             abort(403,'Sorry you cannot view this webpage');
         }
 
-        if (\Gate::allows('isSuperAdmin', \Auth::user())){            
+        if (\Gate::allows('isSuperAdmin', \Auth::user())){
             return view('about');
-        } 
+        }
     }
-   
+
 
 
 
 
     public function create(){
         $user = Auth::user();
-        
+
         if ($user->can('create', Administrator::class)){
             echo 'Logged-in user is allowed to create an administrator';
         } else {
@@ -75,7 +75,7 @@ class AdministratorController extends Controller
 
     public function view(){
         $user = Auth::user();
-        $accountant = Administrator::find(1);
+        $administrator = Administrator::find(1);
 
         if ($user->can('view', $administrator)){
             echo 'Logged-in user is allowed to view the administrator {$administrator->id}';
@@ -86,7 +86,7 @@ class AdministratorController extends Controller
 
     public function update(){
         $user = Auth::user();
-        $accountant = Administrator::find(1);
+        $administrator = Administrator::find(1);
 
         if ($user->can('update', $administrator)){
             echo 'Logged-in user is allowed to update the administrator {$administrator->id}';
@@ -97,7 +97,7 @@ class AdministratorController extends Controller
 
     public function delete(){
         $user = Auth::user();
-        $accountant = Administrator::find(1);
+        $administrator = Administrator::find(1);
 
         if ($user->can('delete', $administrator)){
             echo 'Logged-in user is allowed to delete the administrator {$administrator->id}';

@@ -43,6 +43,21 @@ class User extends Authenticatable
     ];
 
 
+
+
+    //1 User has many Assignments.
+    public function assignment(){
+        return $this->hasMany('App\Assignment');
+    }
+
+    //1-to-1 Employee<->User, User is-a Employee
+    public function employee(){
+        return $this->hasOne('App\Employee');
+    }
+
+
+
+
     //checks if the user belongs to a particular group
     public function user_type($user_type){
         $user_type = (array)$user_type;

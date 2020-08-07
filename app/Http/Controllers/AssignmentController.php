@@ -107,6 +107,14 @@ class AssignmentController extends Controller
 
          if ($authenticatedUser){
 
+            $import_assgnm = new Import();
+
+            //insert 'ImportAssignment' fields here via $request
+
+
+
+            $import_assgnm->save();
+
             return back();
          } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -121,6 +129,14 @@ class AssignmentController extends Controller
          $authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'accountant', 'warehouse_foreman']);
 
          if ($authenticatedUser){
+
+            $export_assgnm = new Export();
+
+            //insert 'ExportAssignment' fields here via $request
+
+
+
+            $export_assgnm->save();
 
             return back();
          } else {
@@ -138,6 +154,15 @@ class AssignmentController extends Controller
 
          if ($authenticatedUser){
 
+            $import_assgnm = Import::findOrFail($id);
+
+            //insert fields here
+
+
+
+            $import_assgnm->update($request->all());
+
+
             return back();
          } else {
              return abort(403, 'Sorry you cannot view this page');
@@ -152,6 +177,14 @@ class AssignmentController extends Controller
          $authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'accountant', 'warehouse_foreman']);
 
          if ($authenticatedUser){
+
+            $export_assgnm = Export::findOrFail($id);
+
+            //insert fields here
+
+
+
+            $export_assgnm->update($request->all());
 
             return back();
          } else {

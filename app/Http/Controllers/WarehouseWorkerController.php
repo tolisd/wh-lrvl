@@ -7,9 +7,21 @@ use Illuminate\Http\Request;
 class WarehouseWorkerController extends Controller
 {
     //
+
+    public function home(){
+        //Warehouse foreman
+        if (\Gate::allows('isWarehouseWorker', \Auth::user())){
+            return view('home');
+        }
+
+        if (\Gate::denies('isWarehouseWorker', \Auth::user())){
+            return abort('403');
+        }
+    }
+
     public function create(){
         $user = Auth::user();
-        
+
         if ($user->can('create', WarehouseWorker::class)){
             echo 'Logged-in user is allowed to create a warehouse worker';
         } else {

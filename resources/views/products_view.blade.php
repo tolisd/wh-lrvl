@@ -10,8 +10,10 @@
 
 
 @section('content')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <div class="row">
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-12 col-xs-6">
 
             <p>Δες τα Προϊόντα</p>
 
@@ -22,10 +24,13 @@
                 <thead>
                     <tr>
                         <th class="text-left">Όνομα</th>
+                        <th class="text-left">Είδος</th>  <!-- product type -->
+                        <th class="text-left">Κατηγορία</th>
                         <th class="text-left">Περιγραφή</th>
-                        <th class="text-left">Τύπος</th>
                         <th class="text-left">Ποσότητα</th>
+                        <th class="text-left">Μον.Μέτρησης</th>
                         <th class="text-left">Σχόλια</th>
+                        <th class="text-left">Κωδικός Ανάθεσης</th> <!-- assignment_code, nullable() -->
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
@@ -35,24 +40,29 @@
                 @foreach($products as $product)
                     <tr class="user-row" data-pid="{{ $product->id }}">  <!-- necessary additions -->
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->type->name }}</td> <!-- eidos proiontos -->
                         <td>{{ $product->description }}</td>
-                        <td>{{ $product->type }}</td>
+                        <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
                         <td>{{ $product->quantity }}</td>
+                        <td>{{ $product->measure_unit }}</td>
                         <td>{{ $product->comments }}</td>
+                        <td>{{ $product->assignment->code }}</td> <!-- κωδικος αναθεσης -->
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-pid="{{ $product->id }}"
-                                    data-name="{{ $product-name }}"
+                                    data-name="{{ $product->name }}"
+                                    data-type="{{ $product->type->name }}"
                                     data-description="{{ $product->description}}"
-                                    data-type="{{ $product->type }}"
+                                    data-category="{{ $product->category->name }}"
                                     data-qty="{{ $product->quantity }}"
+                                    data-measunit="{{ $ product->measure_unit }}"
                                     data-comments="{{ $product->comments }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
                         <td>
-                            <button class="delete-modal btn btn-info"
+                            <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-pid="{{ $product->id }}"
                                     data-name="{{ $product->name }}">
@@ -140,12 +150,24 @@
                                     </div>
                                     <!-- /description -->
 
-                                    <!-- prod_type -->
+                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-usertype-create">Τύπος</label>
-                                        <input type="text" name="modal-input-type-create" class="form-control" id="modal-input-type-create" />
+                                        <label class="col-form-label" for="modal-input-type-create">Είδος</label>
+                                        <input type="text" name="modal-input-type-create" class="form-control" id="modal-input-type-create"
+                                           value="" required />
                                     </div>
                                     <!-- /prod_type -->
+
+                                    <!-- product category -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-category-create">Τύπος</label>
+                                        <select name="modal-input-category-create" id="modal-input-category-create" class="form-control" required>
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- -->
 
                                     <!-- quantity -->
                                     <div class="form-group">
@@ -196,7 +218,7 @@
 
                         <form id="edit-form" class="form-horizontal" method="POST">
                         @csrf <!-- necessary fields for CSRF & Method type-->
-                        @method('POST')
+                        @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
@@ -228,13 +250,24 @@
                                     </div>
                                     <!-- /description -->
 
-                                    <!-- prod_type -->
+                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-type-edit">Τύπος</label>
+                                        <label class="col-form-label" for="modal-input-type-edit">Είδος</label>
                                         <input type="text" name="modal-input-type-edit" class="form-control" id="modal-input-type-edit"
                                            value="" required />
                                     </div>
                                     <!-- /prod_type -->
+
+                                    <!-- product category -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-category-edit">Κατηγορία</label>
+                                        <select name="modal-input-category-edit" id="modal-input-category-edit" class="form-control" required>
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /category -->
 
                                     <!-- quantity -->
                                     <div class="form-group">
@@ -354,7 +387,7 @@
 
          //configure & initialise the (Products) DataTable
          $('.table').DataTable({
-            //autoWidth: true,
+            autoWidth: true,
             ordering: true,
             searching: true,
             select: true,
@@ -368,7 +401,14 @@
                 'print',
             ],
             */
-        })
+        });
+
+        //for all 3 modals/actions, POST, PUT, DELETE
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
     });
 
@@ -380,9 +420,11 @@
 
             var pid = button.data('pid'); // Extract info from data-* attributes
             var name = button.data('name');
-            var description = button.data('description');
             var type = button.data('type');
-            var quantity = button.data('qty');
+            var description = button.data('description');
+            var category = button.data('category');
+            var quantity = button.data('quantity');
+            var unit = button.data('unit');
             var comments = button.data('comments');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -392,12 +434,14 @@
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-pid-edit').val(pid);
             modal.find('.modal-body #modal-input-name-edit').val(name);
-            modal.find('.modal-body #modal-input-description-edit').val(description);
             modal.find('.modal-body #modal-input-type-edit').val(type);
+            modal.find('.modal-body #modal-input-description-edit').val(description);
+            modal.find('.modal-body #modal-input-category-edit').val(category);
             modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
+            modal.find('.modal-body #modal-input-unit-edit').val(unit);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
-            modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET user id value in data-pid attribute
+            modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
 
 
 
@@ -416,7 +460,8 @@
                     cache: false,
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
-                    url: "update/" + pid, //where to send the ajax request
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/products/update/" + pid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -426,8 +471,8 @@
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
-                                console.log("Send Request ..");
-                                window.location.href = "view/";
+                                console.log("Sent PUT Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/products/view/";
                             }
                         });
                     },
@@ -453,6 +498,10 @@
             });
 
         });
+
+
+
+
 
 
 
@@ -486,7 +535,8 @@
                     cache: false,
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
-                    url: "delete/" + pid, //where to send the ajax request
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/products/delete/" + pid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -496,8 +546,8 @@
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
-                                console.log("Sent Request ..");
-                                window.location.href = "view/";
+                                console.log("Sent DELETE Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/products/view/";
                             }
                         });
                     },
@@ -542,7 +592,8 @@
                 cache: false,
                 contentType: false, //do not set any content type header
                 processData: false, //send non-processed data
-                url: "create/", //where to send the ajax request
+                dataType: "json",
+                url: "{{ url(request()->route()->getPrefix()) }}" + "/products/create/", //where to send the ajax request
                 success: function(){
                     Swal.fire({
                             icon: "success",
@@ -552,8 +603,8 @@
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
-                                console.log("Sent Request ..");
-                                window.location.href = "view/";
+                                console.log("Sent POST Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/products/view/";
                             }
                         });
                 },
@@ -580,7 +631,10 @@
         });
 
 
-
+        //necessary addition
+        $('#edit-modal').on('hidden.bs.modal', function() {
+            $(this).find('#edit-form').off('click');
+        });
 
 
     </script>

@@ -241,6 +241,7 @@ class DashboardController extends Controller
             $users = DB::table('users')->get(); //get all users from database via Facade
 
             return view('users_view', ['users' => $users]);     //pass in the view, the $users var.
+
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
