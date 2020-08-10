@@ -233,23 +233,44 @@ return [
             'icon' => 'fas fa-server',
         ],
 
+
+        [
+            'text' => 'Όλα τα Εργαλεία',
+            'route' => 'admin.tools.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-wrench',
+        ],
+        [
+            'text' => 'Όλα τα Εργαλεία',
+            'route' => 'manager.tools.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-wrench',
+        ],
+        [
+            'text' => 'Όλα τα Εργαλεία',
+            'route' => 'foreman.tools.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-wrench',
+        ],
+
+
         [
             'text' => 'Χρέωση Εργαλείων',
             'route' => 'admin.chargetoolkit',
             'can' => 'isSuperAdmin',
-            'icon' => 'fas fa-wrench',
+            'icon' => 'far fa-fw fa-circle',
         ],
         [
             'text' => 'Χρέωση Εργαλείων',
             'route' => 'manager.chargetoolkit',
             'can' => 'isCompanyCEO',
-            'icon' => 'fas fa-wrench',
+            'icon' => 'far fa-fw fa-circle',
         ],
         [
             'text' => 'Χρέωση Εργαλείων',
             'route' => 'foreman.chargetoolkit',
             'can' => 'isWarehouseForeman',
-            'icon' => 'fas fa-wrench',
+            'icon' => 'far fa-fw fa-circle',
         ],
 
         /*
@@ -558,6 +579,33 @@ return [
         [
             'text' => 'Κατηγορίες Προϊόντων',
             'route' => 'worker.category.view',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+
+
+
+        [
+            'text' => 'Είδη Προϊόντων',
+            'route' => 'admin.type.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Είδη Προϊόντων',
+            'route' => 'manager.type.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Είδη Προϊόντων',
+            'route' => 'foreman.type.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Είδη Προϊόντων',
+            'route' => 'worker.type.view',
             'can' => 'isWarehouseWorker',
             'icon' => 'far fa-fw fa-circle',
         ],

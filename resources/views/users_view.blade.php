@@ -398,7 +398,7 @@
     <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js" type="text/javascript" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
 
-    <script>
+    <script type="text/javascript">
 
         $(document).ready(function(){
 
@@ -640,6 +640,17 @@
                 }
             });
 
+        });
+
+
+        //necessary additions for when the modals get hidden
+
+        $('#edit-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#edit-form');
+        });
+
+        $('#delete-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#delete-form');
         });
 
 

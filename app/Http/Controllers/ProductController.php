@@ -40,10 +40,13 @@ class ProductController extends Controller
             $product = new Product();
 
             $product->name            = $request->input('modal-input-name-create');
+            $product->type_id         = $request->input('modal-input-type-create');             //references 'id' in types table
+            $product->category_id     = $request->input('modal-input-category-create');         //references 'id' in category table
             $product->description     = $request->input('modal-input-description-create');
-            $product->category_id     = $request->input('modal-input-type-create');         //references 'id' in category table...
             $product->quantity        = $request->input('modal-input-quantity-create');
+            $product->measure_unit    = $request->input('modal-input-measureunit-create');
             $product->comments        = $request->input('modal-input-comments-create');
+            $product->assignment_id   = $request->input('modal-input-assignment-create');        //references 'id' in assignments table
             // Set other fields (if applicable)...
 
             $product->save(); //Save the new user into the database
@@ -71,10 +74,13 @@ class ProductController extends Controller
             $product = Product::findOrFail($id); //was findOrFail($u_id);
 
             $product->name            = $request->input('modal-input-name-edit');
+            $product->type_id         = $request->input('modal-input-type-edit');             //references 'id' in types table
+            $product->category_id     = $request->input('modal-input-category-edit');         //references 'id' in category table
             $product->description     = $request->input('modal-input-description-edit');
-            $product->category_id     = $request->input('modal-input-type-edit');
             $product->quantity        = $request->input('modal-input-quantity-edit');
+            $product->measure_unit    = $request->input('modal-input-measureunit-edit');
             $product->comments        = $request->input('modal-input-comments-edit');
+            $product->assignment_id   = $request->input('modal-input-assgncode-edit');        //references 'id' in assignments table
 
 
             $product->update($request->all());  //configure the $fillable & $guarded properties/columns in this Model!
@@ -114,113 +120,5 @@ class ProductController extends Controller
 
     }
 
-
-
-    //==================================================================================================
-    //CATEGORIES::
-
-
-    //View all product categories
-    public function view_categories(Request $request){
-
-        //4 user types -> Admin, CEO, Foreman, Worker
-        //$authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'warehouse_foreman', 'warehouse_worker']);
-
-        //if ($authenticatedUser){
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
-
-            $categories = DB::table('category')->get();
-
-            return view('category_view', ['categories' => $categories]);
-
-        } else {
-             return abort(403, 'Sorry you cannot view this page');
-        }
-    }
-
-
-    //Create a new product category
-    public function create_category(Request $request){
-
-         //4 user types -> Admin, CEO, Foreman, Worker
-         //$authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'warehouse_foreman', 'warehouse_worker']);
-
-         //if ($authenticatedUser){
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
-
-            $category = new Category();
-
-            $category->name            = $request->input('modal-input-name-create');
-            $category->description     = $request->input('modal-input-description-create');
-
-            $category->save();
-
-            if ($request->ajax()){
-                return \Response::json();
-            }
-
-             return back();
-
-         } else {
-              return abort(403, 'Sorry you cannot view this page');
-         }
-
-    }
-
-
-    //Update an existing product category
-    public function update_category(Request $request, $id){
-
-         //4 user types -> Admin, CEO, Foreman, Worker
-         //$authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'warehouse_foreman', 'warehouse_worker']);
-
-         //if ($authenticatedUser){
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
-
-            $category = Category::findOrFail($id); //was findOrFail($u_id);
-
-            $category->name            = $request->input('modal-input-name-edit');
-            $category->description     = $request->input('modal-input-description-edit');
-
-            $category->update($request->all());
-
-
-            if ($request->ajax()){
-                return \Response::json();
-            }
-
-             return back();
-
-         } else {
-              return abort(403, 'Sorry you cannot view this page');
-         }
-
-    }
-
-
-    //Delete an existing product category
-    public function delete_category(Request $request, $id){
-
-         //4 user types -> Admin, CEO, Foreman, Worker
-
-         //$authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'warehouse_foreman', 'warehouse_worker']);
-
-         //if ($authenticatedUser){
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
-
-            $category = Category::findOrFail($id);
-            $category->delete();
-
-            if ($request->ajax()){
-                return \Response::json();
-            }
-
-             return back();
-
-         } else {
-              return abort(403, 'Sorry you cannot view this page');
-         }
-
-    }
 
 }

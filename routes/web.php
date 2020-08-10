@@ -55,7 +55,10 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::get('/dashboard', 'DashboardController@index')->name('admin.dashboard');
 
     Route::get('/stock/view', 'DashboardController@view_stock')->name('admin.stock.view'); //view stock availability
+
+    Route::get('/tools/view', 'ToolController@view_tools')->name('admin.tools.view');
     Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit
+
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('admin.invoicecreate');  //create invoice (should be ::post NOT ::get)
 
     Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('admin.assignments.view'); //view assignments
@@ -83,10 +86,15 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::get('/users/view', 'DashboardController@view_users')->name('admin.users.view'); //view all users
     Route::put('/users/change-password', 'DashboardController@change_user_password')->name('admin.user.change-password'); //change user password
 
-    Route::get('/product_category/view', 'ProductController@view_categories')->name('admin.category.view');
-    Route::post('/product_category/create', 'ProductController@create_category')->name('admin.category.create');
-    Route::put('/product_category/update/{id}','ProductController@update_category')->name('admin.category.update');
-    Route::delete('/product_category/delete/{id}', 'ProductController@delete_category')->name('admin.category.delete');
+    Route::get('/product_category/view', 'CategoryController@view_categories')->name('admin.category.view');
+    Route::post('/product_category/create', 'CategoryController@create_category')->name('admin.category.create');
+    Route::put('/product_category/update/{id}','CategoryController@update_category')->name('admin.category.update');
+    Route::delete('/product_category/delete/{id}', 'CategoryController@delete_category')->name('admin.category.delete');
+
+    Route::get('/product_type/view', 'TypeController@view_types')->name('admin.type.view');
+    Route::post('/product_type/create', 'TypeController@create_type')->name('admin.type.create');
+    Route::put('/product_type/update/{id}','TypeController@update_type')->name('admin.type.update');
+    Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('admin.type.delete');
 
     //uncomment the following routes, after implementing them in the AdministratorController!
     /*
@@ -118,7 +126,10 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::get('/about', 'CompanyCEOController@about');
 
    Route::get('/stock/view', 'DashboardController@view_stock')->name('manager.stock.view'); //view stock availability
+
+   Route::get('/tools/view', 'ToolController@view_tools')->name('manager.tools.view');
    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('manager.chargetoolkit'); //charge toolkit
+
    Route::post('/invoice/create', 'DashboardController@create_invoice')->name('manager.invoicecreate');  //create invoice
 
    Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('manager.assignments.view'); //view assignments
@@ -146,10 +157,15 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::get('/users/view', 'DashboardController@view_users')->name('manager.users.view'); //view all users
    Route::put('/user/change-password', 'DashboardController@change_user_password')->name('manager.user.change-password'); //change user password
 
-   Route::get('/product_category/view', 'ProductController@view_categories')->name('manager.category.view');
-   Route::post('/product_category/create', 'ProductController@create_category')->name('manager.category.create');
-   Route::put('/product_category/update/{id}','ProductController@update_category')->name('manager.category.update');
-   Route::delete('/product_category/delete/{id}', 'ProductController@delete_category')->name('manager.category.delete');
+   Route::get('/product_category/view', 'CategoryController@view_categories')->name('manager.category.view');
+   Route::post('/product_category/create', 'CategoryController@create_category')->name('manager.category.create');
+   Route::put('/product_category/update/{id}','CategoryController@update_category')->name('manager.category.update');
+   Route::delete('/product_category/delete/{id}', 'CategoryController@delete_category')->name('manager.category.delete');
+
+   Route::get('/product_type/view', 'TypeController@view_types')->name('manager.type.view');
+   Route::post('/product_type/create', 'TypeController@create_type')->name('manager.type.create');
+   Route::put('/product_type/update/{id}','TypeController@update_type')->name('manager.type.update');
+   Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('manager.type.delete');
 
    //uncomment the following routes and implement the in the CompanyCEOController!
    /*
@@ -214,6 +230,7 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::get('/home', 'WarehouseForemanController@home');
     Route::get('/dashboard', 'DashboardController@index')->name('foreman.dashboard');
 
+    Route::get('/tools/view', 'ToolController@view_tools')->name('foreman.tools.view');
     Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('foreman.chargetoolkit');
 
     Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('foreman.assignments.view'); //view assignments
@@ -234,10 +251,15 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::put('/products/update/{id}', 'ProductController@update_product')->name('foreman.product.update'); //update product
     Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('foreman.product.delete'); //delete product
 
-    Route::get('/product_category/view', 'ProductController@view_categories')->name('foreman.category.view');
-    Route::post('/product_category/create', 'ProductController@create_category')->name('foreman.category.create');
-    Route::put('/product_category/update/{id}','ProductController@update_category')->name('foreman.category.update');
-    Route::delete('/product_category/delete/{id}', 'ProductController@delete_category')->name('foreman.category.delete');
+    Route::get('/product_category/view', 'CategoryController@view_categories')->name('foreman.category.view');
+    Route::post('/product_category/create', 'CategoryController@create_category')->name('foreman.category.create');
+    Route::put('/product_category/update/{id}', 'CategoryController@update_category')->name('foreman.category.update');
+    Route::delete('/product_category/delete/{id}', 'CategoryController@delete_category')->name('foreman.category.delete');
+
+    Route::get('/product_type/view', 'TypeController@view_types')->name('foreman.type.view');
+    Route::post('/product_type/create', 'TypeController@create_type')->name('foreman.type.create');
+    Route::put('/product_type/update/{id}', 'TypeController@update_type')->name('foreman.type.update');
+    Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('foreman.type.delete');
 });
 
 
@@ -251,10 +273,15 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     Route::put('/products/update/{id}', 'ProductController@update_product')->name('worker.product.update'); //update product
     Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('worker.product.delete'); //delete product
 
-    Route::get('/product_category/view', 'ProductController@view_categories')->name('worker.category.view');
-    Route::post('/product_category/create', 'ProductController@create_category')->name('worker.category.create');
-    Route::put('/product_category/update/{id}','ProductController@update_category')->name('worker.category.update');
-    Route::delete('/product_category/delete/{id}', 'ProductController@delete_category')->name('worker.category.delete');
+    Route::get('/product_category/view', 'CategoryController@view_categories')->name('worker.category.view');
+    Route::post('/product_category/create', 'CategoryController@create_category')->name('worker.category.create');
+    Route::put('/product_category/update/{id}','CategoryController@update_category')->name('worker.category.update');
+    Route::delete('/product_category/delete/{id}', 'CategoryController@delete_category')->name('worker.category.delete');
+
+    Route::get('/product_type/view', 'TypeController@view_types')->name('worker.type.view');
+    Route::post('/product_type/create', 'TypeController@create_type')->name('worker.type.create');
+    Route::put('/product_type/update/{id}', 'TypeController@update_type')->name('worker.type.update');
+    Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('worker.type.delete');
 });
 
 

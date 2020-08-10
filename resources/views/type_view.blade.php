@@ -5,7 +5,7 @@
 @section('title', 'Αποθήκη - Dashboard')
 
 @section('content_header')
-    <h1>Warehouse / Κατηγορίες Προϊόντων</h1>
+    <h1>Warehouse / Είδη Προϊόντων</h1>
 @stop
 
 
@@ -15,40 +15,40 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-            <p>Κατηγορίες Προϊόντων</p>
+            <p>Είδη Προϊόντων</p>
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
-            <!-- insert here the main product categories table-->
+            <!-- insert here the main product types table-->
             <table class="table data-table display table-striped table-bordered"
                      data-order='[[ 0, "asc" ]]' data-page-length="5">
                 <thead>
                     <tr>
-                        <th class="text-left">Όνομα</th>
-                        <th class="text-left">Περιγραφή</th>
+                        <th class="text-left">Όνομα Είδους</th>
+                        <th class="text-left">Περιγραφή Είδους</th>
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                @foreach($categories as $categ)
-                    <tr class="user-row" data-cid="{{ $categ->id }}">  <!-- necessary additions -->
-                        <td>{{ $categ->name }}</td>
-                        <td>{{ $categ->description }}</td>
+                @foreach($types as $type)
+                    <tr class="user-row" data-tid="{{ $type->id }}">  <!-- necessary additions -->
+                        <td>{{ $type->name }}</td>
+                        <td>{{ $type->description }}</td>
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
-                                    data-cid="{{ $categ->id }}"
-                                    data-name="{{ $categ->name }}"
-                                    data-description="{{ $categ->description}}">
+                                    data-tid="{{ $type->id }}"
+                                    data-name="{{ $type->name }}"
+                                    data-description="{{ $type->description}}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
                         <td>
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
-                                    data-cid="{{ $categ->id }}"
-                                    data-name="{{ $categ->name }}">
+                                    data-tid="{{ $type->id }}"
+                                    data-name="{{ $type->name }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -60,8 +60,8 @@
 
             <br/><br/>
 
-            <!--Create New Products Category button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Κατηγορίας Προϊόντος</button>
+            <!--Create New Products Type button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Είδους Προϊόντος</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -88,14 +88,14 @@
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
             <!-- The 3 Modals, Add/Update/Delete -->
 
-            <!-- the Add/Create new products Category, Modal popup window -->
+            <!-- the Add/Create new products Type, Modal popup window -->
             <div class="modal fade" id="add-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">Προσθήκη Νέας Κατηγορίας Προϊόντος</h4>
+                            <h4 class="modal-title">Προσθήκη Νέου Είδους Προϊόντος</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
@@ -115,11 +115,11 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-cid-create" name="modal-input-cid-create" value="">
+                                    <input type="hidden" id="modal-input-tid-create" name="modal-input-tid-create" value="">
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-create">Όνομα Κατηγορίας</label>
+                                        <label class="col-form-label" for="modal-input-name-create">Όνομα Είδους</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required autofocus>
                                     </div>
@@ -127,7 +127,7 @@
 
                                     <!-- description -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-description-create">Περιγραφή</label>
+                                        <label class="col-form-label" for="modal-input-description-create">Περιγραφή Είδους</label>
                                         <textarea rows="3" name="modal-input-description-create" class="form-control" id="modal-input-description-create"
                                             value="" required></textarea>
                                     </div>
@@ -140,8 +140,8 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="add-button" name="add-category-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Κατηγορία Προϊόντος</button>
+                            <button type="submit" class="btn btn-primary" id="add-button" name="add-type-button"
+                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Είδος Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -153,14 +153,14 @@
 
 
 
-            <!-- the Edit/Update existing Products Category, Modal popup window -->
+            <!-- the Edit/Update existing Products Type, Modal popup window -->
             <div class="modal fade" id="edit-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">Μεταβολή Κατηγορίας Προϊόντος</h4>
+                            <h4 class="modal-title">Μεταβολή Είδος Προϊόντος</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
@@ -180,11 +180,11 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-cid-edit" name="modal-input-cid-edit" value="">
+                                    <input type="hidden" id="modal-input-tid-edit" name="modal-input-tid-edit" value="">
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα Κατηγορίας</label>
+                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα Είδους</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
                                             value="" required autofocus>
                                     </div>
@@ -192,7 +192,7 @@
 
                                     <!-- description -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-description-edit">Περιγραφή</label>
+                                        <label class="col-form-label" for="modal-input-description-edit">Περιγραφή Είδους</label>
                                         <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
                                             value="" required></textarea>
                                     </div>
@@ -205,8 +205,8 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-category-button"
-                                data-target="#edit-modal" data-toggle="modal" data-cid="">Διόρθωσε Κατηγορία Προϊόντος</button>
+                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-type-button"
+                                data-target="#edit-modal" data-toggle="modal" data-tid="">Διόρθωσε Είδος Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -219,14 +219,14 @@
 
 
 
-            <!-- the Delete existing Products Category, Modal popup window -->
+            <!-- the Delete existing Products Type, Modal popup window -->
             <div class="modal modal-danger fade" id="delete-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">Διαγραφή Κατηγορίας Προϊόντος</h4>
+                            <h4 class="modal-title">Διαγραφή Είδους Προϊόντος</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
@@ -245,16 +245,16 @@
                                 </div>
                                 -->
                                 <div class="card-body">
-                                    <p class="text-center">Είστε σίγουρος ότι θέλετε να διαγράψετε την παρακάτω κατηγορία;</p>
+                                    <p class="text-center">Είστε σίγουρος ότι θέλετε να διαγράψετε το παρακάτω είδος;</p>
 
                                     <!-- added hidden input for ID -->
                                     <div class="form-group">
-                                        <input type="hidden" id="modal-input-cid-del" name="modal-input-cid-del" value="" />
+                                        <input type="hidden" id="modal-input-tid-del" name="modal-input-tid-del" value="" />
                                     </div>
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-del">Όνομα</label>
+                                        <label class="col-form-label" for="modal-input-name-del">Όνομα Είδους</label>
                                         <input type="text" name="modal-input-name-del" class="form-control-plaintext" id="modal-input-name-del"
                                             value="" readonly required autofocus />
                                     </div>
@@ -266,8 +266,8 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger" id="delete-button" name="delete-category-button"
-                                data-target="#delete-modal" data-toggle="modal" data-cid="">Διέγραψε Κατηγορία Προϊόντος</button>
+                            <button type="submit" class="btn btn-danger" id="delete-button" name="delete-type-button"
+                                data-target="#delete-modal" data-toggle="modal" data-tid="">Διέγραψε Είδος Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -298,7 +298,7 @@
 
     $(document).ready(function(){
 
-         //configure & initialise the (Products Categories) DataTable
+         //configure & initialise the (Products Types) DataTable
          $('.table').DataTable({
             autoWidth: true,
             ordering: true,
@@ -335,7 +335,7 @@
         $('#edit-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
-            var cid = button.data('cid'); // Extract info from data-* attributes
+            var tid = button.data('tid'); // Extract info from data-* attributes
             var name = button.data('name');
             var description = button.data('description');
 
@@ -344,21 +344,21 @@
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            //modal.find('.card-body #modal-input-tid-edit').val(tid);
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-description-edit').val(description);
 
-            modal.find('.modal-footer #edit-button').attr("data-cid", cid);  //SET category id value in data-cid attribute
+            modal.find('.modal-footer #edit-button').attr("data-tid", tid);  //SET type id value in data-tid attribute
 
 
 
-            //AJAX Update/Edit Products Category
+            //AJAX Update/Edit Products Type
             //event delegation here...
             $(document).on("submit", "#edit-form", function(evt){
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(cid);
+                console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -368,18 +368,18 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/product_category/update/" + cid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/product_type/update/" + tid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
                             type: "success",
-                            text: "Επιτυχής Διόρθωση Κατηγορίας!",
+                            text: "Επιτυχής Διόρθωση Είδους!",
                             buttons: [false, "OK"],
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent PUT Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_category/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_type/view/";
                             }
                         });
                     },
@@ -391,7 +391,7 @@
                         if(response.status == 500){
                             msg = 'Η κατηγορία υπάρχει ήδη!';
                         } else if (response.status == 403){
-                            msg = 'Δεν έχετε to δικαίωμα διόρθωσης κατηγορίας!';
+                            msg = 'Δεν έχετε to δικαίωμα διόρθωσης είδους!';
                         }
 
                         Swal.fire({
@@ -414,24 +414,24 @@
     $('#delete-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
-            var cid = button.data('cid'); // Extract info from data-* attributes
+            var tid = button.data('tid'); // Extract info from data-* attributes
             var name = button.data('name');
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            modal.find('.modal-body .card .card-body #modal-input-cid-del').val(cid); //change the value to...
+            modal.find('.modal-body .card .card-body #modal-input-tid-del').val(tid); //change the value to...
             modal.find('.modal-body .card .card-body #modal-input-name-del').val(name);
 
-            modal.find('.modal-footer #delete-button').attr("data-cid", cid); //SET category id value in data-cid attribute
+            modal.find('.modal-footer #delete-button').attr("data-tid", tid); //SET type id value in data-tid attribute
 
 
-            //AJAX Delete existing Products Category
+            //AJAX Delete existing Products Type
             //event delegation here..
             $(document).on("submit", "#delete-form", function(evt){
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(cid);
+                console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -441,18 +441,18 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json", //added for debugging purposes...
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/product_category/delete/"+ cid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/product_type/delete/"+ tid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
                             type: "success",
-                            text: "Επιτυχής Διαγραφή Κατηγορίας!",
+                            text: "Επιτυχής Διαγραφή Είδους!",
                             buttons: [false, "OK"],
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent DELETE Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_category/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_type/view/";
                             }
                         });
                     },
@@ -464,7 +464,7 @@
                         if(response.status == 500){
                             msg = 'Η κατηγορία υπάρχει ήδη!';
                         } else if (response.status == 403){
-                            msg = 'Δεν έχετε to δικαίωμα διαγραφής κατηγορίας!';
+                            msg = 'Δεν έχετε to δικαίωμα διαγραφής είδους!';
                         }
 
                         Swal.fire({
@@ -487,7 +487,7 @@
 
 
 
-        //AJAX for Add/Create New Products Category submit
+        //AJAX for Add/Create New Products Type submit
         //event delegation here..
         $(document).on("submit", "#add-form", function(evt){
             evt.preventDefault();
@@ -502,18 +502,18 @@
                 contentType: false, //do not set any content type header
                 processData: false, //send non-processed data
                 dataType: "json",
-                url: "{{ url(request()->route()->getPrefix()) }}" + "/product_category/create/", //where to send the ajax request
+                url: "{{ url(request()->route()->getPrefix()) }}" + "/product_type/create/", //where to send the ajax request
                 success: function(){
                     Swal.fire({
                             icon: "success",
                             type: "success",
-                            text: "Επιτυχής Δημιουργία Κατηγορίας!",
+                            text: "Επιτυχής Δημιουργία Είδους!",
                             buttons: [false, "OK"],
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent POST Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_category/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/product_type/view/";
                             }
                         });
                 },
@@ -525,7 +525,7 @@
                     if(response.status == 500){
                         msg = 'Η κατηγορία υπάρχει ήδη!';
                     } else if (response.status == 403){
-                        msg = 'Δεν έχετε to δικαίωμα δημιουργίας κατηγορίας!';
+                        msg = 'Δεν έχετε to δικαίωμα δημιουργίας είδους!';
                     }
 
                     Swal.fire({

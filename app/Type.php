@@ -13,7 +13,7 @@ class Type extends Model
         'name', 'description',
     ];
 
-    //1 Type has many Product(s), Each Product has 1 Type.
+    //1 Type has many Product(s), Each Product is of 1 Type.
     public function product(){
         return $this->hasMany('App\Product');
     }

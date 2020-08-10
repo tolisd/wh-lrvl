@@ -30,7 +30,8 @@
                         <th class="text-left">Ποσότητα</th>
                         <th class="text-left">Μον.Μέτρησης</th>
                         <th class="text-left">Σχόλια</th>
-                        <th class="text-left">Κωδικός Ανάθεσης</th> <!-- assignment_code, nullable() -->
+                        <th class="text-left">Κωδικός Ανάθεσης</th> <!-- assignment_code, nullable()? -->
+                        <th class="text-left">Τύπος Ανάθεσης</th> <!-- assignment_type -->
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
@@ -40,24 +41,27 @@
                 @foreach($products as $product)
                     <tr class="user-row" data-pid="{{ $product->id }}">  <!-- necessary additions -->
                         <td>{{ $product->name }}</td>
-                        <td>{{ $product->type->name }}</td> <!-- eidos proiontos -->
-                        <td>{{ $product->description }}</td>
+                        <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
                         <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
+                        <td>{{ $product->description }}</td>
                         <td>{{ $product->quantity }}</td>
                         <td>{{ $product->measure_unit }}</td>
                         <td>{{ $product->comments }}</td>
-                        <td>{{ $product->assignment->code }}</td> <!-- κωδικος αναθεσης -->
+                        <td>{{ $product->assignment->assignment_code }}</td> <!-- κωδικος αναθεσης -->
+                        <td>{{ $product->assignment->assignment_type }}</td> <!-- τυπος αναθεσης, import OR export -->
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-pid="{{ $product->id }}"
                                     data-name="{{ $product->name }}"
                                     data-type="{{ $product->type->name }}"
-                                    data-description="{{ $product->description}}"
                                     data-category="{{ $product->category->name }}"
-                                    data-qty="{{ $product->quantity }}"
-                                    data-measunit="{{ $ product->measure_unit }}"
-                                    data-comments="{{ $product->comments }}">
+                                    data-description="{{ $product->description}}"
+                                    data-quantity="{{ $product->quantity }}"
+                                    data-measunit="{{ $product->measure_unit }}"
+                                    data-comments="{{ $product->comments }}"
+                                    data-assigncode="{{ $product->assignment->assignment_code }}"
+                                    data-assigntype="{{ $product->assignment->assignment_type }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -167,7 +171,7 @@
                                         @endforeach
                                         </select>
                                     </div>
-                                    <!-- -->
+                                    <!-- /product category -->
 
                                     <!-- quantity -->
                                     <div class="form-group">
@@ -176,6 +180,32 @@
                                             value="" required>
                                     </div>
                                     <!-- /quantity -->
+
+                                    <!-- measure_unit -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-measureunit-create">Μονάδα Μέτρησης</label>
+                                        <select name="modal-input-measureunit-create" id="modal-input-measureunit-create" class="form-control" required>
+                                        @php
+                                            $meas_unit = ['τμχ', 'm', 'm2', 'm3', 'kg'];
+                                        @endphp
+                                        @foreach($meas_unit as $mu)
+                                            @if($mu == 'τμχ')
+                                                <option value="τμχ">τεμάχια</option>
+                                            @elseif($mu == 'm')
+                                                <option value="m">μέτρα</option>
+                                            @elseif($mu == 'm2')
+                                                <option value="m2">τετραγωνικά μέτρα</option>
+                                            @elseif($mu == 'm3')
+                                                <option value="m3">κυβικά μέτρα</option>
+                                            @elseif($mu == 'kg')
+                                                <option value="kg">κιλά</option>
+                                            @else
+                                                <option value="{{ $mu }}">{{ $mu }}</option>
+                                            @endif
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /measure_unit -->
 
                                     <!-- comments -->
                                     <div class="form-group">
@@ -277,6 +307,32 @@
                                     </div>
                                     <!-- /quantity -->
 
+                                    <!-- measure_unit -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-measureunit-edit">Μονάδα Μέτρησης</label>
+                                        <select name="modal-input-measureunit-edit" id="modal-input-measureunit-edit" class="form-control" required>
+                                        @php
+                                            $meas_unit = ['τμχ', 'm', 'm2', 'm3', 'kg'];
+                                        @endphp
+                                        @foreach($meas_unit as $mu)
+                                            @if($mu == 'τμχ')
+                                                <option value="τμχ">τεμάχια</option>
+                                            @elseif($mu == 'm')
+                                                <option value="m">μέτρα</option>
+                                            @elseif($mu == 'm2')
+                                                <option value="m2">τετραγωνικά μέτρα</option>
+                                            @elseif($mu == 'm3')
+                                                <option value="m3">κυβικά μέτρα</option>
+                                            @elseif($mu == 'kg')
+                                                <option value="kg">κιλά</option>
+                                            @else
+                                                <option value="{{ $mu }}">{{ $mu }}</option>
+                                            @endif
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /measure_unit -->
+
                                     <!-- comments -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
@@ -284,6 +340,22 @@
                                             value="" required></textarea>
                                     </div>
                                     <!-- /comments -->
+
+                                    <!--  -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input--edit">Κωδικός Ανάθεσης</label>
+                                        <input type="text" name="modal-input--edit" class="form-control" id="modal-input--edit"
+                                           value="" required />
+                                    </div>
+                                    <!--  -->
+
+                                    <!--  -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input--edit">Τύπος Ανάθεσης</label>
+                                        <input type="text" name="modal-input--edit" class="form-control" id="modal-input--edit"
+                                           value="" required />
+                                    </div>
+                                    <!--  -->
 
                                 </div>
                             </div>
@@ -380,7 +452,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
 
-    <script>
+    <script type="text/javascript">
     //console.log('Hi!');
 
     $(document).ready(function(){
@@ -632,8 +704,20 @@
 
 
         //necessary addition
+        /*
         $('#edit-modal').on('hidden.bs.modal', function() {
             $(this).find('#edit-form').off('click');
+        });
+        */
+
+        //necessary additions for when the modals get hidden
+
+        $('#edit-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#edit-form');
+        });
+
+        $('#delete-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#delete-form');
         });
 
 
