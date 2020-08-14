@@ -5,7 +5,7 @@
 @section('title', 'Αποθήκη - Dashboard')
 
 @section('content_header')
-    <h1>Warehouse / Δες τα Προϊόντα</h1>
+    <h1>Warehouse / Όλα τα Προϊόντα</h1>
 @stop
 
 
@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-            <p>Δες τα Προϊόντα</p>
+            <p>Όλα τα Προϊόντα</p>
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
             <!-- insert here the main products table-->
@@ -23,15 +23,17 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="5">
                 <thead>
                     <tr>
+                        <th class="text-left">Κωδικός</th>
                         <th class="text-left">Όνομα</th>
                         <th class="text-left">Είδος</th>  <!-- product type -->
                         <th class="text-left">Κατηγορία</th>
                         <th class="text-left">Περιγραφή</th>
                         <th class="text-left">Ποσότητα</th>
-                        <th class="text-left">Μον.Μέτρησης</th>
+                        <th class="text-left">Μον.Μέτρ.</th>
                         <th class="text-left">Σχόλια</th>
                         <th class="text-left">Κωδικός Ανάθεσης</th> <!-- assignment_code, nullable()? -->
                         <th class="text-left">Τύπος Ανάθεσης</th> <!-- assignment_type -->
+
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
@@ -40,6 +42,7 @@
                 <tbody>
                 @foreach($products as $product)
                     <tr class="user-row" data-pid="{{ $product->id }}">  <!-- necessary additions -->
+                        <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
                         <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
@@ -53,15 +56,14 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-pid="{{ $product->id }}"
+                                    data-code="{{ $product->code }}"
                                     data-name="{{ $product->name }}"
                                     data-type="{{ $product->type->name }}"
                                     data-category="{{ $product->category->name }}"
                                     data-description="{{ $product->description}}"
                                     data-quantity="{{ $product->quantity }}"
                                     data-measunit="{{ $product->measure_unit }}"
-                                    data-comments="{{ $product->comments }}"
-                                    data-assigncode="{{ $product->assignment->assignment_code }}"
-                                    data-assigntype="{{ $product->assignment->assignment_type }}">
+                                    data-comments="{{ $product->comments }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -69,6 +71,7 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-pid="{{ $product->id }}"
+                                    data-code="{{ $product->code }}"
                                     data-name="{{ $product->name }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
@@ -138,11 +141,19 @@
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-pid-create" name="modal-input-pid-create" value="">
 
+                                    <!-- code -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-code-create">Κωδικός Προϊόντος</label>
+                                        <input type="text" name="modal-input-code-create" class="form-control" id="modal-input-code-create"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /code -->
+
                                     <!-- name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus>
+                                            value="" required>
                                     </div>
                                     <!-- /name -->
 
@@ -264,6 +275,14 @@
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-pid-edit" name="modal-input-pid-edit" value="">
 
+                                    <!-- code -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-code-edit">Κωδικός Προϊόντος</label>
+                                        <input type="text" name="modal-input-code-edit" class="form-control" id="modal-input-code-edit"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /code -->
+
                                     <!-- name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα</label>
@@ -341,21 +360,19 @@
                                     </div>
                                     <!-- /comments -->
 
-                                    <!--  -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input--edit">Κωδικός Ανάθεσης</label>
                                         <input type="text" name="modal-input--edit" class="form-control" id="modal-input--edit"
                                            value="" required />
                                     </div>
-                                    <!--  -->
 
-                                    <!--  -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input--edit">Τύπος Ανάθεσης</label>
                                         <input type="text" name="modal-input--edit" class="form-control" id="modal-input--edit"
                                            value="" required />
                                     </div>
-                                    <!--  -->
+                                    -->
 
                                 </div>
                             </div>
@@ -413,9 +430,17 @@
 
                                     <!-- name -->
                                     <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-code-del">Κωδικός Προϊόντος</label>
+                                        <input type="text" name="modal-input-code-del" class="form-control-plaintext" id="modal-input-code-del"
+                                            value="" readonly required />
+                                    </div>
+                                    <!-- /name -->
+
+                                    <!-- name -->
+                                    <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-del">Όνομα</label>
                                         <input type="text" name="modal-input-name-del" class="form-control-plaintext" id="modal-input-name-del"
-                                            value="" readonly required autofocus />
+                                            value="" readonly required />
                                     </div>
                                     <!-- /name -->
                                 </div>
@@ -491,12 +516,13 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var pid = button.data('pid'); // Extract info from data-* attributes
+            var code = button.data('code');
             var name = button.data('name');
             var type = button.data('type');
             var description = button.data('description');
             var category = button.data('category');
             var quantity = button.data('quantity');
-            var unit = button.data('unit');
+            var unit = button.data('measunit');
             var comments = button.data('comments');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -505,6 +531,7 @@
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            modal.find('.modal-body #modal-input-code-edit').val(code);
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-type-edit').val(type);
             modal.find('.modal-body #modal-input-description-edit').val(description);
@@ -514,7 +541,6 @@
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
-
 
 
             //AJAX Update/Edit User
@@ -582,11 +608,13 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var pid = button.data('pid'); // Extract info from data-* attributes
+            var code = button.data('code');
             var name = button.data('name');
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             modal.find('.modal-body .card .card-body #modal-input-pid-del').val(pid); //change the value to...
+            modal.find('.modal-body .card .card-body #modal-input-code-del').val(code);
             modal.find('.modal-body .card .card-body #modal-input-name-del').val(name);
 
             modal.find('.modal-footer #delete-button').attr("data-pid", pid); //SET user id value in data-pid attribute

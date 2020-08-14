@@ -36,6 +36,7 @@
                         <td>{{ $type->name }}</td>
                         <td>{{ $type->description }}</td>
                         <td>
+                            @if(!($type->name == 'Εργαλείο'))
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-tid="{{ $type->id }}"
@@ -43,14 +44,17 @@
                                     data-description="{{ $type->description}}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
+                            @endif
                         </td>
                         <td>
+                            @if(!($type->name == 'Εργαλείο'))
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-tid="{{ $type->id }}"
                                     data-name="{{ $type->name }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

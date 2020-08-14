@@ -38,7 +38,21 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>{{ $user->user_type }}</td>
+                            @if($user->user_type == 'super_admin')
+								<td>Διαχειριστής</td>
+							@elseif($user->user_type == 'company_ceo')
+								<td>Διευθυντής</td>
+							@elseif($user->user_type == 'accountant')
+								<td>Λογιστής</td>
+							@elseif($user->user_type == 'warehouse_foreman')
+								<td>Προϊστάμενος Αποθήκης</td>
+							@elseif($user->user_type == 'warehouse_worker')
+								<td>Εργάτης Αποθήκης</td>
+							@elseif($user->user_type == 'normal_user')
+								<td>Απλός Χρήστης</td>
+							@else
+								<td>{{ $user->user_type }}</td>
+							@endif
                             <td>
                                 <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"

@@ -209,10 +209,48 @@ return [
 
     'menu' => [
 
+        /*
         [
             'text' => 'Αρχική Σελίδα',
             'url' => '/home',
             'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker', 'isNormalUser'],
+            'icon' => 'fas fa-globe',
+        ],
+        */
+        [
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'admin.dashboard',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-globe',
+        ],
+		[
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'manager.dashboard',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-globe',
+        ],
+		[
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'accountant.dashboard',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-globe',
+        ],
+		[
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'foreman.dashboard',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-globe',
+        ],
+		[
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'worker.dashboard',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-globe',
+        ],
+		[
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'user.dashboard',
+            'can' => 'isNormalUser',
             'icon' => 'fas fa-globe',
         ],
 
@@ -235,25 +273,112 @@ return [
 
 
         [
-            'text' => 'Όλα τα Εργαλεία',
-            'route' => 'admin.tools.view',
+            'text' => 'Επιλογές Εργαλείων',
+            'url' => '',
             'can' => 'isSuperAdmin',
             'icon' => 'fas fa-wrench',
-        ],
-        [
-            'text' => 'Όλα τα Εργαλεία',
-            'route' => 'manager.tools.view',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Όλα τα Εργαλεία',
+                                        'route'  => 'admin.tools.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'fas fa-wrench',
+                                    ],
+                                    [
+                                        'text' => 'Χρεωμένα Εργαλεία',
+                                        'route'  => 'admin.tools.charged.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+									[
+                                        'text' => 'Μη Χρεωμένα Εργαλεία',
+                                        'route'  => 'admin.tools.noncharged.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+
+                          ],
+		],
+		[
+            'text' => 'Επιλογές Εργαλείων',
+            'url' => '',
             'can' => 'isCompanyCEO',
             'icon' => 'fas fa-wrench',
-        ],
-        [
-            'text' => 'Όλα τα Εργαλεία',
-            'route' => 'foreman.tools.view',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Όλα τα Εργαλεία',
+                                        'route'  => 'manager.tools.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-wrench',
+                                    ],
+                                    [
+                                        'text' => 'Χρεωμένα Εργαλεία',
+                                        'route'  => 'manager.tools.charged.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+									[
+                                        'text' => 'Μη Χρεωμένα Εργαλεία',
+                                        'route'  => 'manager.tools.noncharged.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+
+                          ],
+		],
+		[
+            'text' => 'Επιλογές Εργαλείων',
+            'url' => '',
             'can' => 'isWarehouseForeman',
             'icon' => 'fas fa-wrench',
-        ],
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Όλα τα Εργαλεία',
+                                        'route'  => 'foreman.tools.view',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'fas fa-wrench',
+                                    ],
+                                    [
+                                        'text' => 'Χρεωμένα Εργαλεία',
+                                        'route'  => 'foreman.tools.charged.view',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+									[
+                                        'text' => 'Μη Χρεωμένα Εργαλεία',
+                                        'route'  => 'foreman.tools.noncharged.view',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+									[
+                                        'text' => 'Τα Χρεωμένα μου Εργαλεία',
+                                        'route'  => 'foreman.tools.mycharged.view',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+                          ],
+		],
+		[
+            'text' => 'Επιλογές Εργαλείων',
+            'url' => '',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-wrench',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Τα Χρεωμένα μου Εργαλεία',
+                                        'route'  => 'worker.tools.mycharged.view',
+                                        'can' => 'isWarehouseWorker',
+                                        'icon' => 'far fa-fw fa-circle',
+                                    ],
+                          ],
+		],
 
 
+        /*
         [
             'text' => 'Χρέωση Εργαλείων',
             'route' => 'admin.chargetoolkit',
@@ -272,6 +397,7 @@ return [
             'can' => 'isWarehouseForeman',
             'icon' => 'far fa-fw fa-circle',
         ],
+        */
 
         /*
         [

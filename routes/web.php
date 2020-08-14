@@ -57,7 +57,15 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::get('/stock/view', 'DashboardController@view_stock')->name('admin.stock.view'); //view stock availability
 
     Route::get('/tools/view', 'ToolController@view_tools')->name('admin.tools.view');
-    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit
+    Route::get('/tools/charged/view', 'ToolController@view_charged_tools')->name('admin.tools.charged.view');
+    Route::get('/tools/non-charged/view', 'ToolController@view_non_charged_tools')->name('admin.tools.noncharged.view');
+    //Route::get('/tools/my-charged/view', 'ToolController@view_my_charged_tools')->name('admin.tools.mycharged.view');
+    Route::put('/tools/charge-tool/{id}', 'ToolController@charge_tool')->name('admin.tools.charge');
+    Route::put('/tools/uncharge-tool/{id}', 'ToolController@uncharge_tool')->name('admin.tools.uncharge');
+    Route::post('/tools/create', 'ToolController@create_tool')->name('admin.tools.create');
+    Route::put('/tools/update/{id}', 'ToolController@update_tool')->name('admin.tools.update');
+    Route::delete('/tools/delete/{id}', 'ToolController@delete_tool')->name('admin.tools.delete');
+    //Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit
 
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('admin.invoicecreate');  //create invoice (should be ::post NOT ::get)
 
@@ -128,7 +136,15 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::get('/stock/view', 'DashboardController@view_stock')->name('manager.stock.view'); //view stock availability
 
    Route::get('/tools/view', 'ToolController@view_tools')->name('manager.tools.view');
-   Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('manager.chargetoolkit'); //charge toolkit
+   Route::get('/tools/charged/view', 'ToolController@view_charged_tools')->name('manager.tools.charged.view');
+   Route::get('/tools/non-charged/view', 'ToolController@view_non_charged_tools')->name('manager.tools.noncharged.view');
+   //Route::get('/tools/my-charged/view', 'ToolController@view_my_charged_tools')->name('manager.tools.mycharged.view');
+   Route::put('/tools/charge-tool/{id}', 'ToolController@charge_tool')->name('manager.tools.charge');
+   Route::put('/tools/uncharge-tool/{id}', 'ToolController@uncharge_tool')->name('manager.tools.uncharge');
+   Route::post('/tools/create', 'ToolController@create_tool')->name('manager.tools.create');
+   Route::put('/tools/update/{id}', 'ToolController@update_tool')->name('manager.tools.update');
+   Route::delete('/tools/delete/{id}', 'ToolController@delete_tool')->name('manager.tools.delete');
+   //Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('manager.chargetoolkit'); //charge toolkit
 
    Route::post('/invoice/create', 'DashboardController@create_invoice')->name('manager.invoicecreate');  //create invoice
 
@@ -231,7 +247,15 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::get('/dashboard', 'DashboardController@index')->name('foreman.dashboard');
 
     Route::get('/tools/view', 'ToolController@view_tools')->name('foreman.tools.view');
-    Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('foreman.chargetoolkit');
+    Route::get('/tools/charged/view', 'ToolController@view_charged_tools')->name('foreman.tools.charged.view');
+    Route::get('/tools/non-charged/view', 'ToolController@view_non_charged_tools')->name('foreman.tools.noncharged.view');
+    Route::get('/tools/my-charged/view', 'ToolController@view_my_charged_tools')->name('foreman.tools.mycharged.view');
+    Route::put('/tools/charge-tool/{id}', 'ToolController@charge_tool')->name('foreman.tools.charge');
+    Route::put('/tools/uncharge-tool/{id}', 'ToolController@uncharge_tool')->name('foreman.tools.uncharge');
+    Route::post('/tools/create', 'ToolController@create_tool')->name('foreman.tools.create');
+    Route::put('/tools/update/{id}', 'ToolController@update_tool')->name('foreman.tools.update');
+    Route::delete('/tools/delete/{id}', 'ToolController@delete_tool')->name('foreman.tools.delete');
+    //Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('foreman.chargetoolkit');
 
     Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('foreman.assignments.view'); //view assignments
     Route::get('/assignments/import/view', 'AssignmentController@view_import_assignments')->name('foreman.assignments.import.view');
@@ -267,6 +291,9 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     Route::get('/home', 'WarehouseWorkerController@home');
     Route::get('/dashboard', 'DashboardController@index')->name('worker.dashboard');
 
+    //Route::get('/tools/view', 'ToolController@view_tools')->name('worker.tools.view'); //BUT, he CANNOT see/access Charge/Uncharge Buttons!
+    Route::get('/tools/my-charged/view', 'ToolController@view_my_charged_tools')->name('worker.tools.mycharged.view');
+
     Route::get('/products/view', 'ProductController@view_products')->name('worker.products.view'); //view products
     Route::get('/product/view/{id}', 'DashboardController@view_product')->name('worker.product.view'); //view a single product
     Route::post('/products/create', 'ProductController@create_product')->name('worker.product.create'); //create new product
@@ -287,6 +314,7 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
 
 Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::get('/home', 'UserController@home');
+    Route::get('/dashboard', 'DashboardController@index')->name('user.dashboard');
 
 });
 
