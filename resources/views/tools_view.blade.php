@@ -10,7 +10,7 @@
 
 
 @section('content')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary additoin for $.ajax() in jQuery -->
 
     <div class="row">
         <div class="col-lg-12 col-xs-6">
@@ -24,13 +24,13 @@
                         data-order='[[ 0, "asc" ]]' data-page-length="5">
                     <thead>
                         <tr>
-                            <th class="text-left">Κωδικός Εργαλείου</th>
+                            <th class="text-left">Κωδικός</th>
                             <th class="text-left">Όνομα</th>
                             <th class="text-left">Περιγραφή</th>
                             <th class="text-left">Σχόλια</th>
                             <th class="text-left">Ποσότητα (τμχ)</th>
-                            <th class="text-left">Χρεωμένο?</th> <!-- boolean -->
-                            <th class="text-left">Όνομα Εργαζόμενου</th> <!-- user_id, FK add to products -->
+                            <th class="text-left">Χρεωμένο?</th> <!-- boolean, is_charged [0,1] -->
+                            <th class="text-left">Όνομα Χρεωμένου</th> <!-- user_id, FK add to products -->
 
                             <th class="text-left">Χρέωση</th>   <!-- button1 -->
                             <th class="text-left">Ξεχρέωση</th> <!-- button2 -->
@@ -82,8 +82,8 @@
                                 @endif
                             </td>
                             <td>
-                                <button class="update-modal btn btn-info"
-                                    data-toggle="modal" data-target="#update-modal"
+                                <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
                                     data-pid="{{ $tool->id }}"
                                     data-code="{{ $tool->code }}"
                                     data-name="{{ $tool->name }}"
@@ -134,9 +134,6 @@
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
-            @can('isWarehouseWorker')
-                <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
-            @endcan
 
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])
@@ -155,6 +152,283 @@
                         </div>
 
                         <form id="charge-form" class="form-horizontal" method="POST">
+                        @csrf <!-- necessary fields for CSRF & Method type-->
+                        @method('PUT')
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <div class="card text-white bg-white mb-0">
+                                <!--
+                                <div class="card-header">
+                                    <h2 class="m-0">Μεταβολή Προϊόντος</h2>
+                                </div>
+                                -->
+                                <div class="card-body">
+
+                                    <!-- added hidden input for ID -->
+                                    <input type="hidden" id="modal-input-pid-charge" name="modal-input-pid-charge" value="">
+
+                                    <!-- tool-code, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-name-charge">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-charge" class="form-control-plaintext" id="modal-input-name-charge"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /tool-code -->
+
+                                    <!-- name, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-name-charge">Όνομα Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-charge" class="form-control-plaintext" id="modal-input-name-charge"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /name -->
+
+                                    <!-- description, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-description-charge">Περιγραφή</label>
+                                        <textarea rows="3" name="modal-input-description-charge" class="form-control-plaintext" id="modal-input-description-charge"
+                                            value="" required></textarea>
+                                    </div>
+                                    <!-- /description -->
+
+                                    <!-- comments, editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-comments-charge">Σχόλια</label>
+                                        <textarea rows="3" name="modal-input-comments-charge" class="form-control" id="modal-input-comments-charge"
+                                            value="" required></textarea>
+                                    </div>
+                                    <!-- /comments -->
+
+
+                                    <!-- quantity
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-quantity-charge">Ποσότητα</label>
+                                        <input type="text" name="modal-input-quantity-charge" class="form-control" id="modal-input-quantity-charge"
+                                            value="" required>
+                                    </div>
+                                    /quantity -->
+
+                                    <!-- To Whom User/Employee the Tool is to be Charged-->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-towhom-charge">Όνομα Εργαζόμενου</label>
+                                        <select name="modal-input-towhom-charge" id="modal-input-towhom-charge" class="form-control">
+                                        <!-- ALL The Users of the Program! -->
+                                            @foreach($users as $user)
+                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /To Whom -->
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="charge-button" name="charge-tool-button"
+                                data-target="#charge-modal" data-toggle="modal" data-pid="">Χρέωσε Εργαλείο</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
+                        </div>
+
+                        </form> <!-- end charge-tool form -->
+
+                    </div>
+                </div>
+            </div>
+
+
+             <!-- the Uncharge/Debit (charged)Tool, Modal popup window -->
+             <div class="modal fade" id="uncharge-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Ξεχρέωση Εργαλείου</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <form id="uncharge-form" class="form-horizontal" method="POST">
+                        @csrf <!-- necessary fields for CSRF & Method type-->
+                        @method('PUT')
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <div class="card text-white bg-white mb-0">
+                                <!--
+                                <div class="card-header">
+                                    <h2 class="m-0">Μεταβολή Προϊόντος</h2>
+                                </div>
+                                -->
+                                <div class="card-body">
+
+                                    <!-- added hidden input for ID -->
+                                    <input type="hidden" id="modal-input-pid-uncharge" name="modal-input-pid-uncharge" value="">
+
+                                    <!-- name -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-name-uncharge">Όνομα Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-uncharge" class="form-control" id="modal-input-name-uncharge"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /name -->
+
+                                    <!-- description -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-description-uncharge">Περιγραφή</label>
+                                        <textarea rows="3" name="modal-input-description-uncharge" class="form-control" id="modal-input-description-uncharge"
+                                            value="" required></textarea>
+                                    </div>
+                                    <!-- /description -->
+
+                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-type-uncharge">Είδος</label>
+                                        <input type="text" name="modal-input-type-uncharge" class="form-control" id="modal-input-type-uncharge"
+                                           value="" required />
+                                    </div>
+                                    <!-- /prod_type -->
+
+                                    <!-- quantity -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-quantity-uncharge">Ποσότητα</label>
+                                        <input type="text" name="modal-input-quantity-uncharge" class="form-control" id="modal-input-quantity-uncharge"
+                                            value="" required>
+                                    </div>
+                                    <!-- /quantity -->
+
+                                    <!-- comments -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-comments-uncharge">Σχόλια</label>
+                                        <textarea rows="3" name="modal-input-comments-uncharge" class="form-control" id="modal-input-comments-uncharge"
+                                            value="" required></textarea>
+                                    </div>
+                                    <!-- /comments -->
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="uncharge-button" name="uncharge-tool-button"
+                                data-target="#uncharge-modal" data-toggle="modal" data-pid="">Ξεχρέωσε Εργαλείο</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
+                        </div>
+
+                        </form> <!-- end uncharge-tool form -->
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- add new tool to DB form-->
+            <div class="modal fade" id="create-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Δημιουργία Νέου Εργαλείου</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <form id="create-form" class="form-horizontal" method="POST">
+                        @csrf <!-- necessary fields for CSRF & Method type-->
+                        @method('POST')
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <div class="card text-white bg-white mb-0">
+                                <!--
+                                <div class="card-header">
+                                    <h2 class="m-0">Μεταβολή Προϊόντος</h2>
+                                </div>
+                                -->
+                                <div class="card-body">
+
+                                    <!-- added hidden input for ID -->
+                                    <input type="hidden" id="modal-input-pid-create" name="modal-input-pid-create" value="">
+
+                                    <!-- tool-code, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-name-create">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-create" class="form-control-plaintext" id="modal-input-name-create"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /tool-code -->
+
+                                    <!-- name, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-name-create">Όνομα Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-create" class="form-control-plaintext" id="modal-input-name-create"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /name -->
+
+                                    <!-- description, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-description-create">Περιγραφή</label>
+                                        <textarea rows="3" name="modal-input-description-create" class="form-control-plaintext" id="modal-input-description-create"
+                                            value="" required></textarea>
+                                    </div>
+                                    <!-- /description -->
+
+                                    <!-- comments, editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-comments-create">Σχόλια</label>
+                                        <textarea rows="3" name="modal-input-comments-create" class="form-control" id="modal-input-comments-create"
+                                            value="" required></textarea>
+                                    </div>
+                                    <!-- /comments -->
+
+                                    <!-- quantity -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα</label>
+                                        <input type="text" name="modal-input-quantity-create" class="form-control" id="modal-input-quantity-create"
+                                            value="" required>
+                                    </div>
+                                    <!-- /quantity -->
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="create-button" name="create-tool-button"
+                                data-target="#create-modal" data-toggle="modal" data-pid="">Δημιουργία Εργαλείου</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
+                        </div>
+
+                        </form> <!-- end create-tool form -->
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- edit/update existing tool in DB form-->
+            <div class="modal fade" id="edit-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Διόρθωση Εργαλείου</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <form id="edit-form" class="form-horizontal" method="POST">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
@@ -204,26 +478,13 @@
                                     </div>
                                     <!-- /comments -->
 
-
-                                    <!-- quantity
+                                    <!-- quantity -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
                                             value="" required>
                                     </div>
-                                    /quantity -->
-
-                                    <!-- To Whom User/Employee the Tool is to be Charged-->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-towhom-edit">Όνομα Εργαζόμενου</label>
-                                        <select name="modal-input-towhom-edit" id="modal-input-towhom-edit" class="form-control">
-                                        <!-- ALL The Users of the Program! -->
-                                            @foreach($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <!-- /To Whom -->
+                                    <!-- /quantity -->
 
                                 </div>
                             </div>
@@ -232,32 +493,33 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-product-button"
-                                data-target="#edit-modal" data-toggle="modal" data-pid="">Χρέωσε Εργαλείο</button>
+                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-tool-button"
+                                data-target="#edit-modal" data-toggle="modal" data-pid="">Διόρθωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
-                        </form> <!-- end charge-tool form -->
+                        </form> <!-- end edit-tool form -->
 
                     </div>
                 </div>
             </div>
 
 
-             <!-- the Edit/Update existing Product, Modal popup window -->
-             <div class="modal fade" id="uncharge-modal">
+
+            <!-- delete existing tool from DB form-->
+            <div class="modal fade" id="delete-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">Ξεχρέωση Εργαλείου</h4>
+                            <h4 class="modal-title">Διαγραφή Εργαλείου</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="uncharge-form" class="form-horizontal" method="POST">
+                        <form id="delete-form" class="form-horizontal" method="POST">
                         @csrf <!-- necessary fields for CSRF & Method type-->
-                        @method('PUT')
+                        @method('DELETE')
 
                         <!-- Modal body -->
                         <div class="modal-body">
@@ -271,47 +533,23 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-pid-edit" name="modal-input-pid-edit" value="">
+                                    <input type="hidden" id="modal-input-pid-delete" name="modal-input-pid-delete" value="">
 
-                                    <!-- name -->
+                                    <!-- tool-code, non-editable -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
+                                        <label class="col-form-label" for="modal-input-name-delete">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-delete" class="form-control-plaintext" id="modal-input-name-delete"
+                                            value="" required autofocus>
+                                    </div>
+                                    <!-- /tool-code -->
+
+                                    <!-- name, non-editable -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-name-delete">Όνομα Εργαλείου</label>
+                                        <input type="text" name="modal-input-name-delete" class="form-control-plaintext" id="modal-input-name-delete"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /name -->
-
-                                    <!-- description -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-description-edit">Περιγραφή</label>
-                                        <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
-                                            value="" required></textarea>
-                                    </div>
-                                    <!-- /description -->
-
-                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-type-edit">Είδος</label>
-                                        <input type="text" name="modal-input-type-edit" class="form-control" id="modal-input-type-edit"
-                                           value="" required />
-                                    </div>
-                                    <!-- /prod_type -->
-
-                                    <!-- quantity -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα</label>
-                                        <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
-                                            value="" required>
-                                    </div>
-                                    <!-- /quantity -->
-
-                                    <!-- comments -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
-                                        <textarea rows="3" name="modal-input-comments-edit" class="form-control" id="modal-input-comments-edit"
-                                            value="" required></textarea>
-                                    </div>
-                                    <!-- /comments -->
 
                                 </div>
                             </div>
@@ -320,18 +558,16 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-product-button"
-                                data-target="#edit-modal" data-toggle="modal" data-pid="">Ξεχρέωσε Εργαλείο</button>
+                            <button type="submit" class="btn btn-primary" id="delete-button" name="delete-tool-button"
+                                data-target="#delete-modal" data-toggle="modal" data-pid="">Διέγραψε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
-                        </form> <!-- end uncharge-tool form -->
+                        </form> <!-- end delete-tool form -->
 
                     </div>
                 </div>
             </div>
-
-
 
             @endcanany  <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman -->
 
@@ -341,9 +577,13 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
 @stop
 
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+
     <script type="text/javascript">
      //console.log('Hi!');
         $(document).ready(function(){
@@ -368,44 +608,40 @@
 
             //for all 5 modals/actions, POST, PUT, DELETE
             $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
 
         });
 
 
 
-        //The Charge Tools Modal
+        //The Charge Tools Modal, a kind of UPDATE request.
         $('#charge-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var pid = button.data('pid'); // Extract info from data-* attributes
+            var code = button.data('code');
             var name = button.data('name');
-            var type = button.data('type');
             var description = button.data('description');
-            var category = button.data('category');
-            var quantity = button.data('quantity');
-            var unit = button.data('unit');
             var comments = button.data('comments');
+            var quantity = button.data('quantity');
+            var towhom = button.data('towhom');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-pid-edit').val(pid);
-            modal.find('.modal-body #modal-input-name-edit').val(name);
-            modal.find('.modal-body #modal-input-type-edit').val(type);
-            modal.find('.modal-body #modal-input-description-edit').val(description);
-            modal.find('.modal-body #modal-input-category-edit').val(category);
-            modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
-            modal.find('.modal-body #modal-input-unit-edit').val(unit);
-            modal.find('.modal-body #modal-input-comments-edit').val(comments);
+            modal.find('.modal-body #modal-input-code-charge').val(code);
+            modal.find('.modal-body #modal-input-name-charge').val(name);
+            modal.find('.modal-body #modal-input-description-charge').val(description);
+            modal.find('.modal-body #modal-input-comments-charge').val(comments);
+            modal.find('.modal-body #modal-input-quantity-charge').val(quantity);
+            modal.find('.modal-body #modal-input-towhom-charge').val(towhom);
 
-            modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
-
+            modal.find('.modal-footer #charge-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
 
 
             //AJAX Charge Tool to User
@@ -424,7 +660,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/products/update/" + pid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/charge-tool/" + pid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -435,7 +671,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent PUT Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/products/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/tools/view/";
                             }
                         });
                     },
@@ -464,18 +700,17 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //The Uncharge Tools Modal
+        //The Uncharge/Debit Tools Modal
         $('#uncharge-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var pid = button.data('pid'); // Extract info from data-* attributes
+            var code = button.data('code');
             var name = button.data('name');
-            var type = button.data('type');
             var description = button.data('description');
-            var category = button.data('category');
-            var quantity = button.data('quantity');
-            var unit = button.data('unit');
             var comments = button.data('comments');
+            var quantity = button.data('quantity');
+            var towhom = button.data('towhom');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -483,19 +718,18 @@
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-pid-edit').val(pid);
-            modal.find('.modal-body #modal-input-name-edit').val(name);
-            modal.find('.modal-body #modal-input-type-edit').val(type);
-            modal.find('.modal-body #modal-input-description-edit').val(description);
-            modal.find('.modal-body #modal-input-category-edit').val(category);
-            modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
-            modal.find('.modal-body #modal-input-unit-edit').val(unit);
-            modal.find('.modal-body #modal-input-comments-edit').val(comments);
+            modal.find('.modal-body #modal-input-code-uncharge').val(code);
+            modal.find('.modal-body #modal-input-name-uncharge').val(name);
+            modal.find('.modal-body #modal-input-description-uncharge').val(description);
+            modal.find('.modal-body #modal-input-comments-uncharge').val(comments);
+            modal.find('.modal-body #modal-input-quantity-uncharge').val(quantity);
+            modal.find('.modal-body #modal-input-towhom-uncharge').val(towhom);
 
-            modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
-
+            modal.find('.modal-footer #uncharge-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
 
 
-            //AJAX Uncharge Tool from User
+
+            //AJAX Uncharge/Debit Tool from User
             //event delegation here...
             $(document).on("submit", "#uncharge-form", function(evt){
                 evt.preventDefault();
@@ -511,7 +745,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/products/update/" + pid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/uncharge-tool/" + pid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -522,7 +756,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent PUT Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/products/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/tools/view/";
                             }
                         });
                     },
@@ -549,6 +783,221 @@
 
         });
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //AJAX Create New Tool from User
+            //event delegation here...
+            $(document).on("submit", "#create-form", function(evt){
+                evt.preventDefault();
+                var formData = new FormData(this);
+
+                console.log(pid);
+                console.log(formData);
+
+                $.ajax({
+                    method: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false, //do not set any content type header
+                    processData: false, //send non-processed data
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/create/", //where to send the ajax request
+                    success: function(){
+                        Swal.fire({
+                            icon: "success",
+                            type: "success",
+                            text: "Επιτυχής Δημιουργία Εργαλείου!",
+                            buttons: [false, "OK"],
+                            closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
+                        }).then(function(isConfirm){
+                            if (isConfirm){
+                                console.log("Sent POST Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/tools/view/";
+                            }
+                        });
+                    },
+                    error: function(response){
+                        console.log('Error:', response);
+
+                        var msg = 'Κάτι πήγε στραβά..!';
+
+                        if(response.status == 500){
+                            msg = 'Το εργαλείο υπάρχει ήδη!';
+                        } else if (response.status == 403){
+                            msg = 'Δεν έχετε to δικαίωμα δημιουργίας εργαλείου!';
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            type: "error",
+                            title: 'Oops...',
+                            text: msg,
+                        });
+                    }
+                });
+            });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //The Update/Edit Existing Tool Modal
+        $('#uncharge-modal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+
+            var pid = button.data('pid'); // Extract info from data-* attributes
+            var code = button.data('code');
+            var name = button.data('name');
+            var description = button.data('description');
+            var comments = button.data('comments');
+            var quantity = button.data('quantity');
+            var towhom = button.data('towhom');
+
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+            var modal = $(this);
+            //modal.find('.modal-title').text('New message to ' + recipient);
+            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            modal.find('.modal-body #modal-input-code-edit').val(code);
+            modal.find('.modal-body #modal-input-name-edit').val(name);
+            modal.find('.modal-body #modal-input-description-edit').val(description);
+            modal.find('.modal-body #modal-input-comments-edit').val(comments);
+            modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
+            modal.find('.modal-body #modal-input-towhom-edit').val(towhom);
+
+            modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+
+
+
+            //AJAX Update/Edit Existing Tool
+            //event delegation here...
+            $(document).on("submit", "#edit-form", function(evt){
+                evt.preventDefault();
+                var formData = new FormData(this);
+
+                console.log(pid);
+                console.log(formData);
+
+                $.ajax({
+                    method: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false, //do not set any content type header
+                    processData: false, //send non-processed data
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/update/" + pid, //where to send the ajax request
+                    success: function(){
+                        Swal.fire({
+                            icon: "success",
+                            type: "success",
+                            text: "Επιτυχής ΔιόρθωσηΕργαλείου!",
+                            buttons: [false, "OK"],
+                            closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
+                        }).then(function(isConfirm){
+                            if (isConfirm){
+                                console.log("Sent PUT Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/tools/view/";
+                            }
+                        });
+                    },
+                    error: function(response){
+                        console.log('Error:', response);
+
+                        var msg = 'Κάτι πήγε στραβά..!';
+
+                        if(response.status == 500){
+                            msg = 'Το εργαλείο δεν υπάρχει!';
+                        } else if (response.status == 403){
+                            msg = 'Δεν έχετε to δικαίωμα διόρθωσης εργαλείου!';
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            type: "error",
+                            title: 'Oops...',
+                            text: msg,
+                        });
+                    }
+                });
+            });
+
+        });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //The Delete Existing Tool Modal
+        $('#delete-modal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+
+            var pid = button.data('pid'); // Extract info from data-* attributes
+            var code = button.data('code');
+            var name = button.data('name');
+
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+            var modal = $(this);
+            //modal.find('.modal-title').text('New message to ' + recipient);
+            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            modal.find('.modal-body #modal-input-code-delete').val(code);
+            modal.find('.modal-body #modal-input-name-delete').val(name);
+
+            modal.find('.modal-footer #delete-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+
+
+
+            //AJAX Delete Existing Tool
+            //event delegation here...
+            $(document).on("submit", "#delete-form", function(evt){
+                evt.preventDefault();
+                var formData = new FormData(this);
+
+                console.log(pid);
+                console.log(formData);
+
+                $.ajax({
+                    method: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false, //do not set any content type header
+                    processData: false, //send non-processed data
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/delete/" + pid, //where to send the ajax request
+                    success: function(){
+                        Swal.fire({
+                            icon: "success",
+                            type: "success",
+                            text: "Επιτυχής Διαγραφή Εργαλείου!",
+                            buttons: [false, "OK"],
+                            closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
+                        }).then(function(isConfirm){
+                            if (isConfirm){
+                                console.log("Sent DELETE Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/tools/view/";
+                            }
+                        });
+                    },
+                    error: function(response){
+                        console.log('Error:', response);
+
+                        var msg = 'Κάτι πήγε στραβά..!';
+
+                        if(response.status == 500){
+                            msg = 'Το εργαλείο δεν υπάρχει!';
+                        } else if (response.status == 403){
+                            msg = 'Δεν έχετε to δικαίωμα διαγραφής εργαλείου!';
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            type: "error",
+                            title: 'Oops...',
+                            text: msg,
+                        });
+                    }
+                });
+            });
+
+        });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
         //necessary additions for when the modals get hidden
@@ -559,6 +1008,18 @@
 
         $('#uncharge-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#uncharge-form');
+        });
+
+        $('#edit-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#edit-form');
+        });
+
+        $('#delete-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#delete-form');
+        });
+
+        $('#add-modal').on('hidden.bs.modal', function(e){
+            $(document).off('submit', '#add-form');
         });
 
 

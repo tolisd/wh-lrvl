@@ -11,9 +11,17 @@ class Employee extends Model
 
     //protected $primaryKey = 'employee_id';
 
+    protected $fillable = [
+        'name', 'address', 'phone_number', 'email', 'company_id', 'warehouse_id',
+    ];
+
 
     public function warehouse(){
-        return $this->hasMany('App\Warehouse');
+        return $this->belongsTo('App\Warehouse', 'warehouse_id');
+    }
+
+    public function company(){
+        return $this->belongsTo('App\Company', 'company_id');
     }
 
     public function accountant(){

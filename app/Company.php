@@ -16,4 +16,8 @@ class Company extends Model
         return $this->hasMany('App\Warehouse');
     }
 
+    public function employee(){
+        return $this->hasMany('App\Employee');
+    }
+
 }

@@ -36,7 +36,6 @@
                         <td>{{ $type->name }}</td>
                         <td>{{ $type->description }}</td>
                         <td>
-                            @if(!($type->name == 'Εργαλείο'))
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-tid="{{ $type->id }}"
@@ -44,17 +43,14 @@
                                     data-description="{{ $type->description}}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
-                            @endif
                         </td>
                         <td>
-                            @if(!($type->name == 'Εργαλείο'))
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-tid="{{ $type->id }}"
                                     data-name="{{ $type->name }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
-                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -80,13 +76,14 @@
                 <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
-            @can('isAccountant')
-                <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
-            @endcan
-
             @can('isWarehouseForeman')
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
+
+            @can('isWarehouseWorker')
+                <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
 
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])

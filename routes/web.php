@@ -104,6 +104,21 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::put('/product_type/update/{id}','TypeController@update_type')->name('admin.type.update');
     Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('admin.type.delete');
 
+    Route::get('/employees/view', 'EmployeeController@view_employees')->name('admin.employees.view');
+    Route::post('/employees/create', 'EmployeeController@create_employee')->name('admin.employees.create');
+    Route::put('/employees/update/{id}', 'EmployeeController@update_employee')->name('admin.employees.update');
+    Route::delete('/employees/delete/{id}', 'EmployeeController@delete_employee')->name('admin.employees.delete');
+
+    Route::get('/companies/view', 'CompanyController@view_companies')->name('admin.companies.view');
+    Route::post('/companies/create', 'CompanyController@create_company')->name('admin.companies.create');
+    Route::put('/companies/update/{id}', 'CompanyController@update_company')->name('admin.companies.update');
+    Route::delete('/companies/delete/{id}', 'CompanyController@delete_company')->name('admin.companies.delete');
+
+    Route::get('/warehouses/view', 'WarehouseController@view_warehouses')->name('admin.warehouses.view');
+    Route::post('/warehouses/create', 'WarehouseController@create_warehouse')->name('admin.warehouses.create');
+    Route::put('/warehouses/update/{id}', 'WarehouseController@update_warehouse')->name('admin.warehouses.update');
+    Route::delete('/warehouses/delete/{id}', 'WarehouseController@delete_warehouse')->name('admin.warehouses.delete');
+
     //uncomment the following routes, after implementing them in the AdministratorController!
     /*
     Route::get('/view/assignment/{id}', 'AdministratorController@view_assignment_by_id'); //view assignment
@@ -183,6 +198,21 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::put('/product_type/update/{id}','TypeController@update_type')->name('manager.type.update');
    Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('manager.type.delete');
 
+   Route::get('/employees/view', 'EmployeeController@view_employees')->name('manager.employees.view');
+   Route::post('/employees/create', 'EmployeeController@create_employee')->name('manager.employees.create');
+   Route::put('/employees/update/{id}', 'EmployeeController@update_employee')->name('manager.employees.update');
+   Route::delete('/employees/delete/{id}', 'EmployeeController@delete_employee')->name('manager.employees.delete');
+
+   Route::get('/companies/view', 'CompanyController@view_companies')->name('manager.companies.view');
+   Route::post('/companies/create', 'CompanyController@create_company')->name('manager.companies.create');
+   Route::put('/companies/update/{id}', 'CompanyController@update_company')->name('manager.companies.update');
+   Route::delete('/companies/delete/{id}', 'CompanyController@delete_company')->name('manager.companies.delete');
+
+   Route::get('/warehouses/view', 'WarehouseController@view_warehouses')->name('manager.warehouses.view');
+   Route::post('/warehouses/create', 'WarehouseController@create_warehouse')->name('manager.warehouses.create');
+   Route::put('/warehouses/update/{id}', 'WarehouseController@update_warehouse')->name('manager.warehouses.update');
+   Route::delete('/warehouses/delete/{id}', 'WarehouseController@delete_warehouse')->name('manager.warehouses.delete');
+
    //uncomment the following routes and implement the in the CompanyCEOController!
    /*
     Route::get('/view/assignment/{id}', 'CompanyCEOController@view_assignment_by_id'); //view 1 assignment
@@ -239,6 +269,21 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('accountant.assignment.export.update');
     Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('accountant.assignment.import.delete'); //delete assignment
     Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('accountant.assignment.export.delete');
+
+    Route::get('/employees/view', 'EmployeeController@view_employees')->name('accountant.employees.view');
+    Route::post('/employees/create', 'EmployeeController@create_employee')->name('accountant.employees.create');
+    Route::put('/employees/update/{id}', 'EmployeeController@update_employee')->name('accountant.employees.update');
+    Route::delete('/employees/delete/{id}', 'EmployeeController@delete_employee')->name('accountant.employees.delete');
+
+    Route::get('/companies/view', 'CompanyController@view_companies')->name('accountant.companies.view');
+    Route::post('/companies/create', 'CompanyController@create_company')->name('accountant.companies.create');
+    Route::put('/companies/update/{id}', 'CompanyController@update_company')->name('accountant.companies.update');
+    Route::delete('/companies/delete/{id}', 'CompanyController@delete_company')->name('accountant.companies.delete');
+
+    Route::get('/warehouses/view', 'WarehouseController@view_warehouses')->name('accountant.warehouses.view');
+    Route::post('/warehouses/create', 'WarehouseController@create_warehouse')->name('accountant.warehouses.create');
+    Route::put('/warehouses/update/{id}', 'WarehouseController@update_warehouse')->name('accountant.warehouses.update');
+    Route::delete('/warehouses/delete/{id}', 'WarehouseController@delete_warehouse')->name('accountant.warehouses.delete');
 });
 
 
@@ -284,6 +329,11 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::post('/product_type/create', 'TypeController@create_type')->name('foreman.type.create');
     Route::put('/product_type/update/{id}', 'TypeController@update_type')->name('foreman.type.update');
     Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('foreman.type.delete');
+
+    Route::get('/warehouses/view', 'WarehouseController@view_warehouses')->name('foreman.warehouses.view');
+    Route::post('/warehouses/create', 'WarehouseController@create_warehouse')->name('foreman.warehouses.create');
+    Route::put('/warehouses/update/{id}', 'WarehouseController@update_warehouse')->name('foreman.warehouses.update');
+    Route::delete('/warehouses/delete/{id}', 'WarehouseController@delete_warehouse')->name('foreman.warehouses.delete');
 });
 
 

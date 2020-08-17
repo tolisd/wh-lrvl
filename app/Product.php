@@ -13,9 +13,12 @@ class Product extends Model
     //protected $primaryKey = 'product_id';
 
     protected $fillable = [
-        'code', 'name', 'description', 'quantity', 'comments', 'category_id', 'type_id'
+        'code', 'name', 'description', 'quantity', 'comments', 'category_id', 'type_id', 'warehouse_id',
     ];
 
+    public function warehouse(){
+        return $this->belongsTo('App\Warehouse', 'warehouse_id');
+    }
 
     public function category(){
         return $this->belongsTo('App\Category', 'category_id'); //added the FK

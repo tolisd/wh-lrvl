@@ -19,7 +19,7 @@ class CreateToolsTable extends Migration
             $table->string('name', 255);
             $table->mediumText('description');
             $table->mediumText('comments');
-            $table->int('quantity');
+            $table->integer('quantity');
             $table->boolean('is_charged');
             $table->timestamps();
         });

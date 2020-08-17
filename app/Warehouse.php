@@ -11,13 +11,21 @@ class Warehouse extends Model
 
     //protected $primaryKey = 'warehouse_id';
 
+    protected $fillable = [
+        'name', 'address', 'city', 'phone_number', 'email', 'company_id',
+    ];
+
 
     public function employee(){
-        return $this->belongsTo('App\Employee');
+        return $this->hasMany('App\Employee');
     }
 
     public function company(){
         return $this->belongsTo('App\Company', 'company_id'); //added the FK
+    }
+
+    public function product(){
+        return $this->hasMany('App\Product');
     }
 
 }
