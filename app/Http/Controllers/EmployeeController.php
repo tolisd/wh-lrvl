@@ -8,6 +8,7 @@ use Auth; //added for Auth
 use App\Employee;
 use App\Warehouse;
 use App\Company;
+use App\User;
 
 
 class EmployeeController extends Controller
@@ -17,13 +18,15 @@ class EmployeeController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
+            $users = User::all();
             $employees = Employee::all();
             $warehouses = Warehouse::all();
             $companies = Company::all();
 
             return view('employees_view', ['employees' => $employees,
                                             'warehouses' => $warehouses,
-                                            'companies' => $companies]);
+                                            'companies' => $companies,
+                                            'users' => $users]);
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -36,8 +39,13 @@ class EmployeeController extends Controller
 
             $employee = new Employee();
 
-
-
+            $employee->user->name       = $request->input('modal-input-name-create');
+            $employee->user->user_type  = $request->input('modal-input-role-create');
+            $employee->address          = $request->input('modal-input-address-create');
+            $employee->phone_number     = $request->input('modal-input-telno-create');
+            $employee->email            = $request->input('modal-input-email-create');
+            $employee->company->name    = $request->input('modal-input-company-create');
+            $employee->warehouse->name  = $request->input('modal-input-warehouse-create');
 
             $employee->save();
 
@@ -59,10 +67,15 @@ class EmployeeController extends Controller
 
             $employee = Employee::findOrFail($id);
 
+            $employee->user->name       = $request->input('modal-input-name-edit');
+            $employee->user->user_type  = $request->input('modal-input-role-edit');
+            $employee->address          = $request->input('modal-input-address-edit');
+            $employee->phone_number     = $request->input('modal-input-telno-edit');
+            $employee->email            = $request->input('modal-input-email-edit');
+            $employee->company->name    = $request->input('modal-input-company-edit');
+            $employee->warehouse->name  = $request->input('modal-input-warehouse-edit');
 
-
-
-            $employee->update($request->all());
+            $employee->update($request->all()); //or $request->only(['', '', ...]) ??
 
 
             if ($request->ajax()){

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
-use App\Employee;
-use App\Warehouse;
 use App\Company;
 
 class CompanyController extends Controller
@@ -16,13 +14,9 @@ class CompanyController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $employees = Employee::all();
-            $warehouses = Warehouse::all();
             $companies = Company::all();
 
-            return view('companies_view', ['employees' => $employees,
-                                            'warehouses' => $warehouses,
-                                            'companies' => $companies]);
+            return view('companies_view', ['companies' => $companies]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -34,8 +28,17 @@ class CompanyController extends Controller
 
             $company = new Company();
 
+            $company->name          = $request->input('modal-input-name-create');
+            $company->AFM           = $request->input('modal-input-afm-create');
+            $company->DOY           = $request->input('modal-input-doy-create');
+            $company->postal_code   = $request->input('modal-input-pcode-create');
+            $company->city          = $request->input('modal-input-city-create');
+            $company->phone_number  = $request->input('modal-input-telno-create');
+            $company->email         = $request->input('modal-input-email-create');
 
             $company->save();
+
+
 
             if ($request->ajax()){
                 return \Response::json();
@@ -52,9 +55,15 @@ class CompanyController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $company = Company::findOrFail($id);
+            $company = Company::findOrFail($id);  //get this row with [$company->id == $id]
 
-
+            $company->name          = $request->input('modal-input-name-edit');
+            $company->AFM           = $request->input('modal-input-afm-edit');
+            $company->DOY           = $request->input('modal-input-doy-edit');
+            $company->postal_code   = $request->input('modal-input-pcode-edit');
+            $company->city          = $request->input('modal-input-city-edit');
+            $company->phone_number  = $request->input('modal-input-telno-edit');
+            $company->email         = $request->input('modal-input-email-edit');
 
             $company->update($request->all());
 
@@ -75,6 +84,7 @@ class CompanyController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
             $company = Company::findOrFail($id);
+            //delete a company if it has no employees and no warehouses...
             $company->delete();
 
             if ($request->ajax()){

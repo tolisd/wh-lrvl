@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
 use App\Warehouse;
-use App\Employee;
+use App\Company;
 
 
 class WarehouseController extends Controller
@@ -17,16 +17,16 @@ class WarehouseController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
 
             $warehouses = Warehouse::all(); //gets all rows from warehouse table
-            $employess  = Employee::all(); //gets all employees from employees table
-
+            $companies  = Company::all();   //gets all rows from company tables
 
             return view('warehouses_view', ['warehouses' => $warehouses,
-                                            'users'      => $users]);
+                                            'companies'  => $companies]);
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
     }
+
 
     public function create_warehouse(Request $request){
 
@@ -34,7 +34,12 @@ class WarehouseController extends Controller
 
             $warehouse = new Warehouse();
 
-
+            $warehouse->name            = $request->input('modal-input-name-create');
+            $warehouse->address         = $request->input('modal-input-address-create');
+            $warehouse->city            = $request->input('modal-input-city-create');
+            $warehouse->phone_number    = $request->input('modal-input-telno-create');
+            $warehouse->email           = $request->input('modal-input-email-create');
+            $warehouse->company->name   = $request->input('modal-input-company-create');
 
             $warehouse->save();
 
@@ -51,11 +56,19 @@ class WarehouseController extends Controller
 
     }
 
+
     public function update_warehouse(Request $request, $id){
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
 
             $warehouse = Warehouse::findOrFail($id);
+
+            $warehouse->name            = $request->input('modal-input-name-edit');
+            $warehouse->address         = $request->input('modal-input-address-edit');
+            $warehouse->city            = $request->input('modal-input-city-edit');
+            $warehouse->phone_number    = $request->input('modal-input-telno-edit');
+            $warehouse->email           = $request->input('modal-input-email-edit');
+            $warehouse->company->name   = $request->input('modal-input-company-edit');
 
 
             $warehouse->update($request->all());
@@ -72,6 +85,7 @@ class WarehouseController extends Controller
         }
 
     }
+
 
     public function delete_warehouse(Request $request, $id){
 
