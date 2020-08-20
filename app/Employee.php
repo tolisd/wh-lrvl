@@ -12,7 +12,11 @@ class Employee extends Model
     //protected $primaryKey = 'employee_id';
 
     protected $fillable = [
-        'name', 'address', 'phone_number', 'email', 'company_id', 'warehouse_id',
+        'name',  'type', 'address', 'phone_number', 'email', 'company_id', 'warehouse_id',
+    ];
+
+    protected $guarded = [
+        'accountant_id',
     ];
 
 

@@ -10,6 +10,12 @@
 
 
 @section('content')
+<style>
+    div.dataTables_length {
+        margin: 1em;
+    }
+</style>
+
 <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary addition for $.ajax() in jQuery -->
 
     <div class="row">
@@ -382,6 +388,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
 
+
+
     <script type="text/javascript">
     //console.log('Hi!');
 
@@ -393,7 +401,7 @@
                 ordering: true,
                 searching: true,
                 select: true,
-                //dom: "Brftip",
+                dom: "Bfrtlip ",
                 /*
                 buttons: [
                     'copy',
@@ -403,6 +411,32 @@
                     'print',
                 ],
                 */
+                buttons: [
+                        {
+                            "extend" : "copy",
+                            "text"   : "Αντιγραφή"
+                        },
+                        {
+                            "extend" : "csv",
+                            "text"   : "Εξαγωγή σε CSV",
+                            "title"  : "Εταιρείες"
+                        },
+                        {
+                            "extend" : "excel",
+                            "text"   : "Εξαγωγή σε Excel",
+                            "title"  : "Εταιρείες"
+                        },
+                        {
+                            "extend" : "pdf",
+                            "text"   : "Εξαγωγή σε PDF",
+                            "title"  : "Εταιρείες"
+                        },
+                        {
+                            "extend" : "print",
+                            "text"   : "Εκτύπωση"
+                        },
+                    ],
+
             });
 
             //for all 3 modals/actions, POST, PUT, DELETE
@@ -424,7 +458,7 @@
             var name = button.data('name');
             var afm = button.data('afm');
             var doy = button.data('doy');
-            var doy = button.data('pcode');
+            var pcode = button.data('pcode');
             var city = button.data('city');
             var telno = button.data('telno');
             var email = button.data('email');
@@ -441,7 +475,6 @@
             modal.find('.modal-body #modal-input-city-edit').val(city);
             modal.find('.modal-body #modal-input-telno-edit').val(telno);
             modal.find('.modal-body #modal-input-email-edit').val(email);
-
 
             modal.find('.modal-footer #edit-button').attr("data-cid", cid);  //SET company id value in data-cid attribute
 

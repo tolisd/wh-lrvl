@@ -430,8 +430,8 @@
                     },
                 */
 
-                //dom: "Brftip",
-                /*
+                dom: "Bfrtlip",
+                    /*
                 buttons: [
                     'copy',
                     'excel',
@@ -440,6 +440,32 @@
                     'print',
                 ],
                 */
+                buttons: [
+                        {
+                            "extend" : "copy",
+                            "text"   : "Αντιγραφή"
+                        },
+                        {
+                            "extend" : "csv",
+                            "text"   : "Εξαγωγή σε CSV",
+                            "title"  : "Χρήστες Εφαρμογής"
+                        },
+                        {
+                            "extend" : "excel",
+                            "text"   : "Εξαγωγή σε Excel",
+                            "title"  : "Χρήστες Εφαρμογής"
+                        },
+                        {
+                            "extend" : "pdf",
+                            "text"   : "Εξαγωγή σε PDF",
+                            "title"  : "Χρήστες Εφαρμογής"
+                        },
+                        {
+                            "extend" : "print",
+                            "text"   : "Εκτύπωση"
+                        },
+                    ],
+
             });
 
 

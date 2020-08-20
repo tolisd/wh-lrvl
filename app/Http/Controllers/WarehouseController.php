@@ -39,7 +39,7 @@ class WarehouseController extends Controller
             $warehouse->city            = $request->input('modal-input-city-create');
             $warehouse->phone_number    = $request->input('modal-input-telno-create');
             $warehouse->email           = $request->input('modal-input-email-create');
-            $warehouse->company->name   = $request->input('modal-input-company-create');
+            $warehouse->company_id      = $request->input('modal-input-company-create');
 
             $warehouse->save();
 

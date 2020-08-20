@@ -11,7 +11,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-12 col-xs-6">
 
             <p>Χρεωμένα Εργαλεία</p>
 
@@ -83,7 +83,7 @@
                 ordering: true,
                 searching: true,
                 select: true,
-                //dom: "Brftip",
+                dom: "Bfrtlip",
                 /*
                 buttons: [
                     'copy',
@@ -93,6 +93,31 @@
                     'print',
                 ],
                 */
+                buttons: [
+                        {
+                            "extend" : "copy",
+                            "text"   : "Αντιγραφή"
+                        },
+                        {
+                            "extend" : "csv",
+                            "text"   : "Εξαγωγή σε CSV",
+                            "title"  : "Χρεωμένα Εργαλεία"
+                        },
+                        {
+                            "extend" : "excel",
+                            "text"   : "Εξαγωγή σε Excel",
+                            "title"  : "Χρεωμένα Εργαλεία"
+                        },
+                        {
+                            "extend" : "pdf",
+                            "text"   : "Εξαγωγή σε PDF",
+                            "title"  : "Χρεωμένα Εργαλεία"
+                        },
+                        {
+                            "extend" : "print",
+                            "text"   : "Εκτύπωση"
+                        },
+                    ],
             });
 
         });

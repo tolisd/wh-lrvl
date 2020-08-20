@@ -78,7 +78,7 @@
                 ordering: true,
                 searching: true,
                 select: true,
-                //dom: "Brftip",
+                dom: "Bfrtlip",
                 /*
                 buttons: [
                     'copy',
@@ -88,6 +88,31 @@
                     'print',
                 ],
                 */
+                buttons: [
+                        {
+                            "extend" : "copy",
+                            "text"   : "Αντιγραφή"
+                        },
+                        {
+                            "extend" : "csv",
+                            "text"   : "Εξαγωγή σε CSV",
+                            "title"  : "Τα Χρεωμένα μου Εργαλεία"
+                        },
+                        {
+                            "extend" : "excel",
+                            "text"   : "Εξαγωγή σε Excel",
+                            "title"  : "Τα Χρεωμένα μου Εργαλεία"
+                        },
+                        {
+                            "extend" : "pdf",
+                            "text"   : "Εξαγωγή σε PDF",
+                            "title"  : "Τα Χρεωμένα μου Εργαλεία"
+                        },
+                        {
+                            "extend" : "print",
+                            "text"   : "Εκτύπωση"
+                        },
+                    ],
             });
         });
 

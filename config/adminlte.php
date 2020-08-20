@@ -283,13 +283,13 @@ return [
                                         'text' => 'Όλα τα Εργαλεία',
                                         'route'  => 'admin.tools.view',
                                         'can' => 'isSuperAdmin',
-                                        'icon' => 'fas fa-wrench',
+                                        'icon' => 'fas fa-tools',
                                     ],
                                     [
                                         'text' => 'Χρεωμένα Εργαλεία',
                                         'route'  => 'admin.tools.charged.view',
                                         'can' => 'isSuperAdmin',
-                                        'icon' => 'far fa-fw fa-circle',
+                                        'icon' => 'fas fa-fw fa-circle',
                                     ],
 									[
                                         'text' => 'Μη Χρεωμένα Εργαλεία',
@@ -311,13 +311,13 @@ return [
                                         'text' => 'Όλα τα Εργαλεία',
                                         'route'  => 'manager.tools.view',
                                         'can' => 'isCompanyCEO',
-                                        'icon' => 'fas fa-wrench',
+                                        'icon' => 'fas fa-tools',
                                     ],
                                     [
                                         'text' => 'Χρεωμένα Εργαλεία',
                                         'route'  => 'manager.tools.charged.view',
                                         'can' => 'isCompanyCEO',
-                                        'icon' => 'far fa-fw fa-circle',
+                                        'icon' => 'fas fa-fw fa-circle',
                                     ],
 									[
                                         'text' => 'Μη Χρεωμένα Εργαλεία',
@@ -339,13 +339,13 @@ return [
                                         'text' => 'Όλα τα Εργαλεία',
                                         'route'  => 'foreman.tools.view',
                                         'can' => 'isWarehouseForeman',
-                                        'icon' => 'fas fa-wrench',
+                                        'icon' => 'fas fa-tools',
                                     ],
                                     [
                                         'text' => 'Χρεωμένα Εργαλεία',
                                         'route'  => 'foreman.tools.charged.view',
                                         'can' => 'isWarehouseForeman',
-                                        'icon' => 'far fa-fw fa-circle',
+                                        'icon' => 'fas fa-fw fa-circle',
                                     ],
 									[
                                         'text' => 'Μη Χρεωμένα Εργαλεία',
@@ -357,7 +357,7 @@ return [
                                         'text' => 'Τα Χρεωμένα μου Εργαλεία',
                                         'route'  => 'foreman.tools.mycharged.view',
                                         'can' => 'isWarehouseForeman',
-                                        'icon' => 'far fa-fw fa-circle',
+                                        'icon' => 'fas fa-toolbox',
                                     ],
                           ],
 		],
@@ -372,7 +372,7 @@ return [
                                         'text' => 'Τα Χρεωμένα μου Εργαλεία',
                                         'route'  => 'worker.tools.mycharged.view',
                                         'can' => 'isWarehouseWorker',
-                                        'icon' => 'far fa-fw fa-circle',
+                                        'icon' => 'fas fa-toolbox',
                                     ],
                           ],
 		],
@@ -604,6 +604,126 @@ return [
             'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'],
         ],
 
+
+        [
+            'text' => 'Επιλογές Προϊόντων',
+            'url' => '',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-cubes',
+
+            'submenu' => [
+                                    [
+										'text' => 'Όλα τα Προϊόντα',
+										'route' => 'admin.products.view',
+										'can' => 'isSuperAdmin',
+										'icon' => 'fas fa-pallet',
+									],
+                                    [
+										'text' => 'Κατηγορίες Προϊόντων',
+										'route' => 'admin.category.view',
+										'can' => 'isSuperAdmin',
+										'icon' => 'fas fa-border-style',
+									],
+									[
+										'text' => 'Είδη Προϊόντων',
+										'route' => 'admin.type.view',
+										'can' => 'isSuperAdmin',
+										'icon' => 'fas fa-compress',
+									],
+
+                         ],
+        ],
+
+		[
+            'text' => 'Επιλογές Προϊόντων',
+            'url' => '',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-cubes',
+
+            'submenu' => [
+                                    [
+										'text' => 'Όλα τα Προϊόντα',
+										'route' => 'manager.products.view',
+										'can' => 'isCompanyCEO',
+										'icon' => 'fas fa-pallet',
+									],
+                                    [
+										'text' => 'Κατηγορίες Προϊόντων',
+										'route' => 'manager.category.view',
+										'can' => 'isCompanyCEO',
+										'icon' => 'fas fa-border-style',
+									],
+									[
+										'text' => 'Είδη Προϊόντων',
+										'route' => 'manager.type.view',
+										'can' => 'isCompanyCEO',
+										'icon' => 'fas fa-compress',
+									],
+
+                         ],
+        ],
+
+
+		[
+            'text' => 'Επιλογές Προϊόντων',
+            'url' => '',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-cubes',
+
+            'submenu' => [
+                                    [
+										'text' => 'Όλα τα Προϊόντα',
+										'route' => 'foreman.products.view',
+										'can' => 'isWarehouseForeman',
+										'icon' => 'fas fa-pallet',
+									],
+                                    [
+										'text' => 'Κατηγορίες Προϊόντων',
+										'route' => 'foreman.category.view',
+										'can' => 'isWarehouseForeman',
+										'icon' => 'fas fa-border-style',
+									],
+									[
+										'text' => 'Είδη Προϊόντων',
+										'route' => 'foreman.type.view',
+										'can' => 'isWarehouseForeman',
+										'icon' => 'fas fa-compress',
+									],
+
+                         ],
+        ],
+
+		[
+            'text' => 'Επιλογές Προϊόντων',
+            'url' => '',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-cubes',
+
+            'submenu' => [
+                                    [
+										'text' => 'Όλα τα Προϊόντα',
+										'route' => 'worker.products.view',
+										'can' => 'isWarehouseWorker',
+										'icon' => 'fas fa-pallet',
+									],
+                                    [
+										'text' => 'Κατηγορίες Προϊόντων',
+										'route' => 'worker.category.view',
+										'can' => 'isWarehouseWorker',
+										'icon' => 'fas fa-border-style',
+									],
+									[
+										'text' => 'Είδη Προϊόντων',
+										'route' => 'worker.type.view',
+										'can' => 'isWarehouseWorker',
+										'icon' => 'fas fa-compress',
+									],
+
+                         ],
+        ],
+
+
+        /*
         [
             'text' => 'Όλα τα Προϊόντα',
             'route' => 'admin.products.view',
@@ -628,6 +748,7 @@ return [
             'can' => 'isWarehouseWorker',
             'icon' => 'fas fa-fw fa-server',
         ],
+        */
 
         /*
         [
@@ -684,6 +805,7 @@ return [
 
 */
 
+/*
         [
             'text' => 'Κατηγορίες Προϊόντων',
             'route' => 'admin.category.view',
@@ -735,6 +857,7 @@ return [
             'can' => 'isWarehouseWorker',
             'icon' => 'far fa-fw fa-circle',
         ],
+        */
 
     /*
         [
@@ -771,17 +894,122 @@ return [
 
 
         [
-            'text' => 'Όλοι οι Χρήστες',
+            'text' => 'Χρήστες Εφαρμογής',
             'route'  => 'admin.users.view',
             'can' => 'isSuperAdmin',
-            'icon' => 'fas fa-fw fa-users',
+            'icon' => 'far fa-user',
         ],
         [
-            'text' => 'Όλοι οι Χρήστες',
+            'text' => 'Χρήστες Εφαρμογής',
             'route'  => 'manager.users.view',
             'can' => 'isCompanyCEO',
-            'icon' => 'fas fa-fw fa-users',
+            'icon' => 'far fa-user',
         ],
+
+
+
+
+        [
+            'header' => 'ΔΙΑΦΟΡΑ',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant'],
+        ],
+
+
+        [
+            'text' => 'Εταιρικές Επιλογές',
+            'url' => '',
+            'can' => 'isSuperAdmin',
+            'icon' => 'far fa-building',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Εργαζόμενοι',
+                                        'route'  => 'admin.employees.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'fas fa-fw fa-users',
+                                    ],
+                                    [
+                                        'text' => 'Εταιρείες',
+                                        'route'  => 'admin.companies.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'fas fa-industry',
+                                    ],
+									[
+                                        'text' => 'Αποθήκες',
+                                        'route'  => 'admin.warehouses.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'fas fa-warehouse',
+                                    ],
+
+                          ],
+        ],
+
+        [
+            'text' => 'Εταιρικές Επιλογές',
+            'url' => '',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-building',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Εργαζόμενοι',
+                                        'route'  => 'manager.employees.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-fw fa-users',
+                                    ],
+                                    [
+                                        'text' => 'Εταιρείες',
+                                        'route'  => 'manager.companies.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-industry',
+                                    ],
+									[
+                                        'text' => 'Αποθήκες',
+                                        'route'  => 'manager.warehouses.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-warehouse',
+                                    ],
+
+                          ],
+        ],
+
+        [
+            'text' => 'Εταιρικές Επιλογές',
+            'url' => '',
+            'can' => 'isAccountant',
+            'icon' => 'far fa-building',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Εργαζόμενοι',
+                                        'route'  => 'accountant.employees.view',
+                                        'can' => 'isAccountant',
+                                        'icon' => 'fas fa-fw fa-users',
+                                    ],
+                                    [
+                                        'text' => 'Εταιρείες',
+                                        'route'  => 'accountant.companies.view',
+                                        'can' => 'isAccountant',
+                                        'icon' => 'fas fa-industry',
+                                    ],
+									[
+                                        'text' => 'Αποθήκες',
+                                        'route'  => 'accountant.warehouses.view',
+                                        'can' => 'isAccountant',
+                                        'icon' => 'fas fa-warehouse',
+                                    ],
+
+                          ],
+		],
+
+
+
+
+
+
+
+
+
 
 /*
         [
@@ -1009,15 +1237,63 @@ return [
             'active' => true,
             'files' => [
                 [
-                    'type' => 'js',
+                    'type' => 'css',
                     'asset' => true,
-                    'location' => '//cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js',
+                    'location' => '//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css',
                 ],
                 [
                     'type' => 'css',
                     'asset' => true,
                     'location' => '//cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css',
                 ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.3/css/buttons.bootstrap4.min.css',
+                ],
+
+
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/buttons/1.6.3/js/buttons.bootstrap4.min.js',
+                ],
+
             ],
         ],
 

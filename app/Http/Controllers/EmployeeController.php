@@ -39,13 +39,14 @@ class EmployeeController extends Controller
 
             $employee = new Employee();
 
-            $employee->user->name       = $request->input('modal-input-name-create');
-            $employee->user->user_type  = $request->input('modal-input-role-create');
+            $employee->name             = $request->input('modal-input-name-create');
+            $employee->type             = $request->input('modal-input-role-create');
             $employee->address          = $request->input('modal-input-address-create');
             $employee->phone_number     = $request->input('modal-input-telno-create');
             $employee->email            = $request->input('modal-input-email-create');
-            $employee->company->name    = $request->input('modal-input-company-create');
-            $employee->warehouse->name  = $request->input('modal-input-warehouse-create');
+            $employee->company_id       = $request->input('modal-input-company-create');
+            $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
+
 
             $employee->save();
 
@@ -82,7 +83,7 @@ class EmployeeController extends Controller
                 return \Response::json();
             }
 
-             return back();
+            return back();
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }

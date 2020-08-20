@@ -488,7 +488,7 @@
             ordering: true,
             searching: true,
             select: true,
-            //dom: "Brftip",
+            dom: "Bfrtlip",
             /*
             buttons: [
                 'copy',
@@ -498,6 +498,31 @@
                 'print',
             ],
             */
+            buttons: [
+                        {
+                            "extend" : "copy",
+                            "text"   : "Αντιγραφή"
+                        },
+                        {
+                            "extend" : "csv",
+                            "text"   : "Εξαγωγή σε CSV",
+                            "title"  : "Προϊόντα"
+                        },
+                        {
+                            "extend" : "excel",
+                            "text"   : "Εξαγωγή σε Excel",
+                            "title"  : "Προϊόντα"
+                        },
+                        {
+                            "extend" : "pdf",
+                            "text"   : "Εξαγωγή σε PDF",
+                            "title"  : "Προϊόντα"
+                        },
+                        {
+                            "extend" : "print",
+                            "text"   : "Εκτύπωση"
+                        },
+                    ],
         });
 
         //for all 3 modals/actions, POST, PUT, DELETE
