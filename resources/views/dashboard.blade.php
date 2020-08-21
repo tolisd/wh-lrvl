@@ -53,11 +53,11 @@
               <div class="small-box bg-lightblue"> <!-- changed from bg-aqua and it works -->
                 <div class="inner">
                       <h3>{{ $usersCount }}</h3>
-                      <p>Χρήστες Συστήματος</p>
+                      <p>Χρήστες Εφαρμογής</p>
                 </div>
                 <div class="icon">
                   <!--<i class="ion ion-stats-bars"></i> -->
-                  <i class="fas fa-users fa-sm" aria-hidden="true"></i>
+                  <i class="fas fa-user fa-sm" aria-hidden="true"></i>
                   <!--<i class="ion ion-stats-bars">
                     <ion-icon name="stats-chart-outline"></ion-icon>
                   </i>-->
@@ -81,7 +81,7 @@
                       <p>Προϊόντα στην Αποθήκη</p>
                 </div>
                 <div class="icon">
-                  <i class="fas fa-server fa-sm" aria-hidden="true"></i>
+                  <i class="fas fa-cubes fa-sm" aria-hidden="true"></i>
                 </div>
                 @can('isSuperAdmin')
                   <a href="{{ route('admin.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>

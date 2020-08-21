@@ -10,6 +10,15 @@
 
 
 @section('content')
+<style>
+    .dt-buttons{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+</style>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary addition for $.ajax() in jQuery -->
+
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
@@ -17,7 +26,7 @@
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
             <table class="table data-table display table-striped table-bordered"
-                     data-order='[[ 0, "asc" ]]' data-page-length="5">
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
                         <th class="text-left">Όνομα Εργαζομένου</th>
@@ -47,13 +56,12 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-eid="{{ $employee->id }}"
-                                    data-name="{{ $employee->user->name }}"
-                                    data-role="{{ $employee->user->user_type }}"
+                                    data-usr="{{ $employee->user_id }}"
                                     data-address="{{ $employee->address }}"
                                     data-telno="{{ $employee->phone_number }}"
                                     data-email="{{ $employee->email }}"
-                                    data-warehouse="{{ $employee->warehouse->name }}"
-                                    data-company="{{ $employee->company->name }}">
+                                    data-warehouse="{{ $employee->warehouse_id }}"
+                                    data-company="{{ $employee->company_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -510,7 +518,7 @@
                 var button = $(event.relatedTarget); // Button that triggered the modal
 
                 var eid = button.data('eid'); // Extract info from data-* attributes
-                var name = button.data('name');
+                var usr = button.data('usr');
                 var address = button.data('address');
                 var telno = button.data('telno');
                 var email = button.data('email');
@@ -523,7 +531,7 @@
                 var modal = $(this);
                 //modal.find('.modal-title').text('New message to ' + recipient);
                 //modal.find('.card-body #modal-input-eid-edit').val(eid);
-                modal.find('.modal-body #modal-input-name-edit').val(name);
+                modal.find('.modal-body #modal-input-name-edit').val(usr);
                 modal.find('.modal-body #modal-input-address-edit').val(address);
                 modal.find('.modal-body #modal-input-telno-edit').val(telno);
                 modal.find('.modal-body #modal-input-email-edit').val(email);

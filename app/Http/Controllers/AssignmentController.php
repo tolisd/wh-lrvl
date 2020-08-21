@@ -230,4 +230,12 @@ class AssignmentController extends Controller
 
     }
 
+    //temporary functions for viewing the forms
+    public function import_index(){
+        return view('create_import_assignment');
+    }
+
+    public function export_index(){
+        return view('create_export_assignment');
+    }
 }

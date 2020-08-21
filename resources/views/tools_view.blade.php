@@ -10,6 +10,13 @@
 
 
 @section('content')
+<style>
+    .dt-buttons{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+</style>
+
     <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary additoin for $.ajax() in jQuery -->
 
     <div class="row">
@@ -21,7 +28,7 @@
             <!-- insert here the main tools table-->
 
                 <table class="table data-table display table-hover table-bordered"
-                        data-order='[[ 0, "asc" ]]' data-page-length="5">
+                        data-order='[[ 0, "asc" ]]' data-page-length="10">
                     <thead>
                         <tr>
                             <th class="text-left">Κωδικός</th>

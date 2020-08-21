@@ -10,6 +10,13 @@
 
 
 @section('content')
+<style>
+    .dt-buttons{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+</style>
+
     <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary additoin for $.ajax() in jQuery -->
 
     <div class="row">
@@ -19,7 +26,7 @@
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])
             <table class="table data-table display table-striped table-bordered"
-                     data-order='[[ 0, "asc" ]]' data-page-length="5">
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
                         <th class="text-left">Όνομα</th>
@@ -52,7 +59,7 @@
                                     data-city="{{ $warehouse->city }}"
                                     data-telno="{{ $warehouse->phone_number }}"
                                     data-email="{{ $warehouse->email }}"
-                                    data-company="{{ $warehouse->company->name }}">  <!-- id instead of name, OR just name? -->
+                                    data-company="{{ $warehouse->company_id }}">  <!-- id instead of name, OR just name? -->
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>

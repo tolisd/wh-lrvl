@@ -33,6 +33,8 @@ class EmployeeController extends Controller
         }
     }
 
+    //Create a new employee. An employee is NOT necessarily a User of the system.
+    //An employee belongs to a warehouse and to a company (to WHICH company THIS warehouse belongs to!)
     public function create_employee(Request $request){
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
@@ -46,7 +48,6 @@ class EmployeeController extends Controller
             $employee->email            = $request->input('modal-input-email-create');
             $employee->company_id       = $request->input('modal-input-company-create');
             $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
-
 
             $employee->save();
 
@@ -62,19 +63,20 @@ class EmployeeController extends Controller
 
     }
 
+
     public function update_employee(Request $request, $id){
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
             $employee = Employee::findOrFail($id);
 
-            $employee->user->name       = $request->input('modal-input-name-edit');
-            $employee->user->user_type  = $request->input('modal-input-role-edit');
+            $employee->user_id       = $request->input('modal-input-name-edit');
+            //$employee->user->user_type  = $request->input('modal-input-role-edit');
             $employee->address          = $request->input('modal-input-address-edit');
             $employee->phone_number     = $request->input('modal-input-telno-edit');
             $employee->email            = $request->input('modal-input-email-edit');
-            $employee->company->name    = $request->input('modal-input-company-edit');
-            $employee->warehouse->name  = $request->input('modal-input-warehouse-edit');
+            $employee->company_id    = $request->input('modal-input-company-edit');
+            $employee->warehouse_id  = $request->input('modal-input-warehouse-edit');
 
             $employee->update($request->all()); //or $request->only(['', '', ...]) ??
 

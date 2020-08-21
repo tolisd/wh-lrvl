@@ -11,8 +11,9 @@
 
 @section('content')
 <style>
-    div.dataTables_length {
-        margin: 1em;
+    .dt-buttons{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
     }
 </style>
 
@@ -25,7 +26,7 @@
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
             <table class="table data-table display table-striped table-bordered"
-                     data-order='[[ 0, "asc" ]]' data-page-length="5">
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
                         <th class="text-left">Όνομα Εταιρείας</th>

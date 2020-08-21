@@ -68,7 +68,7 @@ class WarehouseController extends Controller
             $warehouse->city            = $request->input('modal-input-city-edit');
             $warehouse->phone_number    = $request->input('modal-input-telno-edit');
             $warehouse->email           = $request->input('modal-input-email-edit');
-            $warehouse->company->name   = $request->input('modal-input-company-edit');
+            $warehouse->company_id     = $request->input('modal-input-company-edit');
 
 
             $warehouse->update($request->all());

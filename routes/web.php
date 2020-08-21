@@ -74,7 +74,11 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::get('/assignments/export/view', 'AssignmentController@view_export_assignments')->name('admin.assignments.export.view');
     Route::get('/assignments/import/view/{id}', 'AssignmentController@view_import_assignment_byId')->name('admin.assignment.import.view');
     Route::get('/assignments/export/view/{id}', 'AssignmentController@view_export_assignment_byId')->name('admin.assignment.export.view');
-    Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('admin.assignment.import.create'); //create import assignment
+
+    //----I changed the next line from post to get, for viewing form purposes!
+    //Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('admin.assignment.import.create'); //create import assignment
+    Route::get('/assignments/import/create', 'AssignmentController@import_index')->name('admin.assignment.import.create');
+
     Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('admin.assignment.export.create'); //create export assignment
     Route::put('/assignments/import/update/{id}', 'AssignmentController@update_import_assignment')->name('admin.assignment.import.update'); //update assignment details
     Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('admin.assignment.export.update');

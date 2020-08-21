@@ -10,6 +10,13 @@
 
 
 @section('content')
+<style>
+    .dt-buttons{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+</style>
+
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
@@ -18,7 +25,7 @@
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])
             <!-- insert here the main non-charged tools table-->
             <table class="table data-table display table-striped table-bordered"
-                     data-order='[[ 0, "asc" ]]' data-page-length="8">
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
                         <th class="text-left">Όνομα Εργαλείου</th>
