@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->mediumText('description');
             $table->float('quantity');
             //$table->string('meas_unit', 20);
-            $table->enum('measure_unit', ['τμχ', 'm', 'm2', 'm3', 'kg'])->default('τμχ');
+            //$table->enum('measure_unit', ['τμχ', 'm', 'm2', 'm3', 'kg'])->default('τμχ');
             $table->mediumText('comments');
             //$table->boolean('is_charged')->nullable();
             $table->timestamps();

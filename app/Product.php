@@ -20,10 +20,6 @@ class Product extends Model
         return $this->belongsTo('App\Warehouse', 'warehouse_id');
     }
 
-    public function category(){
-        return $this->belongsTo('App\Category', 'category_id'); //added the FK
-    }
-
     public function import(){
         return $this->hasMany('App\Import');
     }
@@ -32,9 +28,17 @@ class Product extends Model
         return $this->hasMany('App\Export');
     }
 
+    public function category(){
+        return $this->belongsTo('App\Category', 'category_id'); //added the FK
+    }
+
     //added for getting the type via product
     public function type(){
         return $this->belongsTo('App\Type', 'type_id');
+    }
+
+    public function measureunit(){
+        return $this->belongsTo('App\MeasureUnit', 'measunit_id');
     }
 
     //1 Assignment has many products.

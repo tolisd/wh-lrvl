@@ -14,11 +14,14 @@ class AddAccountantIdToEmployees extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->unsignedBigInteger('accountant_id');                     
+            /*
+            $table->unsignedBigInteger('accountant_id');
+
             $table->foreign('accountant_id')
                     ->references('id')
                     ->on('accountant')
                     ->onDelete('cascade');
+            */
         });
     }
 
@@ -30,8 +33,10 @@ class AddAccountantIdToEmployees extends Migration
     public function down()
     {
         Schema::table('employees', function (Blueprint $table) {
+            /*
             $table->dropForeign(['accountant_id']);
             $table->dropColumn('accountant_id');
+            */
         });
     }
 }

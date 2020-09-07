@@ -13,6 +13,7 @@ class AddAssignmentIdToProducts extends Migration
      */
     public function up()
     {
+        /*
         Schema::table('products', function (Blueprint $table) {
             //
             $table->unsignedBigInteger('assignment_id');
@@ -22,6 +23,7 @@ class AddAssignmentIdToProducts extends Migration
                     ->on('assignments')
                     ->onDelete('cascade');
         });
+        */
     }
 
     /**
@@ -31,10 +33,12 @@ class AddAssignmentIdToProducts extends Migration
      */
     public function down()
     {
+        /*
         Schema::table('products', function (Blueprint $table) {
             //
             $table->dropForeign(['assignment_id']);
             $table->dropColumn('assignment_id');
         });
+        */
     }
 }

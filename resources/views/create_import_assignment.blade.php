@@ -13,12 +13,12 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary addition for $.ajax() in jQuery -->
 
     <div class="row">
-        <div class="col-lg-4 col-xs-6">
+        <div class="col-lg-6 col-xs-6">
 
             <p>Φόρμα Ανάθεσης Εισαγωγής (Import Assignment)</p>
 
 
-            <form id="create-import-form" class="form-horizontal" method="POST">
+            <form id="create-import-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 

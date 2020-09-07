@@ -20,6 +20,7 @@ class CreateWarehouseTable extends Migration
             $table->string('city');
             $table->string('phone_number');
             $table->string('email');
+            $table->json('workers')->nullable();
             $table->timestamps();
             /*
             $table->integer('company_id')->unsigned();
@@ -27,8 +28,8 @@ class CreateWarehouseTable extends Migration
             $table->foreign('company_id')
                     ->references('id')
                     ->on('company')
-                    ->onDelete('cascade');   
-            */                 
+                    ->onDelete('cascade');
+            */
         });
     }
 

@@ -21,6 +21,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
+//I added this following logout line, it works, and it needs to be a GET request..
+Route::get('/logout', 'Auth\LoginController@logout');
+
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 /*
@@ -78,8 +82,9 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     //----I changed the next line from post to get, for viewing form purposes!
     //Route::post('/assignments/import/create', 'AssignmentController@create_import_assignment')->name('admin.assignment.import.create'); //create import assignment
     Route::get('/assignments/import/create', 'AssignmentController@import_index')->name('admin.assignment.import.create');
+    //Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('admin.assignment.export.create'); //create export assignment
+    Route::get('/assignments/export/create', 'AssignmentController@export_index')->name('admin.assignment.export.create');
 
-    Route::post('/assignments/export/create', 'AssignmentController@create_export_assignment')->name('admin.assignment.export.create'); //create export assignment
     Route::put('/assignments/import/update/{id}', 'AssignmentController@update_import_assignment')->name('admin.assignment.import.update'); //update assignment details
     Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('admin.assignment.export.update');
     Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('admin.assignment.import.delete'); //delete assignment
@@ -107,6 +112,11 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::post('/product_type/create', 'TypeController@create_type')->name('admin.type.create');
     Route::put('/product_type/update/{id}','TypeController@update_type')->name('admin.type.update');
     Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('admin.type.delete');
+
+    Route::get('/meas-units/view', 'MeasureController@view_measunits')->name('admin.measunit.view');
+    Route::post('/meas-units/create', 'MeasureController@create_measunit')->name('admin.measunit.create');
+    Route::put('/meas-units/update/{id}', 'MeasureController@update_measunit')->name('admin.measunit.update');
+    Route::delete('/meas-units/delete/{id}', 'MeasureController@delete_measunit')->name('admin.measunit.delete');
 
     Route::get('/employees/view', 'EmployeeController@view_employees')->name('admin.employees.view');
     Route::post('/employees/create', 'EmployeeController@create_employee')->name('admin.employees.create');
@@ -201,6 +211,11 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::post('/product_type/create', 'TypeController@create_type')->name('manager.type.create');
    Route::put('/product_type/update/{id}','TypeController@update_type')->name('manager.type.update');
    Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('manager.type.delete');
+
+   Route::get('/meas-units/view', 'MeasureController@view_measunits')->name('manager.measunit.view');
+   Route::post('/meas-units/create', 'MeasureController@create_measunit')->name('manager.measunit.create');
+   Route::put('/meas-units/update/{id}', 'MeasureController@update_measunit')->name('manager.measunit.update');
+   Route::delete('/meas-units/delete/{id}', 'MeasureController@delete_measunit')->name('manager.measunit.delete');
 
    Route::get('/employees/view', 'EmployeeController@view_employees')->name('manager.employees.view');
    Route::post('/employees/create', 'EmployeeController@create_employee')->name('manager.employees.create');
@@ -334,6 +349,11 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::put('/product_type/update/{id}', 'TypeController@update_type')->name('foreman.type.update');
     Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('foreman.type.delete');
 
+    Route::get('/meas-units/view', 'MeasureController@view_measunits')->name('foreman.measunit.view');
+    Route::post('/meas-units/create', 'MeasureController@create_measunit')->name('foreman.measunit.create');
+    Route::put('/meas-units/update/{id}', 'MeasureController@update_measunit')->name('foreman.measunit.update');
+    Route::delete('/meas-units/delete/{id}', 'MeasureController@delete_measunit')->name('foreman.measunit.delete');
+
     Route::get('/warehouses/view', 'WarehouseController@view_warehouses')->name('foreman.warehouses.view');
     Route::post('/warehouses/create', 'WarehouseController@create_warehouse')->name('foreman.warehouses.create');
     Route::put('/warehouses/update/{id}', 'WarehouseController@update_warehouse')->name('foreman.warehouses.update');
@@ -363,6 +383,11 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     Route::post('/product_type/create', 'TypeController@create_type')->name('worker.type.create');
     Route::put('/product_type/update/{id}', 'TypeController@update_type')->name('worker.type.update');
     Route::delete('/product_type/delete/{id}', 'TypeController@delete_type')->name('worker.type.delete');
+
+    Route::get('/meas-units/view', 'MeasureController@view_measunits')->name('worker.measunit.view');
+    Route::post('/meas-units/create', 'MeasureController@create_measunit')->name('worker.measunit.create');
+    Route::put('/meas-units/update/{id}', 'MeasureController@update_measunit')->name('worker.measunit.update');
+    Route::delete('/meas-units/delete/{id}', 'MeasureController@delete_measunit')->name('worker.measunit.delete');
 });
 
 

@@ -50,11 +50,11 @@
 							@elseif($user->user_type == 'company_ceo')
 								<td>Διευθυντής</td>
 							@elseif($user->user_type == 'accountant')
-								<td>Λογιστής</td>
+								<td>Λογιστήριο</td>
 							@elseif($user->user_type == 'warehouse_foreman')
 								<td>Προϊστάμενος Αποθήκης</td>
 							@elseif($user->user_type == 'warehouse_worker')
-								<td>Εργάτης Αποθήκης</td>
+								<td>Αποθηκάριος</td>
 							@elseif($user->user_type == 'normal_user')
 								<td>Απλός Χρήστης</td>
 							@else
@@ -181,12 +181,12 @@
                                                 <option value="super_admin">Διαχειριστής</option>
                                             @elseif($ut == 'company_ceo')
                                                 <option value="company_ceo">Διευθυντής</option>
-                                            @elseif($ut == 'accountant')
-                                                <option value="accountant">Λογιστής</option>
                                             @elseif($ut == 'warehouse_foreman')
                                                 <option value="warehouse_foreman">Προϊστάμενος Αποθήκης</option>
+                                            @elseif($ut == 'accountant')
+                                                <option value="accountant">Λογιστήριο</option>
                                             @elseif($ut == 'warehouse_worker')
-                                                <option value="warehouse_worker">Εργάτης Αποθήκης</option>
+                                                <option value="warehouse_worker">Αποθηκάριος</option>
                                             @elseif($ut == 'normal_user')
                                                 <option value="normal_user">Απλός Χρήστης</option>
                                             @else
@@ -361,12 +361,12 @@
                                                     <option value="super_admin">Διαχειριστής</option>
                                                 @elseif($ut == 'company_ceo')
                                                     <option value="company_ceo">Διευθυντής</option>
-                                                @elseif($ut == 'accountant')
-                                                    <option value="accountant">Λογιστής</option>
                                                 @elseif($ut == 'warehouse_foreman')
                                                     <option value="warehouse_foreman">Προϊστάμενος Αποθήκης</option>
+                                                @elseif($ut == 'accountant')
+                                                    <option value="accountant">Λογιστήριο</option>
                                                 @elseif($ut == 'warehouse_worker')
-                                                    <option value="warehouse_worker">Εργάτης Αποθήκης</option>
+                                                    <option value="warehouse_worker">Αποθηκάριος</option>
                                                 @elseif($ut == 'normal_user')
                                                     <option value="normal_user">Απλός Χρήστης</option>
                                                 @else

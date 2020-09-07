@@ -20,10 +20,12 @@ class CreateCompanyTable extends Migration
             $table->string('AFM');
             $table->string('DOY');
             $table->string('postal_code');
+            $table->string('address');
             $table->string('city');
             $table->string('phone_number');
             $table->string('email');
-            $table->timestamps();            
+            $table->mediumText('comments');
+            $table->timestamps();
         });
     }
 

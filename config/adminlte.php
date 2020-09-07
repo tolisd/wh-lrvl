@@ -629,8 +629,13 @@ return [
 										'route' => 'admin.type.view',
 										'can' => 'isSuperAdmin',
 										'icon' => 'fas fa-compress',
+                                    ],
+                                    [
+										'text' => 'Μονάδες Μέτρησης',
+										'route' => 'admin.measunit.view',
+										'can' => 'isSuperAdmin',
+										'icon' => 'fas fa-balance-scale',
 									],
-
                          ],
         ],
 
@@ -658,6 +663,12 @@ return [
 										'route' => 'manager.type.view',
 										'can' => 'isCompanyCEO',
 										'icon' => 'fas fa-compress',
+                                    ],
+                                    [
+										'text' => 'Μονάδες Μέτρησης',
+										'route' => 'manager.measunit.view',
+										'can' => 'isCompanyCEO',
+										'icon' => 'fas fa-balance-scale',
 									],
 
                          ],
@@ -688,6 +699,12 @@ return [
 										'route' => 'foreman.type.view',
 										'can' => 'isWarehouseForeman',
 										'icon' => 'fas fa-compress',
+                                    ],
+                                    [
+										'text' => 'Μονάδες Μέτρησης',
+										'route' => 'foreman.measunit.view',
+										'can' => 'isWarehouseForeman',
+										'icon' => 'fas fa-balance-scale',
 									],
 
                          ],
@@ -717,6 +734,12 @@ return [
 										'route' => 'worker.type.view',
 										'can' => 'isWarehouseWorker',
 										'icon' => 'fas fa-compress',
+                                    ],
+                                    [
+										'text' => 'Μονάδες Μέτρησης',
+										'route' => 'worker.measunit.view',
+										'can' => 'isWarehouseWorker',
+										'icon' => 'fas fa-balance-scale',
 									],
 
                          ],
@@ -1000,7 +1023,51 @@ return [
                                     ],
 
                           ],
-		],
+        ],
+
+
+        [
+            'header' => 'ΑΠΟΣΥΝΔΕΣΗ',
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isWarehouseWorker', 'isNormalUser'],
+        ],
+
+
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isNormalUser',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
 
 
 

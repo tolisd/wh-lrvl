@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserIdToTools extends Migration
+class AddEmployeeIdToTools extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class AddUserIdToTools extends Migration
      */
     public function up()
     {
-        /*
         Schema::table('tools', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('employee_id');
 
-            $table->foreign('user_id')
+            $table->foreign('employee_id')
                     ->references('id')
-                    ->on('users');
+                    ->on('employees');
         });
-        */
     }
 
     /**
@@ -32,12 +30,10 @@ class AddUserIdToTools extends Migration
      */
     public function down()
     {
-        /*
         Schema::table('tools', function (Blueprint $table) {
             //
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
+            $table->dropForeign(['employee_id']);
+            $table->dropColumn('employee_id');
         });
-        */
     }
 }

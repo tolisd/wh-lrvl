@@ -14,18 +14,19 @@ class CreateEmployeesTable extends Migration
     public function up()
     {
         Schema::create('employees', function (Blueprint $table) {
-            $table->id('id');            
+            $table->id('id');
             $table->string('name');
             $table->string('type');
-            $table->string('address');            
+            $table->string('address');
             $table->string('phone_number');
-            $table->string('email');
-            $table->timestamps();      
+            $table->string('email')->unique();
+            $table->string('photo_url')->nullable();
+            $table->timestamps();
         });
 
         /*
-        Schema::table('employees', function(Blueprint $table){   
-            $table->integer('accountant_id')->unsigned();                     
+        Schema::table('employees', function(Blueprint $table){
+            $table->integer('accountant_id')->unsigned();
             $table->foreign('accountant_id')
                     ->references('id')
                     ->on('accountant')
@@ -33,7 +34,7 @@ class CreateEmployeesTable extends Migration
         });
         */
     }
-    
+
 
     /**
      * Reverse the migrations.

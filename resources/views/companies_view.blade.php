@@ -415,26 +415,42 @@
                 buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Εταιρείες"
+                            "title"  : "Εταιρείες",
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Εταιρείες"
+                            "title"  : "Εταιρείες",
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Εταιρείες"
+                            "title"  : "Εταιρείες",
+                            "orientation" : "landscape",
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                            }
                         },
                     ],
 
