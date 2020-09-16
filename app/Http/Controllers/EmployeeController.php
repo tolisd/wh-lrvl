@@ -8,7 +8,6 @@ use Auth; //added for Auth
 use App\Employee;
 use App\Warehouse;
 use App\Company;
-use App\User;
 
 
 class EmployeeController extends Controller
@@ -18,15 +17,13 @@ class EmployeeController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $users = User::all();
             $employees = Employee::all();
             $warehouses = Warehouse::all();
             $companies = Company::all();
 
             return view('employees_view', ['employees' => $employees,
                                             'warehouses' => $warehouses,
-                                            'companies' => $companies,
-                                            'users' => $users]);
+                                            'companies' => $companies]);
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -39,15 +36,23 @@ class EmployeeController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
+            $this->validate($request, [
+                'photo_url' => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',
+            ]);
+
             $employee = new Employee();
 
             $employee->name             = $request->input('modal-input-name-create');
-            $employee->type             = $request->input('modal-input-role-create');
+            $employee->employee_type    = $request->input('modal-input-role-create');
             $employee->address          = $request->input('modal-input-address-create');
             $employee->phone_number     = $request->input('modal-input-telno-create');
             $employee->email            = $request->input('modal-input-email-create');
             $employee->company_id       = $request->input('modal-input-company-create');
-            $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
+            //$employee->warehouse_id     = $request->input('modal-input-warehouse-create');
+            //$employee->photo_url        = $request->file('modal-input-photo-create');
+            $path = $request->file("modal-input-photo-create")->store("images/");  //stored in storage/images/
+            $url = Storage::url($path);
+            $employee->photo_url = $url;
 
             $employee->save();
 
@@ -71,12 +76,16 @@ class EmployeeController extends Controller
             $employee = Employee::findOrFail($id);
 
             $employee->user_id       = $request->input('modal-input-name-edit');
-            //$employee->user->user_type  = $request->input('modal-input-role-edit');
+            $employee->employee_type  = $request->input('modal-input-role-edit');
             $employee->address          = $request->input('modal-input-address-edit');
             $employee->phone_number     = $request->input('modal-input-telno-edit');
             $employee->email            = $request->input('modal-input-email-edit');
             $employee->company_id    = $request->input('modal-input-company-edit');
             $employee->warehouse_id  = $request->input('modal-input-warehouse-edit');
+
+            $path = $request->file("modal-input-photo-edit")->store("images/");  //stored in storage/images/
+            $url = Storage::url($path);
+            $employee->photo_url = $url;
 
             $employee->update($request->all()); //or $request->only(['', '', ...]) ??
 

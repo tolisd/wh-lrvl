@@ -34,8 +34,8 @@
                         <th class="text-left">Διεύθυνση</th>
                         <th class="text-left">Τηλέφωνο</th>
                         <th class="text-left">E-mail</th>
-                        <th class="text-left">Αποθήκη</th>
-                        <th class="text-left">Εταιρεία</th>
+                        <th class="text-left">Φωτο</th>
+
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -49,19 +49,17 @@
                         <td>{{ $employee->user->user_type }}</td> <!-- get role via User -->
                         <td>{{ $employee->address }}</td>
                         <td>{{ $employee->phone_number }}</td>
-                        <td>{{ $employee->email }}</td>
-                        <td>{{ $employee->warehouse->name }}</td>
-                        <td>{{ $employee->company->name }}</td>
+                        <td>{{ $employee->user->email }}</td>
+                        <td>{{ $employee->user->photo_url }}</td>
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-eid="{{ $employee->id }}"
-                                    data-usr="{{ $employee->user_id }}"
+                                    data-name="{{ $employee->user->name }}"
                                     data-address="{{ $employee->address }}"
                                     data-telno="{{ $employee->phone_number }}"
-                                    data-email="{{ $employee->email }}"
-                                    data-warehouse="{{ $employee->warehouse_id }}"
-                                    data-company="{{ $employee->company_id }}">
+                                    data-email="{{ $employee->user->email }}"
+                                    data-photo="{{ $employee->user->photo_url }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -82,7 +80,10 @@
             <br/><br/>
 
             <!--Create New Employee button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Εργαζόμενου</button>
+            <!-- I do not need it as any new employer will be created via the users view-->
+            <!--
+                <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Εργαζόμενου</button>
+            -->
 
             <br/><br/>
             @endcanany <!-- ['isSuperAdmin', 'isCompanyCEO', 'isAccountant'] -->
@@ -104,7 +105,9 @@
 
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
+
             <!-- the Add/Create new Employee, Modal popup window -->
+
             <div class="modal fade" id="add-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -132,11 +135,6 @@
 
                                     <!-- added hidden inputs for ID,company,warehouse -->
                                     <input type="hidden" id="modal-input-eid-create" name="modal-input-eid-create" value="">
-                                    <!-- company_id, where he works -->
-                                    <input type="hidden" id="modal-input-cid-create" name="modal-input-cid-create" value="">
-                                    <!-- warehouse_id, where he works -->
-                                    <input type="hidden" id="modal-input-wid-create" name="modal-input-wid-create" value="">
-
 
                                     <!-- name -->
                                     <div class="form-group">
@@ -151,12 +149,11 @@
                                         <label class="col-form-label" for="modal-input-role-create">Ρόλος/Θέση</label>
                                         <select name="modal-input-role-create" class="form-control" id="modal-input-role-create" required>
                                         @php
-                                            $usrtype = ['super_admin','company_ceo','accountant','warehouse_foreman','warehouse_worker', 'normal_user'];
+                                            $usrtype = ['company_ceo','accountant','warehouse_foreman','warehouse_worker'];
                                         @endphp
                                         @foreach($usrtype as $ut)
-                                            @if($ut == 'super_admin')
-                                                <option value="super_admin">Διαχειριστής</option>
-                                            @elseif($ut == 'company_ceo')
+
+                                            @if($ut == 'company_ceo')
                                                 <option value="company_ceo">Διευθυντής</option>
                                             @elseif($ut == 'accountant')
                                                 <option value="accountant">Λογιστής</option>
@@ -164,8 +161,6 @@
                                                 <option value="warehouse_foreman">Προϊστάμενος Αποθήκης</option>
                                             @elseif($ut == 'warehouse_worker')
                                                 <option value="warehouse_worker">Εργάτης Αποθήκης</option>
-                                            @elseif($ut == 'normal_user')
-                                                <option value="normal_user">Απλός Χρήστης</option>
                                             @else
                                                 <option value="{{ $ut }}">{{ $ut }}</option>
                                             @endif
@@ -197,6 +192,14 @@
                                             value="" required />
                                     </div>
                                     <!-- /email -->
+
+                                    <!-- photo -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-photo-create">Φωτο</label>
+                                        <input type="file" name="modal-input-photo-create" class="form-control" id="modal-input-photo-create"
+                                            value="" />
+                                    </div>
+                                    <!-- /photo -->
 
                                     <!-- company -->
                                     <div class="form-group">
@@ -269,12 +272,6 @@
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-eid-edit" name="modal-input-eid-edit" value="">
 
-                                   <!-- company_id, where he works -->
-                                   <input type="hidden" id="modal-input-cid-edit" name="modal-input-cid-edit" value="">
-                                    <!-- warehouse_id, where he works -->
-                                    <input type="hidden" id="modal-input-wid-edit" name="modal-input-wid-edit" value="">
-
-
                                     <!-- name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα</label>
@@ -288,12 +285,10 @@
                                         <label class="col-form-label" for="modal-input-role-edit">Ρόλος/Θέση</label>
                                         <select name="modal-input-role-edit" class="form-control" id="modal-input-role-edit" required>
                                         @php
-                                            $usrtype = ['super_admin','company_ceo','accountant','warehouse_foreman','warehouse_worker', 'normal_user'];
+                                            $usrtype = ['company_ceo','accountant','warehouse_foreman','warehouse_worker'];
                                         @endphp
                                         @foreach($usrtype as $ut)
-                                            @if($ut == 'super_admin')
-                                                <option value="super_admin">Διαχειριστής</option>
-                                            @elseif($ut == 'company_ceo')
+                                            @if($ut == 'company_ceo')
                                                 <option value="company_ceo">Διευθυντής</option>
                                             @elseif($ut == 'accountant')
                                                 <option value="accountant">Λογιστής</option>
@@ -301,8 +296,6 @@
                                                 <option value="warehouse_foreman">Προϊστάμενος Αποθήκης</option>
                                             @elseif($ut == 'warehouse_worker')
                                                 <option value="warehouse_worker">Εργάτης Αποθήκης</option>
-                                            @elseif($ut == 'normal_user')
-                                                <option value="normal_user">Απλός Χρήστης</option>
                                             @else
                                                 <option value="{{ $ut }}">{{ $ut }}</option>
                                             @endif
@@ -334,6 +327,14 @@
                                             value="" required />
                                     </div>
                                     <!-- /email -->
+
+                                    <!-- photo -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-photo-edit">Φωτο</label>
+                                        <input type="file" name="modal-input-photo-edit" class="form-control" id="modal-input-photo-edit"
+                                            value="" />
+                                    </div>
+                                    <!-- /photo -->
 
                                     <!-- company -->
                                     <div class="form-group">
@@ -524,6 +525,7 @@
                 var email = button.data('email');
                 var warehouse = button.data('warehouse');
                 var company = button.data('company');
+                var photo = button.data('photo');
                 //var uid = button.data('uid');
 
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -537,6 +539,7 @@
                 modal.find('.modal-body #modal-input-email-edit').val(email);
                 modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
                 modal.find('.modal-body #modal-input-company-edit').val(company);
+                modal.find('.modal-body #modal-input-photo-edit').val(photo);
                 //modal.find('.modal-body #modal-input-uid-edit').val(uid);
 
                 modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET product id value in data-eid attribute

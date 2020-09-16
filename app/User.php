@@ -21,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'user_type', 'password',
+        'name', 'email', 'user_type', 'password', 'photo_url',
     ];
 
     /**
@@ -46,18 +46,24 @@ class User extends Authenticatable
 
 
     //1 User has many Assignments.
+    /*
     public function assignment(){
         return $this->hasMany('App\Assignment');
     }
+    */
 
     //1-to-1 Employee<->User, User is-a Employee
     public function employee(){
         return $this->hasOne('App\Employee');
     }
 
+
+    /*
     public function tool(){
         return $this->hasMany('App\Tool');
     }
+    */
+
 
 
 

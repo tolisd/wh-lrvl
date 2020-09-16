@@ -37,6 +37,10 @@
                         <a href="/worker/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Εργαζόμενου Αποθήκης</a>
                     @endcan
 
+                    @can('isNormalUser')
+                        <a href="/user/dashboard">Πήγαινε στον Πίνακα Ελέγχου του Απλού Χρήστη</a>
+                    @endcan
+
                 </div>
             </div>
         </div>

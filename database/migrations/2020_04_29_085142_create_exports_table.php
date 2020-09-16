@@ -15,8 +15,8 @@ class CreateExportsTable extends Migration
     {
         Schema::create('exports', function (Blueprint $table) {
             $table->id('id');
-            $table->string('delivery_manager_name', 255);
-            $table->string('delivery_company', 255);
+            //$table->string('delivery_manager_name', 255);
+            //$table->string('delivery_company', 255);
             $table->dateTime('delivered_on');
             $table->string('shipment_address', 255);
             $table->string('destination_address', 255);
@@ -35,7 +35,7 @@ class CreateExportsTable extends Migration
                     ->references('id')
                     ->on('products')
                     ->onDelete('cascade');
-            */                   
+            */
         });
     }
 

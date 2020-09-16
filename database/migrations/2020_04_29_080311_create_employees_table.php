@@ -15,12 +15,16 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id('id');
-            $table->string('name');
-            $table->string('type');
+            //$table->string('name');
+
+            //$table->string('type');
+            //The 4 types of Employees for the Warehouse Application
+            //$table->enum('employee_type', ['company_ceo','accountant','warehouse_foreman','warehouse_worker'])->default('warehouse_worker');
+
             $table->string('address');
             $table->string('phone_number');
-            $table->string('email')->unique();
-            $table->string('photo_url')->nullable();
+            //$table->string('email')->unique();
+            //$table->string('photo_url')->nullable();
             $table->timestamps();
         });
 

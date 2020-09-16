@@ -11,6 +11,8 @@ class Company extends Model
 
     //protected $primaryKey = 'company_id';
 
+    protected $guarded = [];
+
 
     public function warehouse(){
         return $this->hasMany('App\Warehouse');
@@ -18,6 +20,14 @@ class Company extends Model
 
     public function employee(){
         return $this->hasMany('App\Employee');
+    }
+
+    public function import(){
+        return $this->hasMany('App\Import');
+    }
+
+    public function export(){
+        return $this->hasMany('App\Export');
     }
 
 }

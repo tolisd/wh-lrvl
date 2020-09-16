@@ -12,8 +12,10 @@ class Accountant extends Model
     //protected $primaryKey = 'accountant_id';
 
 
+    /*
     public function employee(){
         return $this->belongsTo('App\Employee');
     }
+    */
 
 }

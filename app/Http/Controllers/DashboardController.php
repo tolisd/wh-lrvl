@@ -17,6 +17,8 @@ class DashboardController extends Controller
     public function index(){
         //who CAN view the (initial screen of) the Dashboard, (remove or add the types here)
         //in this case, each and every user_type can view the Dashboard (but NOT all menus)
+
+        /*
         $authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'accountant', 'warehouse_foreman', 'warehouse_worker', 'normal_user']);
 
         //---use this?
@@ -37,6 +39,24 @@ class DashboardController extends Controller
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
+        */
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker', 'isNormalUser'])){
+
+            $usersCount = User::count();
+            $productsCount = Product::count(); //added: 'use App\Product;'
+            $assignmentsCount = Assignment::count();
+
+            return view('dashboard', ['usersCount' => $usersCount,
+                                        'prodCount'  => $productsCount,
+                                        'assignCount' => $assignmentsCount ]);
+        }
+        else {
+            return abort(403, 'Sorry you cannot view this home webpage');
+        }
+
+
+
 
     }
 

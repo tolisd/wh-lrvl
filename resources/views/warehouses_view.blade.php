@@ -34,7 +34,9 @@
                         <th class="text-left">Πόλη</th>
                         <th class="text-left">Τηλέφωνο</th>
                         <th class="text-left">E-mail</th>
-                        <th class="text-left">Όνομα Εταιρείας</th>
+                        <th class="text-left">Προϊστάμενος</th>
+                        <th class="text-left">Αποθηκάριος</th>
+                        <th class="text-left">Εταιρεία</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -59,7 +61,9 @@
                                     data-city="{{ $warehouse->city }}"
                                     data-telno="{{ $warehouse->phone_number }}"
                                     data-email="{{ $warehouse->email }}"
-                                    data-company="{{ $warehouse->company_id }}">  <!-- id instead of name, OR just name? -->
+                                    data-foreman="{{ $warehouse->employees->name }}"
+                                    data-workers="{{ $warehouse->employees->name }}"
+                                    data-company="{{ $warehouse->company_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -176,6 +180,28 @@
                                     </div>
                                     <!-- /email -->
 
+                                    <!-- foreman -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-foreman-create">Προϊστάμενος Αποθήκης</label>
+                                        <select name="modal-input-foreman-create" id="modal-input-foreman-create" class="form-control" required>
+                                        @foreach($foremen as $foreman)
+                                            <option value="{{ $foreman->id }}">{{ $foreman->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /foreman -->
+
+                                    <!-- workers -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-workers-create">Αποθηκάριος/οι</label>
+                                        <select name="modal-input-workers-create" id="modal-input-workers-create" class="form-control" required>
+                                        @foreach($workers as $worker)
+                                            <option value="{{ $worker->id }}">{{ $worker->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /workers -->
+
 
                                     <!-- company -->
                                     <div class="form-group">
@@ -276,6 +302,28 @@
                                             value="" required />
                                     </div>
                                     <!-- /email -->
+
+                                    <!-- foreman -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-foreman-edit">Προϊστάμενος Αποθήκης</label>
+                                        <select name="modal-input-foreman-edit" id="modal-input-foreman-edit" class="form-control" required>
+                                        @foreach($foremen as $foreman)
+                                            <option value="{{ $foreman->id }}">{{ $foreman->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /foreman -->
+
+                                    <!-- workers -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-workers-edit">Αποθηκάριος/οι</label>
+                                        <select name="modal-input-workers-edit" id="modal-input-workers-edit" class="form-control" required>
+                                        @foreach($workers as $worker)
+                                            <option value="{{ $worker->id }}">{{ $worker->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /workers -->
 
 
                                     <!-- company -->
@@ -455,6 +503,8 @@
             var telno = button.data('telno');
             var email = button.data('email');
             var company = button.data('company');
+            var foreman = button.data('foreman');
+            var workers = button.data('workers');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -467,6 +517,8 @@
             modal.find('.modal-body #modal-input-telno-edit').val(telno);
             modal.find('.modal-body #modal-input-email-edit').val(email);
             modal.find('.modal-body #modal-input-company-edit').val(company);
+            modal.find('.modal-body #modal-input-foreman-edit').val(foreman);
+            modal.find('.modal-body #modal-input-workers-edit').val(workers);
 
             modal.find('.modal-footer #edit-button').attr("data-wid", wid);  //SET product id value in data-wid attribute
 

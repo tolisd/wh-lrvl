@@ -20,6 +20,7 @@ class CreateExportassignmentsTable extends Migration
             $table->dateTime('export_deadline');
             $table->mediumText('comments');
             $table->json('uploaded_files')->nullable();
+            $table->boolean('is_open');
             $table->timestamps();
         });
     }

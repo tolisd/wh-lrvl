@@ -7,17 +7,25 @@
         <title>Laravel</title>
 
         <!-- Fonts -->
+        <!--
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        -->
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
 
         <!-- Styles -->
         <style>
             html, body {
                 background-color: #fff;
                 color: #636b6f;
-                font-family: 'Nunito', sans-serif;
+              /*  font-family: 'Nunito', sans-serif; */
+                font-family: 'Lato', sans-serif;
                 font-weight: 200;
                 height: 100vh;
                 margin: 0;
+
+                background-image: url("../images/warehouse--pexels-photo-1267338-gamma.jpg");
+                background-repeat: no-repeat;
+                background-size: cover;
             }
 
             .full-height {
@@ -61,30 +69,72 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+
+            button{
+                background-color: blue; /* #008CBA; */
+                font-size: 20px;
+                padding: 12px 28px;
+            }
+
+            button > a{
+                color: white;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+
+            a.link-class{
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+            }
+
         </style>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
+
+            <!--
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
                         <a href="{{ url('/home') }}">Home</a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
+                        <button class="btn btn-primary btn-lg">
+                            <a href="{{ route('login') }}">Σύνδεση</a>
+                        </button>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
+                            <a href="{{ route('register') }}">Εγγραφή</a>
                         @endif
                     @endauth
                 </div>
             @endif
+            -->
 
             <div class="content">
                 <div class="title m-b-md">
-                    Warehouse - Ypostirixis Group                    
+                    Αποθήκη - Ypostirixis Group
                 </div>
 
-            <!---
+
+                <div class="links">
+                    @auth
+                        <a href="{{ url('/home') }}">Home</a>
+                    @else
+                        <button class="btn btn-primary btn-lg btn-block">
+                            <a class="link-class" href="{{ route('login') }}">Σύνδεση</a>
+                        </button>
+
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}">Εγγραφή</a>
+                        @endif
+                    @endauth
+                </div>
+
+
+
+
+                <!--
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
@@ -95,7 +145,8 @@
                     <a href="https://vapor.laravel.com">Vapor</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
-            -->
+                -->
+
             </div>
         </div>
     </body>

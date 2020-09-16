@@ -174,7 +174,7 @@
                                         -->
                                         <select name="modal-input-usertype-edit" class="form-control" id="modal-input-usertype-edit">
                                         @php
-                                            $usrtype = ['super_admin','company_ceo','accountant','warehouse_foreman','warehouse_worker', 'normal_user'];
+                                            $usrtype = ['super_admin','company_ceo','warehouse_foreman','accountant','warehouse_worker','normal_user'];
                                         @endphp
                                         @foreach($usrtype as $ut)
                                             @if($ut == 'super_admin')
@@ -354,7 +354,7 @@
                                             -->
                                             <select name="modal-input-usertype-create" class="form-control" id="modal-input-usertype-create">
                                             @php
-                                                $usrtype = ['super_admin','company_ceo','accountant','warehouse_foreman','warehouse_worker', 'normal_user'];
+                                                $usrtype = ['super_admin','company_ceo','warehouse_foreman','accountant','warehouse_worker', 'normal_user'];
                                             @endphp
                                             @foreach($usrtype as $ut)
                                                 @if($ut == 'super_admin')

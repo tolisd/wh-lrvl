@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
 use App\Warehouse;
 use App\Company;
+use App\Employee;
 
 
 class WarehouseController extends Controller
@@ -18,9 +19,14 @@ class WarehouseController extends Controller
 
             $warehouses = Warehouse::all(); //gets all rows from warehouse table
             $companies  = Company::all();   //gets all rows from company tables
+            //$employees = Employee::all();
+            $foremen = Employee::with('warehouse')->where('employee_type', 'warehouse_foreman')->get(); //eager loading
+            $workers = Employee::with('warehouse')->where('employee_type', 'warehouse_worker')->get(); //eager loading
 
             return view('warehouses_view', ['warehouses' => $warehouses,
-                                            'companies'  => $companies]);
+                                            'companies'  => $companies,
+                                            'foremen' => $foremen,
+                                            'workers' => $workers]);
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -39,6 +45,8 @@ class WarehouseController extends Controller
             $warehouse->city            = $request->input('modal-input-city-create');
             $warehouse->phone_number    = $request->input('modal-input-telno-create');
             $warehouse->email           = $request->input('modal-input-email-create');
+            $warehouse->foreman         = $request->input('modal-input-foreman-create');
+            $warehouse->workers         = json_encode($request->input('modal-input-workers-create'));
             $warehouse->company_id      = $request->input('modal-input-company-create');
 
             $warehouse->save();
@@ -68,7 +76,10 @@ class WarehouseController extends Controller
             $warehouse->city            = $request->input('modal-input-city-edit');
             $warehouse->phone_number    = $request->input('modal-input-telno-edit');
             $warehouse->email           = $request->input('modal-input-email-edit');
+            $warehouse->foreman         = $request->input('modal-input-foreman-edit');
+            $warehouse->workers         = json_encode($request->input('modal-input-workers-edit'));
             $warehouse->company_id     = $request->input('modal-input-company-edit');
+
 
 
             $warehouse->update($request->all());

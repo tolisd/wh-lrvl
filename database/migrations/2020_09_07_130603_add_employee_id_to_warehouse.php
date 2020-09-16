@@ -15,11 +15,13 @@ class AddEmployeeIdToWarehouse extends Migration
     {
         Schema::table('warehouse', function (Blueprint $table) {
             //
+            /*
             $table->unsignedBigInteger('employee_id');
 
             $table->foreign('employee_id')
                     ->references('id')
                     ->on('employees');
+            */
         });
     }
 
@@ -32,8 +34,10 @@ class AddEmployeeIdToWarehouse extends Migration
     {
         Schema::table('warehouse', function (Blueprint $table) {
             //
+            /*
             $table->dropForeign(['employee_id']);
             $table->dropColumn('employee_id');
+            */
         });
     }
 }

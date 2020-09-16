@@ -15,9 +15,9 @@ class CreateImportsTable extends Migration
     {
         Schema::create('imports', function (Blueprint $table) {
             $table->id('id');
-            $table->string('recipient', 255);
+            //$table->string('recipient', 255);
             $table->dateTime('delivered_on');
-            $table->string('shipping_company', 255);
+            //$table->string('shipping_company', 255);
             $table->string('delivery_address', 255);
             $table->mediumText('discrete_description');
             $table->float('hours_worked');
@@ -35,7 +35,7 @@ class CreateImportsTable extends Migration
                     ->on('products')
                     ->onDelete('cascade');
             */
-                    
+
         });
     }
 

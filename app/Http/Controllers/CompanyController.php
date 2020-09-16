@@ -35,6 +35,8 @@ class CompanyController extends Controller
             $company->city          = $request->input('modal-input-city-create');
             $company->phone_number  = $request->input('modal-input-telno-create');
             $company->email         = $request->input('modal-input-email-create');
+            $company->address       = $request->input('modal-input-address-create');
+            $company->comments      = $request->input('modal-input-comments-create');
 
             $company->save();
 
@@ -64,6 +66,8 @@ class CompanyController extends Controller
             $company->city          = $request->input('modal-input-city-edit');
             $company->phone_number  = $request->input('modal-input-telno-edit');
             $company->email         = $request->input('modal-input-email-edit');
+            $company->address       = $request->input('modal-input-address-edit');
+            $company->comments      = $request->input('modal-input-comments-edit');
 
             $company->update($request->all());
 

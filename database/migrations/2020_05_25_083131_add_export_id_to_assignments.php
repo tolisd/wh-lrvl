@@ -14,12 +14,14 @@ class AddExportIdToAssignments extends Migration
     public function up()
     {
         Schema::table('assignments', function (Blueprint $table) {
+            /*
             $table->unsignedBigInteger('export_id');
 
             $table->foreign('export_id')
                     ->references('id')
                     ->on('exports')
-                    ->onDelete('cascade');   
+                    ->onDelete('cascade');
+            */
         });
     }
 
@@ -31,8 +33,10 @@ class AddExportIdToAssignments extends Migration
     public function down()
     {
         Schema::table('assignments', function (Blueprint $table) {
+            /*
             $table->dropForeign(['export_id']);
             $table->dropColumn('export_id');
+            */
         });
     }
 }

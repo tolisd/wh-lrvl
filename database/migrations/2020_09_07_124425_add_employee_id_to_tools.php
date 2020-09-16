@@ -18,6 +18,7 @@ class AddEmployeeIdToTools extends Migration
             $table->unsignedBigInteger('employee_id');
 
             $table->foreign('employee_id')
+                    ->nullable()             //Can be NULL, because not all employees will have tool(s)
                     ->references('id')
                     ->on('employees');
         });

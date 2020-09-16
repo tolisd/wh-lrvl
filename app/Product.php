@@ -42,8 +42,10 @@ class Product extends Model
     }
 
     //1 Assignment has many products.
+    /*
     public function assignment(){
         return $this->belongsTo('App\Assignment', 'assignment_id');
     }
+    */
 
 }

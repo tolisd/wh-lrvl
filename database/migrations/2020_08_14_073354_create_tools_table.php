@@ -21,7 +21,7 @@ class CreateToolsTable extends Migration
             $table->mediumText('comments');
             $table->integer('quantity');
             $table->boolean('is_charged');
-            $table->string('file_url'); //χρεωστικό αρχείο, pdf μάλλον
+            $table->string('file_url')->nullable(); //χρεωστικό αρχείο, pdf, nullable because NOT ALL tools ARE charged
             $table->timestamps();
         });
     }

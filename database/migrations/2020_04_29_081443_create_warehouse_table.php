@@ -21,6 +21,7 @@ class CreateWarehouseTable extends Migration
             $table->string('phone_number');
             $table->string('email');
             $table->json('workers')->nullable();
+            $table->string('foreman')->nullable();
             $table->timestamps();
             /*
             $table->integer('company_id')->unsigned();

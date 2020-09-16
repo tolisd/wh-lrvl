@@ -9,14 +9,52 @@ class Import extends Model
     //
     protected $table = "imports";
 
-    //protected $primaryKey = 'import_id';
+    //protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'delivered_on',
+        'delivery_address',
+        'discrete_description',
+        'hours_worked',
+        'chargeable_hours_worked',
+        'shipment_bulletin',
+        'shipment_address',
+        'vehicle_reg_no',
+
+        'product_id',
+        'employee_id',
+        'company_id',
+        'importassignment_id',
+    ];
+
+    protected $casts = [
+        'delivered_on' => 'datetime:d-m-Y H:i:s',
+    ];
+
+
 
     public function product(){
         return $this->belongsTo('App\Product', 'product_id'); //added the FK
     }
 
+    /*
     public function assignment(){
         return $this->belongsTo('App\Assignment');
+    }
+    */
+
+    public function import_assignment(){
+        return $this->belongsTo('App\ImportAssignment', 'importassignment_id');
+    }
+
+    //the worker or foreman to whom the assignment is assigned to
+    public function employee(){
+        return $this->belongsTo('App\Employee', 'employee_id');
+    }
+
+    //the delivery company
+    public function company(){
+        return $this->belongsTo('App\Company', 'company_id');
     }
 
 }

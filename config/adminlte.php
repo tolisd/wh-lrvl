@@ -145,8 +145,8 @@ return [
     |
     */
 
-    'right_sidebar' => false,
-    'right_sidebar_icon' => 'fas fa-cogs',
+    'right_sidebar' => true,
+    'right_sidebar_icon' => 'fas fa-cog',
     'right_sidebar_theme' => 'dark',
     'right_sidebar_slide' => true,
     'right_sidebar_push' => true,
@@ -167,7 +167,8 @@ return [
 
     'use_route_url' => false,
 
-    'dashboard_url' => 'home',
+    //'dashboard_url' => 'home', //is changed to the following line:
+    'dashboard_url' => 'dashboard',
 
     'logout_url' => 'logout',
 
@@ -423,35 +424,127 @@ return [
 
         [
             'header' => 'ΔΙΑΧΕΙΡΙΣΗ ΑΝΑΘΕΣΕΩΝ',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'],
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isNormalUser'],
         ],
         [
-            'text' => 'Ανοιχτές Αναθέσεις',
-            'route' => 'admin.assignments.view',
+            'text' => 'Αναθέσεις Εισαγωγής',
+            'route' => 'admin.assignments.import.view',
             'can' => 'isSuperAdmin',
-            'icon' => 'fas fa-fw fa-briefcase',
+            'icon' => 'fas fa-fw fa-arrow-left',
         ],
         [
-            'text' => 'Ανοιχτές Αναθέσεις',
-            'route' => 'manager.assignments.view',
+            'text' => 'Αναθέσεις Εισαγωγής',
+            'route' => 'manager.assignments.import.view',
             'can' => 'isCompanyCEO',
-            'icon' => 'fas fa-fw fa-briefcase',
+            'icon' => 'fas fa-fw fa-arrow-left',
         ],
         [
-            'text' => 'Ανοιχτές Αναθέσεις',
-            'route' => 'accountant.assignments.view',
+            'text' => 'Αναθέσεις Εισαγωγής',
+            'route' => 'accountant.assignments.import.view',
             'can' => 'isAccountant',
-            'icon' => 'fas fa-fw fa-briefcase',
+            'icon' => 'fas fa-fw fa-arrow-left',
         ],
         [
-            'text' => 'Ανοιχτές Αναθέσεις',
-            'route' => 'foreman.assignments.view',
+            'text' => 'Αναθέσεις Εισαγωγής',
+            'route' => 'foreman.assignments.import.view',
             'can' => 'isWarehouseForeman',
-            'icon' => 'fas fa-fw fa-briefcase',
+            'icon' => 'fas fa-fw fa-arrow-left',
+        ],
+        [
+            'text' => 'Αναθέσεις Εισαγωγής',
+            'route' => 'user.assignments.import.view',
+            'can' => 'isNormalUser',
+            'icon' => 'fas fa-fw fa-arrow-left',
+        ],
+
+
+        [
+            'text' => 'Αναθέσεις Εξαγωγής',
+            'route' => 'admin.assignments.export.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-arrow-right',
+        ],
+        [
+            'text' => 'Αναθέσεις Εξαγωγής',
+            'route' => 'manager.assignments.export.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-arrow-right',
+        ],
+        [
+            'text' => 'Αναθέσεις Εξαγωγής',
+            'route' => 'accountant.assignments.export.view',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-fw fa-arrow-right',
+        ],
+        [
+            'text' => 'Αναθέσεις Εξαγωγής',
+            'route' => 'foreman.assignments.export.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-fw fa-arrow-right',
+        ],
+        [
+            'text' => 'Αναθέσεις Εξαγωγής',
+            'route' => 'user.assignments.export.view',
+            'can' => 'isNormalUser',
+            'icon' => 'fas fa-fw fa-arrow-right',
         ],
 
 
 
+
+        [
+            'text' => 'Πληροφορίες Εισαγωγών',
+            'route' => 'admin.imports.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Πληροφορίες Εισαγωγών',
+            'route' => 'manager.imports.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Πληροφορίες Εισαγωγών',
+            'route' => 'accountant.imports.view',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Πληροφορίες Εισαγωγών',
+            'route' => 'foreman.imports.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-fw fa-circle',
+        ],
+
+
+        [
+            'text' => 'Πληροφορίες Εξαγωγών',
+            'route' => 'admin.exports.view',
+            'can' => 'isSuperAdmin',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Πληροφορίες Εξαγωγών',
+            'route' => 'manager.exports.view',
+            'can' => 'isCompanyCEO',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Πληροφορίες Εξαγωγών',
+            'route' => 'accountant.exports.view',
+            'can' => 'isAccountant',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Πληροφορίες Εξαγωγών',
+            'route' => 'foreman.exports.view',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+
+
+        /*
         [
             'text' => 'Δημιουργία Ανάθεσης',
             'url' => '',
@@ -540,6 +633,7 @@ return [
                           ],
 
         ],
+        */
 
 
 
@@ -1366,7 +1460,7 @@ return [
 
         [
             'name' => 'DateTimePicker',
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',

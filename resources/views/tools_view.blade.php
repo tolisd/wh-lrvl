@@ -158,7 +158,7 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="charge-form" class="form-horizontal" method="POST">
+                        <form id="charge-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
@@ -337,17 +337,17 @@
 
 
             <!-- add new tool to DB form-->
-            <div class="modal fade" id="create-modal">
+            <div class="modal fade" id="add-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">Δημιουργία Νέου Εργαλείου</h4>
+                            <h4 class="modal-title">Προσθήκη Νέου Εργαλείου</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="create-form" class="form-horizontal" method="POST">
+                        <form id="create-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
@@ -365,26 +365,26 @@
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-pid-create" name="modal-input-pid-create" value="">
 
-                                    <!-- tool-code, non-editable -->
+                                    <!-- tool-code, editable -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Κωδικός Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-create" class="form-control-plaintext" id="modal-input-name-create"
+                                        <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /tool-code -->
 
-                                    <!-- name, non-editable -->
+                                    <!-- name, editable -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-create" class="form-control-plaintext" id="modal-input-name-create"
+                                        <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /name -->
 
-                                    <!-- description, non-editable -->
+                                    <!-- description, editable -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-create">Περιγραφή</label>
-                                        <textarea rows="3" name="modal-input-description-create" class="form-control-plaintext" id="modal-input-description-create"
+                                        <textarea rows="3" name="modal-input-description-create" class="form-control" id="modal-input-description-create"
                                             value="" required></textarea>
                                     </div>
                                     <!-- /description -->
@@ -399,7 +399,7 @@
 
                                     <!-- quantity -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα</label>
+                                        <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα (σε τεμάχια)</label>
                                         <input type="text" name="modal-input-quantity-create" class="form-control" id="modal-input-quantity-create"
                                             value="" required>
                                     </div>
@@ -413,7 +413,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="create-button" name="create-tool-button"
-                                data-target="#create-modal" data-toggle="modal" data-pid="">Δημιουργία Εργαλείου</button>
+                                data-target="#create-modal" data-toggle="modal" data-pid="">Προσθήκη Εργαλείου</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -435,7 +435,7 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST">
+                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
@@ -445,7 +445,7 @@
                             <div class="card text-white bg-white mb-0">
                                 <!--
                                 <div class="card-header">
-                                    <h2 class="m-0">Μεταβολή Προϊόντος</h2>
+                                    <h2 class="m-0">Μεταβολή Εργαλείου</h2>
                                 </div>
                                 -->
                                 <div class="card-body">
@@ -1050,10 +1050,11 @@
             $(document).off('submit', '#delete-form');
         });
 
+        /*
         $('#add-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#add-form');
         });
-
+        */
 
 
 

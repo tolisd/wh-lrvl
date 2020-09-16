@@ -15,6 +15,13 @@
         margin-bottom: 10px;
         padding-bottom: 5px;
     }
+
+    html, body{
+        font-family: 'Lato', sans-serif;
+        font-weight: 200;
+    }
+
+
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary addition for $.ajax() in jQuery -->
@@ -32,10 +39,12 @@
                         <th class="text-left">Όνομα Εταιρείας</th>
                         <th class="text-left">Α.Φ.Μ.</th>
                         <th class="text-left">Δ.Ο.Υ.</th>
-                        <th class="text-left">Ταχυδρ.Κωδ.</th>
+                        <th class="text-left">Ταχ.Κωδ.</th>
+                        <th class="text-left">Διεύθυνση</th>
                         <th class="text-left">Πόλη</th>
                         <th class="text-left">Τηλέφωνο</th>
                         <th class="text-left">E-mail</th>
+                        <th class="text-left">Σχόλια</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -49,9 +58,11 @@
                         <td>{{ $company->AFM }}</td>
                         <td>{{ $company->DOY }}</td>
                         <td>{{ $company->postal_code }}</td>
+                        <td>{{ $company->address }}</td>
                         <td>{{ $company->city }}</td>
                         <td>{{ $company->phone_number }}</td>
                         <td>{{ $company->email }}</td>
+                        <td>{{ $company->comments }}</td>
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
@@ -62,7 +73,9 @@
                                     data-pcode="{{ $company->postal_code }}"
                                     data-city="{{ $company->city }}"
                                     data-telno="{{ $company->phone_number }}"
-                                    data-email="{{ $company->email }}">
+                                    data-email="{{ $company->email }}"
+                                    data-address="{{ $company->address }}"
+                                    data-comments="{{ $company->comments }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -164,6 +177,14 @@
                                     </div>
                                     <!-- /postal_code -->
 
+                                    <!-- address -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-address-create">Διεύθυνση</label>
+                                        <input type="text" name="modal-input-address-create" class="form-control" id="modal-input-address-create"
+                                           value="" required />
+                                    </div>
+                                    <!-- /address -->
+
                                     <!-- city -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-city-create">Πόλη</label>
@@ -187,6 +208,16 @@
                                             value="" required />
                                     </div>
                                     <!-- /email -->
+
+                                    <!-- comments -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-comments-create">Σχόλια</label>
+                                        <input type="text" name="modal-input-comments-create" class="form-control" id="modal-input-comments-create"
+                                            value="" required />
+                                    </div>
+                                    <!-- /comments -->
+
+
 
                                 </div>
                             </div>
@@ -269,6 +300,14 @@
                                     </div>
                                     <!-- /postal_code -->
 
+                                    <!-- address -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-address-edit">Διεύθυνση</label>
+                                        <input type="text" name="modal-input-address-edit" class="form-control" id="modal-input-address-edit"
+                                           value="" required />
+                                    </div>
+                                    <!-- /address -->
+
                                     <!-- city -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-city-edit">Πόλη</label>
@@ -292,6 +331,14 @@
                                             value="" required />
                                     </div>
                                     <!-- /email -->
+
+                                    <!-- comments -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
+                                        <input type="text" name="modal-input-comments-edit" class="form-control" id="modal-input-comments-edit"
+                                            value="" required />
+                                    </div>
+                                    <!-- /comments -->
 
 
                                 </div>
@@ -381,6 +428,8 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
 @stop
@@ -479,6 +528,8 @@
             var city = button.data('city');
             var telno = button.data('telno');
             var email = button.data('email');
+            var address = button.data('address');
+            var comments = button.data('comments');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -492,6 +543,8 @@
             modal.find('.modal-body #modal-input-city-edit').val(city);
             modal.find('.modal-body #modal-input-telno-edit').val(telno);
             modal.find('.modal-body #modal-input-email-edit').val(email);
+            modal.find('.modal-body #modal-input-address-edit').val(address);
+            modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
             modal.find('.modal-footer #edit-button').attr("data-cid", cid);  //SET company id value in data-cid attribute
 
