@@ -36,10 +36,8 @@ class EmployeeController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $this->validate($request, [
-                'photo_url' => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',
-            ]);
-
+            //there is no Create New Employee button anymore, it receives all its data from User table
+            /*
             $employee = new Employee();
 
             $employee->name             = $request->input('modal-input-name-create');
@@ -49,10 +47,6 @@ class EmployeeController extends Controller
             $employee->email            = $request->input('modal-input-email-create');
             $employee->company_id       = $request->input('modal-input-company-create');
             //$employee->warehouse_id     = $request->input('modal-input-warehouse-create');
-            //$employee->photo_url        = $request->file('modal-input-photo-create');
-            $path = $request->file("modal-input-photo-create")->store("images/");  //stored in storage/images/
-            $url = Storage::url($path);
-            $employee->photo_url = $url;
 
             $employee->save();
 
@@ -62,8 +56,11 @@ class EmployeeController extends Controller
             }
 
              return back();
+             */
         } else {
+            /*
             return abort(403, 'Sorry you cannot view this page');
+            */
         }
 
     }

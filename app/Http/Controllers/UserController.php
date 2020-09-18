@@ -8,6 +8,7 @@ use App\User;
 use Auth; //added for Auth
 use Response;
 use Datatables;
+use App\Employee;
 
 class UserController extends Controller
 {
@@ -200,6 +201,11 @@ class UserController extends Controller
             //$input = $request->input();  //take ALL input values into $input, as an assoc.array
             //$usertype = $input[''];
 
+
+            $this->validate($request, [
+                'photo_url' => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',
+            ]);
+
             $user = new User();
 
             $user->name      = $request->input('modal-input-name-create');
@@ -207,8 +213,27 @@ class UserController extends Controller
             $user->password  = \Hash::make($request->input('modal-input-passwd-create'));
             $user->user_type = $request->input('modal-input-usertype-create');
             // Set other fields (if applicable)...
+            /*
+
+            // ...image upload
+            $path = $request->file("modal-input-photo-create")->store("images/");  //stored in storage/app/images/
+            $url = \Storage::url($path);
+            $user->photo_url = $url;
+            */
 
             $user->save(); //Save the new user into the database
+
+
+            //Also, CREATE a new row in 'employees' table
+            $employee = new Employee();
+
+            $employee->name = $user->name;
+            $employee->email = $user->email;
+            $employee->employee_type = $user->user_type;
+
+            $employee->save();
+
+
 
 
             if ($request->ajax()){

@@ -12,8 +12,8 @@ class Warehouse extends Model
     //protected $primaryKey = 'warehouse_id';
 
     protected $fillable = [
-        'name', 'address', 'city', 'phone_number', 'email', 'company_id', 'workers', 'foreman'
-    ];  //foreman & worker will be produced by the inverse relationship...so no FKs needed in this table!
+        'name', 'address', 'city', 'phone_number', 'email', 'company_id', 'foreman_id', 'worker_id',
+    ];
 
     protected $casts = [
         'workers' => 'array',
@@ -21,13 +21,17 @@ class Warehouse extends Model
 
 
 
-    public function employees(){
-        return $this->hasMany('App\Employee');
+    public function foreman(){
+        return $this->hasOne('App\Employee', 'foreman_id'); //foreman is an Employee->User user_type
+    }
+
+    public function worker(){
+        return $this->hasMany('App\Employee', 'worker_id'); //worker is an Employee->User user_type
     }
 
     /*
     public function employees(){
-        return $this->hasMany('App\Employee');
+        return $this->hasMany('App\Employee', 'employee_id');
     }
     */
 
@@ -36,9 +40,8 @@ class Warehouse extends Model
     }
 
     public function product(){
-        return $this->hasMany('App\Product');
+        return $this->belongsToMany('App\Product', 'product_warehouse', 'warehouse_id', 'product_id');
     }
-
 
 
     public function importassignment(){

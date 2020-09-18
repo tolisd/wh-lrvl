@@ -35,6 +35,7 @@
                         <th class="text-left">Όνομα</th>
                         <th class="text-left">E-mail</th>
                         <th class="text-left">Τύπος χρήστη</th>
+                        <th class="text-left">Φωτογραφία</th>
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
@@ -60,12 +61,16 @@
 							@else
 								<td>{{ $user->user_type }}</td>
 							@endif
+                            <td><img src="{{ asset('/images/' . $user->photo_url) }}" alt=""></td>
+                            <!-- <td>{{ $user->photo_url }}</td> -->
+
                             <td>
                                 <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-uid="{{ $user->id }}"
                                     data-name="{{ $user->name }}"
                                     data-email="{{ $user->email }}"
+                                    data-photo="{{ $user->photo_url }}"
                                     data-usertype="{{ $user->user_type }}">
                                     <!-- <span class="glyphicon glyphicon-edit"></span> -->
                                     <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
@@ -450,26 +455,42 @@
                 buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [1, 2, 3]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Χρήστες Εφαρμογής"
+                            "title"  : "Χρήστες Εφαρμογής",
+                            exportOptions: {
+                                columns: [1, 2, 3]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Χρήστες Εφαρμογής"
+                            "title"  : "Χρήστες Εφαρμογής",
+                            exportOptions: {
+                                columns: [1, 2, 3]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
                             "title"  : "Χρήστες Εφαρμογής"
+                            "orientation" : "landscape",
+                            exportOptions: {
+                                columns: [1, 2, 3]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [1, 2, 3]
+                            }
                         },
                     ],
 
@@ -544,7 +565,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Ο χρήστης υπάρχει ήδη!';
@@ -614,7 +635,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Ο χρήστης υπάρχει ήδη!';
@@ -700,8 +721,10 @@
             $(document).off('submit', '#delete-form');
         });
 
-
-
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
+        });
 
 
 

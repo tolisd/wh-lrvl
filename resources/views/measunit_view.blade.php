@@ -25,6 +25,8 @@
                     <tr>
                         <th class="text-left">Μονάδα Μέτρησης</th>
                         <th class="text-left">Περιγραφή</th>  <!-- olografws, px "tetragwnika metra" -->
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
                     </tr>
                 </thead>
 
@@ -526,6 +528,11 @@
 
             $('#delete-modal').on('hidden.bs.modal', function(e){
                 $(document).off('submit', '#delete-form');
+            });
+
+            //resets the create/add form. Re-use this code snippet in other blade views!
+            $(document).on('click', '[data-dismiss="modal"]', function(e){
+                $('#add-form').find("input,textarea,select").val('');
             });
 
 

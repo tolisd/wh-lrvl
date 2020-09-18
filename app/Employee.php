@@ -21,11 +21,9 @@ class Employee extends Model
 
 
     /*1 Warehouse has_many Employees, and Each 1 Employee belongs to 1 Warehouse */
-    /*
     public function warehouse(){
         return $this->belongsTo('App\Warehouse', 'warehouse_id');
-    }
-    */
+    } //
 
 
     public function company(){
@@ -44,7 +42,6 @@ class Employee extends Model
     */
 
     //employee is-a user, hasOne/belongsTo
-
     public function user(){
         return $this->belongsTo('App\User', 'user_id');
     }

@@ -21,6 +21,8 @@ class AddEmployeeIdToTools extends Migration
                     ->nullable()             //Can be NULL, because not all employees will have tool(s)
                     ->references('id')
                     ->on('employees');
+                    //Laravel doesnt let me write the following lines
+                    //->onDelete('set null');
         });
     }
 

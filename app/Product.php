@@ -17,7 +17,7 @@ class Product extends Model
     ];
 
     public function warehouse(){
-        return $this->belongsTo('App\Warehouse', 'warehouse_id');
+        return $this->belongsToMany('App\Warehouse', 'product_warehouse', 'product_id', 'warehouse_id');
     }
 
     public function import(){

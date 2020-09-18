@@ -8,6 +8,7 @@ use Auth; //added for Auth
 use App\Warehouse;
 use App\Company;
 use App\Employee;
+use App\User;
 
 
 class WarehouseController extends Controller
@@ -20,8 +21,10 @@ class WarehouseController extends Controller
             $warehouses = Warehouse::all(); //gets all rows from warehouse table
             $companies  = Company::all();   //gets all rows from company tables
             //$employees = Employee::all();
-            $foremen = Employee::with('warehouse')->where('employee_type', 'warehouse_foreman')->get(); //eager loading
-            $workers = Employee::with('warehouse')->where('employee_type', 'warehouse_worker')->get(); //eager loading
+            //$users = User::all();
+
+            $foremen = User::where('user_type', 'warehouse_foreman')->get(); //eager loading
+            $workers = User::where('user_type', 'warehouse_worker')->get(); //eager loading
 
             return view('warehouses_view', ['warehouses' => $warehouses,
                                             'companies'  => $companies,

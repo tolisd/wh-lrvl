@@ -16,12 +16,12 @@
         padding-bottom: 5px;
     }
 
+    /*
     html, body{
         font-family: 'Lato', sans-serif;
         font-weight: 200;
     }
-
-
+    */
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token, necessary addition for $.ajax() in jQuery -->
@@ -466,7 +466,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ,8 ]
                             }
                         },
                         {
@@ -474,7 +474,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Εταιρείες",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ,8 ]
                             }
                         },
                         {
@@ -482,7 +482,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Εταιρείες",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ,8 ]
                             }
                         },
                         {
@@ -491,14 +491,14 @@
                             "title"  : "Εταιρείες",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ,8 ]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ,8 ]
                             }
                         },
                     ],
@@ -511,6 +511,12 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 }
             });
+
+
+
+
+
+
 
         });
 
@@ -583,7 +589,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η εταιρεία υπάρχει ήδη!';
@@ -658,7 +664,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η εταιρεία υπάρχει ήδη!';
@@ -676,6 +682,7 @@
                 });
             });
         });
+
 
 
 
@@ -715,7 +722,7 @@
                 error: function(response){
                     console.log('Error:', response);
 
-                    var msg = 'Κάτι πήγε στραβά..!';
+                    var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(response.status == 500){
                         msg = 'Η εταιρεία υπάρχει ήδη!';
@@ -743,6 +750,11 @@
 
         $('#delete-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#delete-form');
+        });
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
         });
 
 

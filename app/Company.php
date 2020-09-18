@@ -22,6 +22,7 @@ class Company extends Model
         return $this->hasMany('App\Employee');
     }
 
+
     public function import(){
         return $this->hasMany('App\Import');
     }
