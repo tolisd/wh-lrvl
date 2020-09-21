@@ -23,8 +23,8 @@ class CreateCompanyTable extends Migration
             $table->string('address');
             $table->string('city');
             $table->string('phone_number');
-            $table->string('email');
-            $table->mediumText('comments');
+            $table->string('email')->unique();
+            $table->mediumText('comments')->nullable();
             $table->timestamps();
         });
     }

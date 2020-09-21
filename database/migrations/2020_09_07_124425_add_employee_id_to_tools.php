@@ -15,14 +15,14 @@ class AddEmployeeIdToTools extends Migration
     {
         Schema::table('tools', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('employee_id')->nullable(); //I moved nullable() in here from below
 
             $table->foreign('employee_id')
-                    ->nullable()             //Can be NULL, because not all employees will have tool(s)
+                    //->nullable()             //Can be NULL, because not all employees will have tool(s)
                     ->references('id')
-                    ->on('employees');
-                    //Laravel doesnt let me write the following lines
-                    //->onDelete('set null');
+                    ->on('employees')
+                    //Laravel doesnt let me write the following lines, because i had nullable 2 lines above!
+                    ->onDelete('set null');
         });
     }
 

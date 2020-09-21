@@ -5,7 +5,7 @@
 @section('title', 'Αποθήκη - Dashboard')
 
 @section('content_header')
-    <h1>Warehouse / Όλα τα Προϊόντα</h1>
+    <h1><strong>Αποθήκη/Warehouse</strong> | Όλα τα Προϊόντα</h1>
 @stop
 
 
@@ -30,7 +30,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
-                        <th class="text-left">Κωδικός</th>
+                        <th class="text-left">Αναγνωριστικό</th>
                         <th class="text-left">Όνομα</th>
                         <th class="text-left">Είδος</th>  <!-- product type -->
                         <th class="text-left">Κατηγορία</th>
@@ -38,9 +38,12 @@
                         <th class="text-left">Ποσότητα</th>
                         <th class="text-left">Μον.Μέτρ.</th>
                         <th class="text-left">Σχόλια</th>
-                        <th class="text-left">Κωδικός Ανάθεσης</th> <!-- assignment_code, nullable()? -->
-                        <th class="text-left">Τύπος Ανάθεσης</th> <!-- assignment_type -->
-
+                        <!--
+                        <th class="text-left">Κωδικός Ανάθεσης</th>
+                        --> <!-- assignment_code, nullable()? -->
+                        <!--
+                        <th class="text-left">Τύπος Ανάθεσης</th>
+                        --> <!-- assignment_type -->
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
@@ -57,8 +60,12 @@
                         <td>{{ $product->quantity }}</td>
                         <td>{{ $product->measure_unit }}</td>
                         <td>{{ $product->comments }}</td>
-                        <td>{{ $product->assignment->assignment_code }}</td> <!-- κωδικος αναθεσης -->
-                        <td>{{ $product->assignment->assignment_type }}</td> <!-- τυπος αναθεσης, import OR export -->
+                        <!--
+                        <td>{{ $product->assignment->assignment_code }}</td>
+                        --> <!-- κωδικος αναθεσης -->
+                        <!--
+                        <td>{{ $product->assignment->assignment_type }}</td>
+                        --> <!-- τυπος αναθεσης, import OR export -->
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
@@ -477,12 +484,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
     //console.log('Hi!');
@@ -779,6 +786,12 @@
         $('#delete-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#delete-form');
         });
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
+        });
+
 
 
     </script>

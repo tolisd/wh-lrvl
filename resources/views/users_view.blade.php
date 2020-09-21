@@ -78,7 +78,7 @@
                             </td>
                             <td>
                             <!-- no need for other checks here, as other types Accountant etc, CANNOT see this screen -->
-                            @if(!($user->id == \Auth::user()->id)) <!-- The User CANNOT delete SELF -->
+                            @if(!($user->id == \Auth::user()->id)) <!-- NB.: The User CANNOT delete him/her SELF! -->
                                 <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-uid="{{ $user->id }}"
@@ -479,8 +479,8 @@
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Χρήστες Εφαρμογής"
-                            "orientation" : "landscape",
+                            "title"  : "Χρήστες Εφαρμογής",
+                            "orientation" : "portrait",
                             exportOptions: {
                                 columns: [1, 2, 3]
                             }
@@ -725,6 +725,7 @@
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
         });
+
 
 
 

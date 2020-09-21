@@ -48,7 +48,7 @@
                             <button class="delete-modal btn btn-danger"
                                 data-toggle="modal" data-target="#delete-modal"
                                 data-mid="{{ $meas_unit->id }}"
-                                data-code="{{ $meas_unit->name }}">
+                                data-name="{{ $meas_unit->name }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -317,7 +317,7 @@
 
             var mid = button.data('mid'); // Extract info from data-* attributes
             var name = button.data('name');
-            var description = button.data('description');
+            var description = button.data('descr');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.

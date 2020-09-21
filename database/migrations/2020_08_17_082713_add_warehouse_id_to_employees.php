@@ -15,7 +15,7 @@ class AddWarehouseIdToEmployees extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('warehouse_id');
+            $table->unsignedBigInteger('warehouse_id')->nullable();
 
             $table->foreign('warehouse_id')
                     ->references('id')

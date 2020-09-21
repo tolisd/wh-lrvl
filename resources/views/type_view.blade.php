@@ -5,7 +5,7 @@
 @section('title', 'Αποθήκη - Dashboard')
 
 @section('content_header')
-    <h1>Warehouse / Είδη Προϊόντων</h1>
+    <h1><strong>Αποθήκη</strong> / Είδη Προϊόντων</h1>
 @stop
 
 
@@ -294,12 +294,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
     //console.log('Hi!');
@@ -325,26 +325,42 @@
             buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Είδη Προϊόντων"
+                            "title"  : "Είδη Προϊόντων",
+                            exportOptions: {
+                                columns: [0,1]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Είδη Προϊόντων"
+                            "title"  : "Είδη Προϊόντων",
+                            exportOptions: {
+                                columns: [0,1]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Είδη Προϊόντων"
+                            "title"  : "Είδη Προϊόντων",
+                            "orientation" : "portrait",
+                            exportOptions: {
+                                columns: [0,1]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1]
+                            }
                         },
                     ],
         });
@@ -583,6 +599,11 @@
 
             $('#delete-modal').on('hidden.bs.modal', function(e){
                 $(document).off('submit', '#delete-form');
+            });
+
+            //resets the create/add form. Re-use this code snippet in other blade views!
+            $(document).on('click', '[data-dismiss="modal"]', function(e){
+                $('#add-form').find("input,textarea,select").val('');
             });
 
 

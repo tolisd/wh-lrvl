@@ -8,7 +8,7 @@ use App\User;
 use Auth; //added for Auth
 use Response;
 use Datatables;
-use App\Employee;
+use App\Employee; //for syncing the 2 tables ('users' & 'employees') simultaneously.
 
 class UserController extends Controller
 {
@@ -203,8 +203,9 @@ class UserController extends Controller
 
 
             $this->validate($request, [
-                'photo_url' => 'required|image|mimes:jpeg,jpg,png,gif|max:2048',
+                'photo_url' => 'image|mimes:jpeg,jpg,png,gif|max:2048',
             ]);
+
 
             $user = new User();
 
@@ -214,7 +215,6 @@ class UserController extends Controller
             $user->user_type = $request->input('modal-input-usertype-create');
             // Set other fields (if applicable)...
             /*
-
             // ...image upload
             $path = $request->file("modal-input-photo-create")->store("images/");  //stored in storage/app/images/
             $url = \Storage::url($path);
@@ -223,7 +223,7 @@ class UserController extends Controller
 
             $user->save(); //Save the new user into the database
 
-
+            /*
             //Also, CREATE a new row in 'employees' table
             $employee = new Employee();
 
@@ -231,10 +231,11 @@ class UserController extends Controller
             $employee->email = $user->email;
             $employee->employee_type = $user->user_type;
 
-            $employee->save();
+            //$employee->save();
 
-
-
+            //$user = User::find(1);
+            $user->profile()->save($employee); //when I create a new User, ALSO create a NEW Employee with/from the same(almost) data as the User.
+            */
 
             if ($request->ajax()){
                 return \Response::json();

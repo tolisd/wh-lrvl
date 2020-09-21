@@ -211,9 +211,9 @@
 
                                     <!-- comments -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-comments-create">Σχόλια</label>
+                                        <label class="col-form-label" for="modal-input-comments-create">Σχόλια (Προαιρετικά)</label>
                                         <input type="text" name="modal-input-comments-create" class="form-control" id="modal-input-comments-create"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /comments -->
 
@@ -334,9 +334,9 @@
 
                                     <!-- comments -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
+                                        <label class="col-form-label" for="modal-input-comments-edit">Σχόλια (Προαιρετικά)</label>
                                         <input type="text" name="modal-input-comments-edit" class="form-control" id="modal-input-comments-edit"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /comments -->
 

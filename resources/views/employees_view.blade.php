@@ -34,7 +34,8 @@
                         <th class="text-left">Διεύθυνση</th>
                         <th class="text-left">Τηλέφωνο</th>
                         <th class="text-left">E-mail</th>
-                        <th class="text-left">Φωτο</th>
+                        <!-- <th class="text-left">Φωτο</th> -->
+                        <th class="text-left">Όνομα Εταιρείας</th>
 
 
                         <th class="text-left">Μεταβολή</th>
@@ -46,20 +47,38 @@
                 @foreach($employees as $employee)
                     <tr class="user-row" data-eid="{{ $employee->id }}">  <!-- necessary additions -->
                         <td>{{ $employee->user->name }}</td>  <!-- get name via User -->
-                        <td>{{ $employee->user->user_type }}</td> <!-- get role via User -->
+
+                        <!-- <td>{{ $employee->user->user_type }}</td> --> <!-- get role via User -->
+                        @if($employee->user->user_type == 'super_admin')
+                            <td>Διαχειριστής</td>
+                        @elseif($employee->user->user_type == 'company_ceo')
+                            <td>Διευθυντής</td>
+                        @elseif($employee->user->user_type == 'warehouse_foreman')
+                            <td>Προϊστάμενος Αποθήκης</td>
+                        @elseif($employee->user->user_type == 'accountant')
+                            <td>Λογιστήριο</td>
+                        @elseif($employee->user->user_type == 'warehouse_worker')
+                            <td>Αποθηκάριος</td>
+                        @elseif($employee->user->user_type == 'normal_user')
+                            <td>Απλός Χρήστης</td>
+                        @else
+                            <td></td>
+                        @endif
+
                         <td>{{ $employee->address }}</td>
                         <td>{{ $employee->phone_number }}</td>
                         <td>{{ $employee->user->email }}</td>
-                        <td>{{ $employee->user->photo_url }}</td>
+                        <td>{{ $employee->company->name }}</td>
+                        <!-- <td>{{ $employee->user->email }}</td> -->
+                        <!-- <td>{{ $employee->user->photo_url }}</td> -->
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-eid="{{ $employee->id }}"
-                                    data-name="{{ $employee->user->name }}"
+                                    data-userid="{{ $employee->user_id }}"
+                                    data-companyid="{{ $employee->company_id }}"
                                     data-address="{{ $employee->address }}"
-                                    data-telno="{{ $employee->phone_number }}"
-                                    data-email="{{ $employee->user->email }}"
-                                    data-photo="{{ $employee->user->photo_url }}">
+                                    data-telno="{{ $employee->phone_number }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -67,7 +86,7 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-eid="{{ $employee->id }}"
-                                    data-name="{{ $employee->name }}">
+                                    data-user="{{ $employee->user->name }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -80,10 +99,7 @@
             <br/><br/>
 
             <!--Create New Employee button -->
-            <!-- I do not need it as any new employer will be created via the users view-->
-            <!--
-                <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Εργαζόμενου</button>
-            -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Εργαζόμενου</button>
 
             <br/><br/>
             @endcanany <!-- ['isSuperAdmin', 'isCompanyCEO', 'isAccountant'] -->
@@ -139,17 +155,25 @@
                                     <!-- name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα</label>
+                                        <!--
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required autofocus />
+                                        -->
+                                        <select name="modal-input-name-create" class="form-control" id="modal-input-name-create" required>
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                        </select>
                                     </div>
                                     <!-- /name -->
 
                                     <!-- user_type -->
+                                    <!--
                                      <div class="form-group">
                                         <label class="col-form-label" for="modal-input-role-create">Ρόλος/Θέση</label>
                                         <select name="modal-input-role-create" class="form-control" id="modal-input-role-create" required>
                                         @php
-                                            $usrtype = ['company_ceo','accountant','warehouse_foreman','warehouse_worker'];
+                                            $usrtype = ['company_ceo','warehouse_foreman','accountant','warehouse_worker'];
                                         @endphp
                                         @foreach($usrtype as $ut)
 
@@ -167,6 +191,7 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /user_type -->
 
                                     <!-- address -->
@@ -186,19 +211,23 @@
                                     <!-- /telno -->
 
                                     <!-- email -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-email-create">E-mail</label>
                                         <input type="text" name="modal-input-email-create" class="form-control" id="modal-input-email-create"
                                             value="" required />
                                     </div>
+                                    -->
                                     <!-- /email -->
 
                                     <!-- photo -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-photo-create">Φωτο</label>
                                         <input type="file" name="modal-input-photo-create" class="form-control" id="modal-input-photo-create"
                                             value="" />
                                     </div>
+                                    -->
                                     <!-- /photo -->
 
                                     <!-- company -->
@@ -213,6 +242,7 @@
                                     <!-- /company -->
 
                                     <!-- warehouse -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-create">Αποθήκη</label>
                                         <select name="modal-input-warehouse-create" class="form-control" id="modal-input-warehouse-create" required>
@@ -221,6 +251,7 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /warehouse -->
 
                                 </div>
@@ -275,12 +306,20 @@
                                     <!-- name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα</label>
+                                        <!--
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
                                             value="" required autofocus />
+                                        -->
+                                        <select name="modal-input-name-edit" class="form-control" id="modal-input-name-edit" required>
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                        </select>
                                     </div>
                                     <!-- /name -->
 
                                     <!-- user_type -->
+                                    <!--
                                      <div class="form-group">
                                         <label class="col-form-label" for="modal-input-role-edit">Ρόλος/Θέση</label>
                                         <select name="modal-input-role-edit" class="form-control" id="modal-input-role-edit" required>
@@ -302,6 +341,7 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /user_type -->
 
                                     <!-- address -->
@@ -321,19 +361,23 @@
                                     <!-- /telno -->
 
                                     <!-- email -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-email-edit">E-mail</label>
                                         <input type="text" name="modal-input-email-edit" class="form-control" id="modal-input-email-edit"
                                             value="" required />
                                     </div>
+                                    -->
                                     <!-- /email -->
 
                                     <!-- photo -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-photo-edit">Φωτο</label>
                                         <input type="file" name="modal-input-photo-edit" class="form-control" id="modal-input-photo-edit"
                                             value="" />
                                     </div>
+                                    -->
                                     <!-- /photo -->
 
                                     <!-- company -->
@@ -348,6 +392,7 @@
                                     <!-- /company -->
 
                                     <!-- warehouse -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη</label>
                                         <select name="modal-input-warehouse-edit" class="form-control" id="modal-input-warehouse-edit" required>
@@ -356,6 +401,7 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /warehouse -->
 
                                 </div>
@@ -479,26 +525,42 @@
                 buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Εργαζόμενοι"
+                            "title"  : "Εργαζόμενοι",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Εργαζόμενοι"
+                            "title"  : "Εργαζόμενοι",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Εργαζόμενοι"
+                            "title"  : "Εργαζόμενοι",
+                            "orientation" : "portrait",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                     ],
             });
@@ -519,13 +581,13 @@
                 var button = $(event.relatedTarget); // Button that triggered the modal
 
                 var eid = button.data('eid'); // Extract info from data-* attributes
-                var usr = button.data('usr');
+                var userid = button.data('userid');
                 var address = button.data('address');
                 var telno = button.data('telno');
-                var email = button.data('email');
-                var warehouse = button.data('warehouse');
-                var company = button.data('company');
-                var photo = button.data('photo');
+                //var email = button.data('email');
+                //var warehouse = button.data('warehouse');
+                var companyid = button.data('companyid');
+                //var photo = button.data('photo');
                 //var uid = button.data('uid');
 
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -533,13 +595,13 @@
                 var modal = $(this);
                 //modal.find('.modal-title').text('New message to ' + recipient);
                 //modal.find('.card-body #modal-input-eid-edit').val(eid);
-                modal.find('.modal-body #modal-input-name-edit').val(usr);
+                modal.find('.modal-body #modal-input-name-edit').val(userid);
                 modal.find('.modal-body #modal-input-address-edit').val(address);
                 modal.find('.modal-body #modal-input-telno-edit').val(telno);
-                modal.find('.modal-body #modal-input-email-edit').val(email);
-                modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
-                modal.find('.modal-body #modal-input-company-edit').val(company);
-                modal.find('.modal-body #modal-input-photo-edit').val(photo);
+                //modal.find('.modal-body #modal-input-email-edit').val(email);
+                //modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
+                 //modal.find('.modal-body #modal-input-photo-edit').val(photo);
+                modal.find('.modal-body #modal-input-company-edit').val(companyid);
                 //modal.find('.modal-body #modal-input-uid-edit').val(uid);
 
                 modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET product id value in data-eid attribute
@@ -610,7 +672,7 @@
                 var button = $(event.relatedTarget); // Button that triggered the modal
 
                 var eid = button.data('eid'); // Extract info from data-* attributes
-                var name = button.data('name');
+                var name = button.data('user');
 
                 var modal = $(this);
                 //modal.find('.modal-title').text('New message to ' + recipient);
