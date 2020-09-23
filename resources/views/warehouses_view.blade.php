@@ -34,8 +34,10 @@
                         <th class="text-left">Πόλη</th>
                         <th class="text-left">Τηλέφωνο</th>
                         <th class="text-left">E-mail</th>
+                        <!--
                         <th class="text-left">Προϊστάμενος</th>
-                        <th class="text-left">Αποθηκάριος</th>
+                        <th class="text-left">Αποθηκάριος/-οι</th>
+                        -->
                         <th class="text-left">Εταιρεία</th>
 
                         <th class="text-left">Μεταβολή</th>
@@ -51,6 +53,7 @@
                         <td>{{ $warehouse->city }}</td>
                         <td>{{ $warehouse->phone_number }}</td>
                         <td>{{ $warehouse->email }}</td>
+
                         <td>{{ $warehouse->company->name }}</td>
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -61,9 +64,7 @@
                                     data-city="{{ $warehouse->city }}"
                                     data-telno="{{ $warehouse->phone_number }}"
                                     data-email="{{ $warehouse->email }}"
-                                    data-foreman="{{ $warehouse->employees->name }}"
-                                    data-workers="{{ $warehouse->employees->name }}"
-                                    data-company="{{ $warehouse->company_id }}">
+                                    data-company="{{ $warehouse->company_id }}"> <!-- data-workers[] ? -->
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -142,7 +143,7 @@
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-create">Όνομα</label>
+                                        <label class="col-form-label" for="modal-input-name-create">Όνομα Αποθήκης</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required autofocus />
                                     </div>
@@ -181,6 +182,7 @@
                                     <!-- /email -->
 
                                     <!-- foreman -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-foreman-create">Προϊστάμενος Αποθήκης</label>
                                         <select name="modal-input-foreman-create" id="modal-input-foreman-create" class="form-control" required>
@@ -189,17 +191,21 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /foreman -->
 
                                     <!-- workers -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-workers-create">Αποθηκάριος/οι</label>
-                                        <select name="modal-input-workers-create" id="modal-input-workers-create" class="form-control" required>
+                                        <select multiple="multiple" name="modal-input-workers-create[]" id="modal-input-workers-create"
+                                           class="form-control" required>
                                         @foreach($workers as $worker)
                                             <option value="{{ $worker->id }}">{{ $worker->name }}</option>
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /workers -->
 
 
@@ -265,7 +271,7 @@
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα</label>
+                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα Αποθήκης</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
                                             value="" required autofocus />
                                     </div>
@@ -304,6 +310,7 @@
                                     <!-- /email -->
 
                                     <!-- foreman -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-foreman-edit">Προϊστάμενος Αποθήκης</label>
                                         <select name="modal-input-foreman-edit" id="modal-input-foreman-edit" class="form-control" required>
@@ -312,17 +319,21 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /foreman -->
 
                                     <!-- workers -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-workers-edit">Αποθηκάριος/οι</label>
-                                        <select name="modal-input-workers-edit" id="modal-input-workers-edit" class="form-control" required>
+                                        <select multiple="multiple" name="modal-input-workers-edit[]" id="modal-input-workers-edit"
+                                           class="form-control" required>
                                         @foreach($workers as $worker)
                                             <option value="{{ $worker->id }}">{{ $worker->name }}</option>
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /workers -->
 
 
@@ -427,11 +438,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
     // console.log('Hi!');
@@ -457,26 +469,42 @@
             buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Αποθήκες"
+                            "title"  : "Αποθήκες",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Αποθήκες"
+                            "title"  : "Αποθήκες",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Αποθήκες"
+                            "title"  : "Αποθήκες",
+                            "orientation" : "landscape",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5]
+                            }
                         },
                     ],
         });
@@ -503,8 +531,8 @@
             var telno = button.data('telno');
             var email = button.data('email');
             var company = button.data('company');
-            var foreman = button.data('foreman');
-            var workers = button.data('workers');
+            //var foreman = button.data('foreman');
+            //var workers = button.data('workers');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -517,8 +545,8 @@
             modal.find('.modal-body #modal-input-telno-edit').val(telno);
             modal.find('.modal-body #modal-input-email-edit').val(email);
             modal.find('.modal-body #modal-input-company-edit').val(company);
-            modal.find('.modal-body #modal-input-foreman-edit').val(foreman);
-            modal.find('.modal-body #modal-input-workers-edit').val(workers);
+            //modal.find('.modal-body #modal-input-foreman-edit').val(foreman);
+           // modal.find('.modal-body #modal-input-workers-edit').val(workers);
 
             modal.find('.modal-footer #edit-button').attr("data-wid", wid);  //SET product id value in data-wid attribute
 
@@ -557,7 +585,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η αποθήκη υπάρχει ήδη!';
@@ -632,7 +660,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η αποθήκη υπάρχει ήδη!';
@@ -689,7 +717,7 @@
                 error: function(response){
                     console.log('Error:', response);
 
-                    var msg = 'Κάτι πήγε στραβά..!';
+                    var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(response.status == 500){
                         msg = 'Η αποθήκη υπάρχει ήδη!';
@@ -717,6 +745,11 @@
 
         $('#delete-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#delete-form');
+        });
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
         });
 
 

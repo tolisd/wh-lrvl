@@ -37,7 +37,8 @@
                             <th class="text-left">Σχόλια</th>
                             <th class="text-left">Ποσότητα (τμχ)</th>
                             <th class="text-left">Χρεωμένο?</th> <!-- boolean, is_charged [0,1] -->
-                            <th class="text-left">Όνομα Χρεωμένου</th> <!-- user_id, FK add to products -->
+                            <th class="text-left">Όνομα Χρεωμένου</th>
+                            <th class="text-left">Χρεωστικό</th>
 
                             <th class="text-left">Χρέωση</th>   <!-- button1 -->
                             <th class="text-left">Ξεχρέωση</th> <!-- button2 -->
@@ -48,27 +49,35 @@
 
                     <tbody>
                     @foreach($tools as $tool)
-                        <tr class="user-row" data-pid="{{ $tool->id }}">
+                        <tr class="user-row" data-tid="{{ $tool->id }}">
                             <td>{{ $tool->code }}</td>
                             <td>{{ $tool->name }}</td>
                             <td>{{ $tool->description }}</td>
                             <td>{{ $tool->comments }}</td>
                             <td>{{ $tool->quantity }}</td> <!--σε τεμάχια ALWAYS! 'τμχ.' -->
-                            <td>{{ $tool->is_charged }}</td> <!-- boolean -->
-                            <td>{{ $tool->user->name }}</td> <!-- by its user_id, FK add to products -->
+
+                            @if($tool->is_charged == 0) <!-- boolean -->
+                                <td>Όχι</td>
+                            @elseif($tool->is_charged == 1)
+                                <td>Ναι</td>
+                            @endif
+
+                            <td>{{ $tool->employee_id }}</td> <!-- I need the employee's name here... -->
+                            <td>{{ $tool->file_url }}</td>
+
                             <td>
                                 @if($tool->is_charged == 0)
                                 <button class="charge-modal btn btn-secondary"
                                     data-toggle="modal" data-target="#charge-modal"
-                                    data-pid="{{ $tool->id }}"
+                                    data-tid="{{ $tool->id }}"
                                     data-code="{{ $tool->code }}"
                                     data-name="{{ $tool->name }}"
                                     data-description="{{ $tool->description }}"
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
-                                    data-towhom="{{ $tool->user->name }}">
-                                    <i class="fas fa-wrench" aria-hidden="true"></i>&nbsp;Χρέωση
+                                    data-towhom="{{ $tool->employee_id }}"> <!-- name of the employee via user() here.. -->
+                                    <i class="fas fa-circle" aria-hidden="true"></i>&nbsp;Χρέωση
                                 </button>
                                 @endif
                             </td>
@@ -76,36 +85,36 @@
                                 @if($tool->is_charged == 1)
                                 <button class="uncharge-modal btn btn-secondary"
                                     data-toggle="modal" data-target="#uncharge-modal"
-                                    data-pid="{{ $tool->id }}"
+                                    data-tid="{{ $tool->id }}"
                                     data-code="{{ $tool->code }}"
                                     data-name="{{ $tool->name }}"
                                     data-description="{{ $tool->description }}"
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
-                                    data-towhom="{{ $tool->user->name }}">
-                                    <i class="fal fa-wrench" aria-hidden="true"></i>&nbsp;Ξεχρέωση
+                                    data-towhom="{{ $tool->employee_id }}">
+                                    <i class="far fa-circle" aria-hidden="true"></i>&nbsp;Ξεχρέωση
                                 </button>
                                 @endif
                             </td>
                             <td>
                                 <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
-                                    data-pid="{{ $tool->id }}"
+                                    data-tid="{{ $tool->id }}"
                                     data-code="{{ $tool->code }}"
                                     data-name="{{ $tool->name }}"
                                     data-description="{{ $tool->description }}"
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
-                                    data-towhom="{{ $tool->user->name }}">
+                                    data-towhom="{{ $tool->employee_id }}">
                                     <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                                 </button>
                             </td>
                             <td>
                                 <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
-                                    data-pid="{{ $tool->id }}"
+                                    data-tid="{{ $tool->id }}"
                                     data-code="{{ $tool->code }}"
                                     data-name="{{ $tool->name }}">
                                     <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
@@ -174,7 +183,7 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-pid-charge" name="modal-input-pid-charge" value="">
+                                    <input type="hidden" id="modal-input-tid-charge" name="modal-input-tid-charge" value="">
 
                                     <!-- tool-code, non-editable -->
                                     <div class="form-group">
@@ -208,7 +217,6 @@
                                     </div>
                                     <!-- /comments -->
 
-
                                     <!-- quantity
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-charge">Ποσότητα</label>
@@ -222,12 +230,20 @@
                                         <label class="col-form-label" for="modal-input-towhom-charge">Όνομα Εργαζόμενου</label>
                                         <select name="modal-input-towhom-charge" id="modal-input-towhom-charge" class="form-control">
                                         <!-- ALL The Users of the Program! -->
-                                            @foreach($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @foreach($employees as $employee)
+                                                <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <!-- /To Whom -->
+
+                                    <!-- xrewstiko eggrafo -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-file-charge">Χρεωστικό έγγραφο</label>
+                                        <input type="file" name="modal-input-file-charge" class="form-control-plaintext" id="modal-input-file-charge"
+                                            value="" />
+                                    </div>
+                                    <!-- /xrewstiko eggrafo -->
 
                                 </div>
                             </div>
@@ -237,7 +253,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="charge-button" name="charge-tool-button"
-                                data-target="#charge-modal" data-toggle="modal" data-pid="">Χρέωσε Εργαλείο</button>
+                                data-target="#charge-modal" data-toggle="modal" data-tid="">Χρέωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -275,12 +291,12 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-pid-uncharge" name="modal-input-pid-uncharge" value="">
+                                    <input type="hidden" id="modal-input-tid-uncharge" name="modal-input-tid-uncharge" value="">
 
-                                    <!-- name -->
+                                    <!-- name, non-editable -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-uncharge">Όνομα Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-uncharge" class="form-control" id="modal-input-name-uncharge"
+                                        <input type="text" name="modal-input-name-uncharge" class="form-control-plaintext" id="modal-input-name-uncharge"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /name -->
@@ -288,23 +304,15 @@
                                     <!-- description -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-uncharge">Περιγραφή</label>
-                                        <textarea rows="3" name="modal-input-description-uncharge" class="form-control" id="modal-input-description-uncharge"
+                                        <textarea rows="3" name="modal-input-description-uncharge" class="form-control-plaintext" id="modal-input-description-uncharge"
                                             value="" required></textarea>
                                     </div>
                                     <!-- /description -->
 
-                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-type-uncharge">Είδος</label>
-                                        <input type="text" name="modal-input-type-uncharge" class="form-control" id="modal-input-type-uncharge"
-                                           value="" required />
-                                    </div>
-                                    <!-- /prod_type -->
-
                                     <!-- quantity -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-uncharge">Ποσότητα</label>
-                                        <input type="text" name="modal-input-quantity-uncharge" class="form-control" id="modal-input-quantity-uncharge"
+                                        <input type="text" name="modal-input-quantity-uncharge" class="form-control-plaintext" id="modal-input-quantity-uncharge"
                                             value="" required>
                                     </div>
                                     <!-- /quantity -->
@@ -312,10 +320,18 @@
                                     <!-- comments -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-uncharge">Σχόλια</label>
-                                        <textarea rows="3" name="modal-input-comments-uncharge" class="form-control" id="modal-input-comments-uncharge"
+                                        <textarea rows="3" name="modal-input-comments-uncharge" class="form-control-plaintext" id="modal-input-comments-uncharge"
                                             value="" required></textarea>
                                     </div>
                                     <!-- /comments -->
+
+                                    <!-- onoma xrewmenou -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-towhom-uncharge">Όνομα Χρεωμένου</label>
+                                        <input type="text" name="modal-input-towhom-uncharge" class="form-control-plaintext" id="modal-input-towhom-uncharge"
+                                            value="" required>
+                                    </div>
+                                    <!-- /onoma xrewmenou -->
 
                                 </div>
                             </div>
@@ -324,8 +340,8 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="uncharge-button" name="uncharge-tool-button"
-                                data-target="#uncharge-modal" data-toggle="modal" data-pid="">Ξεχρέωσε Εργαλείο</button>
+                            <button type="submit" class="btn btn-danger" id="uncharge-button" name="uncharge-tool-button"
+                                data-target="#uncharge-modal" data-toggle="modal" data-tid="">Ξεχρέωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -347,7 +363,7 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="create-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="create-form" class="form-horizontal" method="POST">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
@@ -363,12 +379,12 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-pid-create" name="modal-input-pid-create" value="">
+                                    <input type="hidden" id="modal-input-tid-create" name="modal-input-tid-create" value="">
 
                                     <!-- tool-code, editable -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-create">Κωδικός Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
+                                        <label class="col-form-label" for="modal-input-code-create">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-code-create" class="form-control" id="modal-input-code-create"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /tool-code -->
@@ -413,7 +429,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="create-button" name="create-tool-button"
-                                data-target="#create-modal" data-toggle="modal" data-pid="">Προσθήκη Εργαλείου</button>
+                                data-target="#create-modal" data-toggle="modal" data-tid="">Προσθήκη Εργαλείου</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -451,28 +467,28 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-pid-edit" name="modal-input-pid-edit" value="">
+                                    <input type="hidden" id="modal-input-tid-edit" name="modal-input-tid-edit" value="">
 
-                                    <!-- tool-code, non-editable -->
+                                    <!-- tool-code -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-edit">Κωδικός Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-edit" class="form-control-plaintext" id="modal-input-name-edit"
+                                        <label class="col-form-label" for="modal-input-code-edit">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-code-edit" class="form-control" id="modal-input-code-edit"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /tool-code -->
 
-                                    <!-- name, non-editable -->
+                                    <!-- name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-edit" class="form-control-plaintext" id="modal-input-name-edit"
-                                            value="" required autofocus>
+                                        <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
+                                            value="" required>
                                     </div>
                                     <!-- /name -->
 
-                                    <!-- description, non-editable -->
+                                    <!-- description -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-edit">Περιγραφή</label>
-                                        <textarea rows="3" name="modal-input-description-edit" class="form-control-plaintext" id="modal-input-description-edit"
+                                        <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
                                             value="" required></textarea>
                                     </div>
                                     <!-- /description -->
@@ -487,7 +503,7 @@
 
                                     <!-- quantity -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα</label>
+                                        <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα (τμχ.)</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
                                             value="" required>
                                     </div>
@@ -501,7 +517,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-tool-button"
-                                data-target="#edit-modal" data-toggle="modal" data-pid="">Διόρθωσε Εργαλείο</button>
+                                data-target="#edit-modal" data-toggle="modal" data-tid="">Διόρθωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -540,12 +556,12 @@
                                 <div class="card-body">
 
                                     <!-- added hidden input for ID -->
-                                    <input type="hidden" id="modal-input-pid-delete" name="modal-input-pid-delete" value="">
+                                    <input type="hidden" id="modal-input-tid-delete" name="modal-input-tid-delete" value="">
 
                                     <!-- tool-code, non-editable -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-delete">Κωδικός Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-delete" class="form-control-plaintext" id="modal-input-name-delete"
+                                        <label class="col-form-label" for="modal-input-code-delete">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-code-delete" class="form-control-plaintext" id="modal-input-code-delete"
                                             value="" required autofocus>
                                     </div>
                                     <!-- /tool-code -->
@@ -565,8 +581,8 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="delete-button" name="delete-tool-button"
-                                data-target="#delete-modal" data-toggle="modal" data-pid="">Διέγραψε Εργαλείο</button>
+                            <button type="submit" class="btn btn-danger" id="delete-button" name="delete-tool-button"
+                                data-target="#delete-modal" data-toggle="modal" data-tid="">Διέγραψε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -614,26 +630,42 @@
                 buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Εργαλεία"
+                            "title"  : "Εργαλεία",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Εργαλεία"
+                            "title"  : "Εργαλεία",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Εργαλεία"
+                            "title"  : "Εργαλεία",
+                            "orientation" : "landscape",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                     ],
             });
@@ -653,7 +685,7 @@
         $('#charge-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
-            var pid = button.data('pid'); // Extract info from data-* attributes
+            var tid = button.data('tid'); // Extract info from data-* attributes
             var code = button.data('code');
             var name = button.data('name');
             var description = button.data('description');
@@ -665,7 +697,7 @@
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            //modal.find('.card-body #modal-input-tid-edit').val(tid);
             modal.find('.modal-body #modal-input-code-charge').val(code);
             modal.find('.modal-body #modal-input-name-charge').val(name);
             modal.find('.modal-body #modal-input-description-charge').val(description);
@@ -673,7 +705,7 @@
             modal.find('.modal-body #modal-input-quantity-charge').val(quantity);
             modal.find('.modal-body #modal-input-towhom-charge').val(towhom);
 
-            modal.find('.modal-footer #charge-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+            modal.find('.modal-footer #charge-button').attr("data-tid", tid);  //SET product id value in data-tid attribute
 
 
             //AJAX Charge Tool to User
@@ -682,7 +714,7 @@
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -692,7 +724,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/charge-tool/" + pid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/charge-tool/" + tid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -736,7 +768,7 @@
         $('#uncharge-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
-            var pid = button.data('pid'); // Extract info from data-* attributes
+            var tid = button.data('tid'); // Extract info from data-* attributes
             var code = button.data('code');
             var name = button.data('name');
             var description = button.data('description');
@@ -749,7 +781,7 @@
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            //modal.find('.card-body #modal-input-tid-edit').val(tid);
             modal.find('.modal-body #modal-input-code-uncharge').val(code);
             modal.find('.modal-body #modal-input-name-uncharge').val(name);
             modal.find('.modal-body #modal-input-description-uncharge').val(description);
@@ -757,7 +789,7 @@
             modal.find('.modal-body #modal-input-quantity-uncharge').val(quantity);
             modal.find('.modal-body #modal-input-towhom-uncharge').val(towhom);
 
-            modal.find('.modal-footer #uncharge-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+            modal.find('.modal-footer #uncharge-button').attr("data-tid", tid);  //SET product id value in data-tid attribute
 
 
 
@@ -767,7 +799,7 @@
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -777,7 +809,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/uncharge-tool/" + pid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/uncharge-tool/" + tid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -822,7 +854,7 @@
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                //console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -871,10 +903,10 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //The Update/Edit Existing Tool Modal
-        $('#uncharge-modal').on('show.bs.modal', function(event) {
+        $('#edit-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
-            var pid = button.data('pid'); // Extract info from data-* attributes
+            var tid = button.data('tid'); // Extract info from data-* attributes
             var code = button.data('code');
             var name = button.data('name');
             var description = button.data('description');
@@ -887,7 +919,7 @@
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            //modal.find('.card-body #modal-input-tid-edit').val(tid);
             modal.find('.modal-body #modal-input-code-edit').val(code);
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-description-edit').val(description);
@@ -895,7 +927,7 @@
             modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
             modal.find('.modal-body #modal-input-towhom-edit').val(towhom);
 
-            modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+            modal.find('.modal-footer #edit-button').attr("data-tid", tid);  //SET product id value in data-tid attribute
 
 
 
@@ -905,7 +937,7 @@
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                //console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -915,7 +947,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/update/" + pid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/update/" + tid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -958,7 +990,7 @@
         $('#delete-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
-            var pid = button.data('pid'); // Extract info from data-* attributes
+            var tid = button.data('tid'); // Extract info from data-* attributes
             var code = button.data('code');
             var name = button.data('name');
 
@@ -967,13 +999,11 @@
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            //modal.find('.card-body #modal-input-pid-edit').val(pid);
+            //modal.find('.card-body #modal-input-tid-edit').val(tid);
             modal.find('.modal-body #modal-input-code-delete').val(code);
             modal.find('.modal-body #modal-input-name-delete').val(name);
 
-            modal.find('.modal-footer #delete-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
-
-
+            modal.find('.modal-footer #delete-button').attr("data-tid", tid);  //SET product id value in data-tid attribute
 
             //AJAX Delete Existing Tool
             //event delegation here...
@@ -981,7 +1011,7 @@
                 evt.preventDefault();
                 var formData = new FormData(this);
 
-                console.log(pid);
+                //console.log(tid);
                 console.log(formData);
 
                 $.ajax({
@@ -991,7 +1021,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/delete/" + pid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/tools/delete/" + tid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -1055,6 +1085,11 @@
             $(document).off('submit', '#add-form');
         });
         */
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
+        });
 
 
 

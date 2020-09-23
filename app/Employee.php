@@ -13,7 +13,7 @@ class Employee extends Model
 
 
     protected $fillable = [
-        'address', 'phone_number', 'user_id',
+        'address', 'phone_number', 'user_id', 'company_id', 'warehouse_id',
     ];
 
     //or, just use this line instead of filling in values for $fillable above

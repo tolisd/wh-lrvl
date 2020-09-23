@@ -80,7 +80,8 @@ return [
     |
     */
 
-    'locale' => 'en',
+    //'locale' => 'en',
+    'locale' => 'gr', //changed the above locale line, to this line
 
     /*
     |--------------------------------------------------------------------------

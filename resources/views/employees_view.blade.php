@@ -35,8 +35,8 @@
                         <th class="text-left">Τηλέφωνο</th>
                         <th class="text-left">E-mail</th>
                         <!-- <th class="text-left">Φωτο</th> -->
-                        <th class="text-left">Όνομα Εταιρείας</th>
-
+                        <th class="text-left">Εταιρεία</th>
+                        <th class="text-left">Αποθήκη</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -69,6 +69,7 @@
                         <td>{{ $employee->phone_number }}</td>
                         <td>{{ $employee->user->email }}</td>
                         <td>{{ $employee->company->name }}</td>
+                        <td>{{ $employee->warehouse->name }}</td>
                         <!-- <td>{{ $employee->user->email }}</td> -->
                         <!-- <td>{{ $employee->user->photo_url }}</td> -->
                         <td>
@@ -76,9 +77,10 @@
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-eid="{{ $employee->id }}"
                                     data-userid="{{ $employee->user_id }}"
-                                    data-companyid="{{ $employee->company_id }}"
                                     data-address="{{ $employee->address }}"
-                                    data-telno="{{ $employee->phone_number }}">
+                                    data-telno="{{ $employee->phone_number }}"
+                                    data-companyid="{{ $employee->company_id }}"
+                                    data-warehouseid=" {{ $employee->warehouse_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -242,7 +244,6 @@
                                     <!-- /company -->
 
                                     <!-- warehouse -->
-                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-create">Αποθήκη</label>
                                         <select name="modal-input-warehouse-create" class="form-control" id="modal-input-warehouse-create" required>
@@ -251,7 +252,6 @@
                                         @endforeach
                                         </select>
                                     </div>
-                                    -->
                                     <!-- /warehouse -->
 
                                 </div>
@@ -392,7 +392,6 @@
                                     <!-- /company -->
 
                                     <!-- warehouse -->
-                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη</label>
                                         <select name="modal-input-warehouse-edit" class="form-control" id="modal-input-warehouse-edit" required>
@@ -401,7 +400,6 @@
                                         @endforeach
                                         </select>
                                     </div>
-                                    -->
                                     <!-- /warehouse -->
 
                                 </div>
@@ -494,12 +492,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+   <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
         //console.log('Hi!');
@@ -527,7 +525,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4,5,6]
                             }
                         },
                         {
@@ -535,7 +533,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Εργαζόμενοι",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4,5,6]
                             }
                         },
                         {
@@ -543,23 +541,23 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Εργαζόμενοι",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4,5,6]
                             }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
                             "title"  : "Εργαζόμενοι",
-                            "orientation" : "portrait",
+                            "orientation" : "landscape",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4,5,6]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4,5,6]
                             }
                         },
                     ],
@@ -585,7 +583,7 @@
                 var address = button.data('address');
                 var telno = button.data('telno');
                 //var email = button.data('email');
-                //var warehouse = button.data('warehouse');
+                var warehouseid = button.data('warehouseid');
                 var companyid = button.data('companyid');
                 //var photo = button.data('photo');
                 //var uid = button.data('uid');
@@ -599,7 +597,7 @@
                 modal.find('.modal-body #modal-input-address-edit').val(address);
                 modal.find('.modal-body #modal-input-telno-edit').val(telno);
                 //modal.find('.modal-body #modal-input-email-edit').val(email);
-                //modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
+                modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid);
                  //modal.find('.modal-body #modal-input-photo-edit').val(photo);
                 modal.find('.modal-body #modal-input-company-edit').val(companyid);
                 //modal.find('.modal-body #modal-input-uid-edit').val(uid);
@@ -641,7 +639,7 @@
                         error: function(response){
                             console.log('Error:', response);
 
-                            var msg = 'Κάτι πήγε στραβά..!';
+                            var msg = 'Συνέβη κάποιο λάθος!';
 
                             if(response.status == 500){
                                 msg = 'Ο εργαζόμενος υπάρχει ήδη!';
@@ -716,7 +714,7 @@
                         error: function(response){
                             console.log('Error:', response);
 
-                            var msg = 'Κάτι πήγε στραβά..!';
+                            var msg = 'Συνέβη κάποιο λάθος!';
 
                             if(response.status == 500){
                                 msg = 'Ο εργαζόμενος υπάρχει ήδη!';
@@ -773,7 +771,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Ο εργαζόμενος υπάρχει ήδη!';
@@ -801,6 +799,11 @@
 
             $('#delete-modal').on('hidden.bs.modal', function(e){
                 $(document).off('submit', '#delete-form');
+            });
+
+            //resets the create/add form. Re-use this code snippet in other blade views!
+            $(document).on('click', '[data-dismiss="modal"]', function(e){
+                $('#add-form').find("input,textarea,select").val('');
             });
 
 

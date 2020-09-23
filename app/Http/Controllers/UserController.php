@@ -56,6 +56,11 @@ class UserController extends Controller
             $user->email     = $request->input('modal-input-email-edit');
             $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
             $user->user_type = $request->input('modal-input-usertype-edit');
+            // ...image upload
+            $path = $request->file('modal-input-photo-edit')->store('images/profile');  //stored in storage/app/images/
+            $url = \Storage::url($path);
+            $user->photo_url = $url;
+
 
             $user->update($request->all());
 
@@ -201,9 +206,8 @@ class UserController extends Controller
             //$input = $request->input();  //take ALL input values into $input, as an assoc.array
             //$usertype = $input[''];
 
-
             $this->validate($request, [
-                'photo_url' => 'image|mimes:jpeg,jpg,png,gif|max:2048',
+                'photo_url' => 'image|mimes:jpeg,jpg,png,gif|max:100',
             ]);
 
 
@@ -214,12 +218,11 @@ class UserController extends Controller
             $user->password  = \Hash::make($request->input('modal-input-passwd-create'));
             $user->user_type = $request->input('modal-input-usertype-create');
             // Set other fields (if applicable)...
-            /*
             // ...image upload
-            $path = $request->file("modal-input-photo-create")->store("images/");  //stored in storage/app/images/
-            $url = \Storage::url($path);
-            $user->photo_url = $url;
-            */
+            $path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
+            $url = \Storage::url($path); //stores the full path
+            $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
+
 
             $user->save(); //Save the new user into the database
 

@@ -58,25 +58,20 @@
                         <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->quantity }}</td>
-                        <td>{{ $product->measure_unit }}</td>
+                        <td>{{ $product->measureunit->name }}</td> <!-- measureunit() in App\Product.php -->
                         <td>{{ $product->comments }}</td>
-                        <!--
-                        <td>{{ $product->assignment->assignment_code }}</td>
-                        --> <!-- κωδικος αναθεσης -->
-                        <!--
-                        <td>{{ $product->assignment->assignment_type }}</td>
-                        --> <!-- τυπος αναθεσης, import OR export -->
+
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-pid="{{ $product->id }}"
                                     data-code="{{ $product->code }}"
                                     data-name="{{ $product->name }}"
-                                    data-type="{{ $product->type->name }}"
-                                    data-category="{{ $product->category->name }}"
-                                    data-description="{{ $product->description}}"
+                                    data-type="{{ $product->type_id }}"
+                                    data-category="{{ $product->category_id }}"
+                                    data-description="{{ $product->description }}"
                                     data-quantity="{{ $product->quantity }}"
-                                    data-measunit="{{ $product->measure_unit }}"
+                                    data-measunit="{{ $product->measunit_id }}"
                                     data-comments="{{ $product->comments }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
@@ -99,7 +94,7 @@
             <br/><br/>
 
             <!--Create New User button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Προϊόντος</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Προϊόντος</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -157,7 +152,7 @@
 
                                     <!-- code -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-code-create">Κωδικός Προϊόντος</label>
+                                        <label class="col-form-label" for="modal-input-code-create">Αναγνωριστικό</label>
                                         <input type="text" name="modal-input-code-create" class="form-control" id="modal-input-code-create"
                                             value="" required autofocus>
                                     </div>
@@ -165,7 +160,7 @@
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-create">Όνομα</label>
+                                        <label class="col-form-label" for="modal-input-name-create">Όνομα Προϊόντος</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required>
                                     </div>
@@ -182,14 +177,21 @@
                                     <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-type-create">Είδος</label>
+                                        <!--
                                         <input type="text" name="modal-input-type-create" class="form-control" id="modal-input-type-create"
                                            value="" required />
+                                        -->
+                                        <select name="modal-input-type-create" id="modal-input-type-create" class="form-control" required>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
+                                        </select>
                                     </div>
                                     <!-- /prod_type -->
 
                                     <!-- product category -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-category-create">Τύπος</label>
+                                        <label class="col-form-label" for="modal-input-category-create">Κατηγορία</label>
                                         <select name="modal-input-category-create" id="modal-input-category-create" class="form-control" required>
                                         @foreach($categories as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -210,23 +212,8 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-measureunit-create">Μονάδα Μέτρησης</label>
                                         <select name="modal-input-measureunit-create" id="modal-input-measureunit-create" class="form-control" required>
-                                        @php
-                                            $meas_unit = ['τμχ', 'm', 'm2', 'm3', 'kg'];
-                                        @endphp
-                                        @foreach($meas_unit as $mu)
-                                            @if($mu == 'τμχ')
-                                                <option value="τμχ">τεμάχια</option>
-                                            @elseif($mu == 'm')
-                                                <option value="m">μέτρα</option>
-                                            @elseif($mu == 'm2')
-                                                <option value="m2">τετραγωνικά μέτρα</option>
-                                            @elseif($mu == 'm3')
-                                                <option value="m3">κυβικά μέτρα</option>
-                                            @elseif($mu == 'kg')
-                                                <option value="kg">κιλά</option>
-                                            @else
-                                                <option value="{{ $mu }}">{{ $mu }}</option>
-                                            @endif
+                                        @foreach($measunits as $mu)
+                                                <option value="{{ $mu->id }}">{{ $mu->name }}</option>
                                         @endforeach
                                         </select>
                                     </div>
@@ -291,7 +278,7 @@
 
                                     <!-- code -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-code-edit">Κωδικός Προϊόντος</label>
+                                        <label class="col-form-label" for="modal-input-code-edit">Αναγνωριστικό</label>
                                         <input type="text" name="modal-input-code-edit" class="form-control" id="modal-input-code-edit"
                                             value="" required autofocus>
                                     </div>
@@ -299,7 +286,7 @@
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα</label>
+                                        <label class="col-form-label" for="modal-input-name-edit">Όνομα Προϊόντος</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
                                             value="" required autofocus>
                                     </div>
@@ -316,8 +303,15 @@
                                     <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-type-edit">Είδος</label>
+                                        <!--
                                         <input type="text" name="modal-input-type-edit" class="form-control" id="modal-input-type-edit"
                                            value="" required />
+                                        -->
+                                        <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control" required>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
+                                        </select>
                                     </div>
                                     <!-- /prod_type -->
 
@@ -344,23 +338,8 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-measureunit-edit">Μονάδα Μέτρησης</label>
                                         <select name="modal-input-measureunit-edit" id="modal-input-measureunit-edit" class="form-control" required>
-                                        @php
-                                            $meas_unit = ['τμχ', 'm', 'm2', 'm3', 'kg'];
-                                        @endphp
-                                        @foreach($meas_unit as $mu)
-                                            @if($mu == 'τμχ')
-                                                <option value="τμχ">τεμάχια</option>
-                                            @elseif($mu == 'm')
-                                                <option value="m">μέτρα</option>
-                                            @elseif($mu == 'm2')
-                                                <option value="m2">τετραγωνικά μέτρα</option>
-                                            @elseif($mu == 'm3')
-                                                <option value="m3">κυβικά μέτρα</option>
-                                            @elseif($mu == 'kg')
-                                                <option value="kg">κιλά</option>
-                                            @else
-                                                <option value="{{ $mu }}">{{ $mu }}</option>
-                                            @endif
+                                        @foreach($measunits as $mu)
+                                                <option value="{{ $mu->id }}">{{ $mu->name }}</option>
                                         @endforeach
                                         </select>
                                     </div>
@@ -515,26 +494,42 @@
             buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Προϊόντα"
+                            "title"  : "Προϊόντα",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Προϊόντα"
+                            "title"  : "Προϊόντα",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Προϊόντα"
+                            "title"  : "Προϊόντα",
+                            "orientation" : "landscape",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7]
+                            }
                         },
                     ],
         });
@@ -561,7 +556,7 @@
             var description = button.data('description');
             var category = button.data('category');
             var quantity = button.data('quantity');
-            var unit = button.data('measunit');
+            var munit = button.data('measunit');
             var comments = button.data('comments');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -576,7 +571,7 @@
             modal.find('.modal-body #modal-input-description-edit').val(description);
             modal.find('.modal-body #modal-input-category-edit').val(category);
             modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
-            modal.find('.modal-body #modal-input-unit-edit').val(unit);
+            modal.find('.modal-body #modal-input-unit-edit').val(munit);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
@@ -616,7 +611,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Το προϊόν υπάρχει ήδη!';
@@ -693,7 +688,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Το προϊόν υπάρχει ήδη!';
@@ -750,7 +745,7 @@
                 error: function(response){
                     console.log('Error:', response);
 
-                    var msg = 'Κάτι πήγε στραβά..!';
+                    var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(response.status == 500){
                         msg = 'Το προϊόν υπάρχει ήδη!';

@@ -9,8 +9,13 @@
     @yield('css')
 
     <style>
+        /* the following gradient added by ypostdev */
         body.login-page{
+            /*
             background-image: linear-gradient(to right, blue , yellow);
+            */
+            background-image: linear-gradient(gray , blue); /* default top to bottom */
+
         }
     </style>
 @stop

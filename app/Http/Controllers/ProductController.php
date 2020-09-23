@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
 use App\Product;
 use App\Category;
+use App\Type;
+use App\MeasureUnit;
 
 class ProductController extends Controller
 {
@@ -21,8 +23,13 @@ class ProductController extends Controller
             //$products = DB::table('products')->get(); //Get ALL product(s) row(s) from products db table. ---> Product::all();
             $products = Product::with('category')->get(); //because I want to display Categories also
             $categories = Category::all();
+            $measunits = MeasureUnit::all();
+            $types = Type::all();
 
-            return view('products_view', ['products' => $products, 'categories' => $categories]); //also, send the $products & $categories variable to the 'products_view' Blade View.
+            return view('products_view', ['products' => $products,
+                                          'categories' => $categories,
+                                          'types' => $types,
+                                          'measunits' => $measunits]); //also, send the $products & $categories variable to the 'products_view' Blade View.
 
          } else {
              return abort(403, 'Sorry you cannot view this page');
@@ -41,11 +48,11 @@ class ProductController extends Controller
 
             $product->code            = $request->input('modal-input-code-create');
             $product->name            = $request->input('modal-input-name-create');
-            $product->type->name      = $request->input('modal-input-type-create');             //references 'id' in types table
-            $product->category->name  = $request->input('modal-input-category-create');         //references 'id' in category table
+            $product->type_id         = $request->input('modal-input-type-create');             //references 'id' in types table
+            $product->category_id     = $request->input('modal-input-category-create');         //references 'id' in category table
             $product->description     = $request->input('modal-input-description-create');
             $product->quantity        = $request->input('modal-input-quantity-create');
-            $product->measure_unit    = $request->input('modal-input-measureunit-create');
+            $product->measunit_id     = $request->input('modal-input-measureunit-create');
             $product->comments        = $request->input('modal-input-comments-create');
             //$product->assignment_id   = $request->input('modal-input-assignment-create');        //references 'id' in assignments table
             // Set other fields (if applicable)...
@@ -76,11 +83,11 @@ class ProductController extends Controller
 
             $product->code            = $request->input('modal-input-code-edit');
             $product->name            = $request->input('modal-input-name-edit');
-            $product->type->name      = $request->input('modal-input-type-edit');             //references 'id' in types table
-            $product->category->name  = $request->input('modal-input-category-edit');         //references 'id' in category table
+            $product->type_id         = $request->input('modal-input-type-edit');             //references 'id' in types table
+            $product->category_id     = $request->input('modal-input-category-edit');         //references 'id' in category table
             $product->description     = $request->input('modal-input-description-edit');
             $product->quantity        = $request->input('modal-input-quantity-edit');
-            $product->measure_unit    = $request->input('modal-input-measureunit-edit');
+            $product->measunit_id     = $request->input('modal-input-measureunit-edit');
             $product->comments        = $request->input('modal-input-comments-edit');
             //$product->assignment_id   = $request->input('modal-input-assgncode-edit');        //references 'id' in assignments table
 

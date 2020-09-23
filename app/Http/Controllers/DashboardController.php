@@ -55,9 +55,6 @@ class DashboardController extends Controller
             return abort(403, 'Sorry you cannot view this home webpage');
         }
 
-
-
-
     }
 
 

@@ -48,18 +48,24 @@ class EmployeeController extends Controller
             $employee->address          = $request->input('modal-input-address-create');
             $employee->phone_number     = $request->input('modal-input-telno-create');
             //$employee->email          = $request->input('modal-input-email-create');
-            //$employee->warehouse_id   = $request->input('modal-input-warehouse-create');
+            $employee->warehouse_id   = $request->input('modal-input-warehouse-create');
 
             $employee->save();
-            /*
+
             //From Laravel 7.x Docs---:
             //When updating a belongsTo relationship, you may use the associate method.
             //This method will set the foreign key on the child model:
 
-            $account = App\Account::find(10);
-            $user->account()->associate($account);
+            //$account = App\Account::find(10);
+
+            /*
+            $user = new User(); //insert this line instead
             $user->save();
+
+            $user->employee()->associate($employee); //associate the 2 objects with each other
+            $user->save(); //store the object
             */
+
 
             //  $user->employee()->associate($employee);
             //  $user->save();
@@ -95,7 +101,7 @@ class EmployeeController extends Controller
             $employee->address          = $request->input('modal-input-address-edit');
             $employee->phone_number     = $request->input('modal-input-telno-edit');
             //$employee->email            = $request->input('modal-input-email-edit');
-            //$employee->warehouse_id  = $request->input('modal-input-warehouse-edit');
+            $employee->warehouse_id     = $request->input('modal-input-warehouse-edit');
 
             /*
             $path = $request->file("modal-input-photo-edit")->store("images/");  //stored in storage/images/

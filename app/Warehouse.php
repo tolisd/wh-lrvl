@@ -12,15 +12,17 @@ class Warehouse extends Model
     //protected $primaryKey = 'warehouse_id';
 
     protected $fillable = [
-        'name', 'address', 'city', 'phone_number', 'email', 'company_id', 'foreman_id', 'worker_id',
+        'name', 'address', 'city', 'phone_number', 'email', 'company_id', //'foreman_id', 'worker_id',
     ];
 
+    /*
     protected $casts = [
-        'workers' => 'array',
+        'worker_id' => 'array',
     ];
+    */
 
 
-
+    /*
     public function foreman(){
         return $this->hasOne('App\Employee', 'foreman_id'); //foreman is an Employee->User user_type
     }
@@ -28,12 +30,13 @@ class Warehouse extends Model
     public function worker(){
         return $this->hasMany('App\Employee', 'worker_id'); //worker is an Employee->User user_type
     }
-
-    /*
-    public function employees(){
-        return $this->hasMany('App\Employee', 'employee_id');
-    }
     */
+
+
+    public function employees(){
+        return $this->hasMany('App\Employee');
+    }
+
 
     public function company(){
         return $this->belongsTo('App\Company', 'company_id'); //added the FK

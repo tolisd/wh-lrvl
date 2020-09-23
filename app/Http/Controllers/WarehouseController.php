@@ -23,8 +23,8 @@ class WarehouseController extends Controller
             //$employees = Employee::all();
             //$users = User::all();
 
-            $foremen = User::where('user_type', 'warehouse_foreman')->get(); //eager loading
-            $workers = User::where('user_type', 'warehouse_worker')->get(); //eager loading
+            $foremen = User::where('user_type', 'warehouse_foreman')->get();
+            $workers = User::where('user_type', 'warehouse_worker')->get();
 
             return view('warehouses_view', ['warehouses' => $warehouses,
                                             'companies'  => $companies,
@@ -48,11 +48,26 @@ class WarehouseController extends Controller
             $warehouse->city            = $request->input('modal-input-city-create');
             $warehouse->phone_number    = $request->input('modal-input-telno-create');
             $warehouse->email           = $request->input('modal-input-email-create');
-            $warehouse->foreman         = $request->input('modal-input-foreman-create');
-            $warehouse->workers         = json_encode($request->input('modal-input-workers-create'));
+            //$warehouse->foreman_id      = $request->input('modal-input-foreman-create');
+            /*
+            $workers = [];
+            foreach($request->input('modal-input-workers-create') as $worker){
+                $warehouse->worker_id = $worker;
+            }
+            */
+            //$warehouse->worker_id       = $request->input('modal-input-workers-create'); //it is an array!
             $warehouse->company_id      = $request->input('modal-input-company-create');
 
             $warehouse->save();
+
+
+            //array of worker_id(s), does it matter that it is outside the save() loop?
+            /*
+            foreach($request->input('modal-input-workers-create') as $worker)
+            {
+                $warehouse->assign($worker);
+            }
+            */
 
 
             if ($request->ajax()){

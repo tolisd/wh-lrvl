@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-            <p>Τα Χρεωμένα μου Εργαλεία</p>
+        <p>Τα Χρεωμένα μου Εργαλεία (Χρήστης: {{ \Auth::user()->name }})</p>
 
             @canany(['isWarehouseForeman', 'isWarehouseWorker'])
             <!-- insert here the main my charged tools table-->

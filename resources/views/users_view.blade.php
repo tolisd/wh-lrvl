@@ -15,6 +15,12 @@
         margin-bottom: 10px;
         padding-bottom: 5px;
     }
+
+    img{
+        max-width: 15%;
+        max-height: 15%;
+    }
+
 </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -46,6 +52,7 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
+
                             @if($user->user_type == 'super_admin')
 								<td>Διαχειριστής</td>
 							@elseif($user->user_type == 'company_ceo')
@@ -61,7 +68,11 @@
 							@else
 								<td>{{ $user->user_type }}</td>
 							@endif
-                            <td><img src="{{ asset('/images/' . $user->photo_url) }}" alt=""></td>
+
+                            <!--
+                            <td><img src="{{ Storage::url('app/images/profile/' . $user->photo_url) }}" alt=""></td>
+                            -->
+                            <td><img src="{{ $user->photo_url }}" alt=""></img></td>
                             <!-- <td>{{ $user->photo_url }}</td> -->
 
                             <td>
@@ -95,6 +106,12 @@
 
             <br/><br/>
 
+            <!--
+            @foreach($users as $user)
+                <img src="{{ $user->photo_url }}" alt=""></img>
+            @endforeach
+            -->
+
             <!--Create New User button -->
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Χρήστη</button>
 
@@ -123,7 +140,7 @@
                         </div>
 
 
-                        <form id="edit-form" class="form-horizontal" method="POST">
+                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <!-- necessary fields for CSRF & Method type-->
@@ -201,6 +218,14 @@
                                         </select>
                                     </div>
                                     <!-- /usertype -->
+
+                                    <!-- photo profile -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-photo-edit">Φωτογραφία</label>
+                                        <input type="file" name="modal-input-photo-edit" class="form-control" id="modal-input-photo-edit"
+                                            value="" />
+                                    </div>
+                                    <!-- /photo profile -->
 
                                 </div>
                             </div>
@@ -308,7 +333,7 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
@@ -382,6 +407,17 @@
                                         </div>
                                         <!-- /usertype -->
 
+
+                                        <!-- photo profile -->
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="modal-input-photo-create">Φωτογραφία</label>
+                                            <input type="file" name="modal-input-photo-create" class="form-control" id="modal-input-photo-create"
+                                               value="" />
+                                        </div>
+                                        <!-- /photo profile -->
+
+
+
                                     </div>
                                 </div>
 
@@ -412,8 +448,10 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
+    <!--
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    -->
 @stop
 
 @section('js')
@@ -421,8 +459,10 @@
         <script> console.log('Hi!'); </script>
     -->
 
+    <!--
     <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js" type="text/javascript" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    -->
 
     <script type="text/javascript">
 

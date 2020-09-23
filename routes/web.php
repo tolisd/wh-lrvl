@@ -504,19 +504,19 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
 
 Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::get('/home', 'UserController@home');
-    Route::get('/dashboard', 'DashboardController@index')->name('user.dashboard');
+    Route::get('/dashboard', 'DashboardController@index')->name('normaluser.dashboard');
 
-        //import assignments
-        Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('user.assignments.import.view');
-        Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('user.assignment.import.create');
-        Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('user.assignment.import.update');
-        Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('user.assignment.import.delete');
+    //import assignments
+    Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('user.assignments.import.view');
+    Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('user.assignment.import.create');
+    Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('user.assignment.import.update');
+    Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('user.assignment.import.delete');
 
-        //export assignments
-        Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('user.assignments.export.view');
-        Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('user.assignment.export.create');
-        Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('user.assignment.export.update');
-        Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('user.assignment.export.delete');
+    //export assignments
+    Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('user.assignments.export.view');
+    Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('user.assignment.export.create');
+    Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('user.assignment.export.update');
+    Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('user.assignment.export.delete');
 
 });
 

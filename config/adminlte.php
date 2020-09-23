@@ -250,7 +250,7 @@ return [
         ],
 		[
             'text' => 'Αρχική Σελίδα',
-            'route' => 'user.dashboard',
+            'route' => 'normaluser.dashboard',
             'can' => 'isNormalUser',
             'icon' => 'fas fa-globe',
         ],

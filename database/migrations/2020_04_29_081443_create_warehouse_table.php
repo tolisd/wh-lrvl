@@ -20,8 +20,8 @@ class CreateWarehouseTable extends Migration
             $table->string('city');
             $table->string('phone_number');
             $table->string('email');
-            $table->mediumText('workers')->nullable();
-            $table->string('foreman')->nullable();
+            //$table->mediumText('workers')->nullable();
+            //$table->string('foreman')->nullable();
             $table->timestamps();
             /*
             $table->integer('company_id')->unsigned();
