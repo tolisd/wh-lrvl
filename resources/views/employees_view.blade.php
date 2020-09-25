@@ -395,8 +395,8 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη</label>
                                         <select name="modal-input-warehouse-edit" class="form-control" id="modal-input-warehouse-edit" required>
-                                        @foreach($warehouses as $warehouse)
-                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                        @foreach($warehouses as $warehouse1)
+                                            <option value="{{ $warehouse1->id }}">{{ $warehouse1->name }}</option>
                                         @endforeach
                                         </select>
                                     </div>
@@ -597,9 +597,9 @@
                 modal.find('.modal-body #modal-input-address-edit').val(address);
                 modal.find('.modal-body #modal-input-telno-edit').val(telno);
                 //modal.find('.modal-body #modal-input-email-edit').val(email);
+                modal.find('.modal-body #modal-input-company-edit').val(companyid);
                 modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid);
                  //modal.find('.modal-body #modal-input-photo-edit').val(photo);
-                modal.find('.modal-body #modal-input-company-edit').val(companyid);
                 //modal.find('.modal-body #modal-input-uid-edit').val(uid);
 
                 modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET product id value in data-eid attribute

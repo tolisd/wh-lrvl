@@ -16,7 +16,7 @@ class ImportAssignment extends Model
     protected $casts = [
         'uploaded_files' => 'array',
         'is_open' => 'boolean',
-        'import_deadline' => 'datetime: d-m-Y H:i:s',
+        'import_deadline' => 'datetime:d-m-Y H:i',
     ];
 
 

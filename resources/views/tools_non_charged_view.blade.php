@@ -28,6 +28,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
                         <th class="text-left">Περιγραφή Εργαλείου</th>
                     </tr>
@@ -36,6 +37,7 @@
                 <tbody>
                     @foreach($non_charged_tools as $tool)
                     <tr>
+                        <td>{{ $tool->code }}</td>
                         <td>{{ $tool->name }}</td>
                         <td>{{ $tool->description }}</td>
                     </tr>
@@ -97,26 +99,42 @@
                 buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1,2]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Μη Χρεωμένα Εργαλεία"
+                            "title"  : "Μη Χρεωμένα Εργαλεία",
+                            exportOptions: {
+                                columns: [0,1,2]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Μη Χρεωμένα Εργαλεία"
+                            "title"  : "Μη Χρεωμένα Εργαλεία",
+                            exportOptions: {
+                                columns: [0,1,2]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Μη Χρεωμένα Εργαλεία"
+                            "title"  : "Μη Χρεωμένα Εργαλεία",
+                            "orientation" : "portrait",
+                            exportOptions: {
+                                columns: [0,1,2]
+                            }
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1,2]
+                            }
                         },
                     ],
             });

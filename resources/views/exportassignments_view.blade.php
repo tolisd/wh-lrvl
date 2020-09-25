@@ -52,7 +52,13 @@
                         <td>{{ $exportassignment->export_deadline }}</td>
                         <td>{{ $exportassignment->uploaded_files }}</td>
                         <td>{{ $exportassignment->comments }}</td>
-						<td>{{ $exportassignment->is_open }}</td>
+						<td>
+                            @if($exportassignment->is_open == 1)
+                                Ανοικτή
+                            @elseif($exportassignment->is_open == 0)
+                                Κλειστή
+                            @endif
+                        </td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -61,7 +67,7 @@
 									data-warehouse="{{ $exportassignment->warehouse->name }}"
                                     data-text="{{ $exportassignment->export_assignment_text }}"
                                     data-deadline="{{ $exportassignment->deadline }}"
-                                    data-uploadedfiles="{{ $exportassignment->uploaded_files }}"
+                                    data-files="{{ $exportassignment->uploaded_files }}"
 									data-comments="{{ $exportassignment->comments }}"
 									data-isopen="{{ $exportassignment->is_open }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
@@ -165,8 +171,8 @@
 
 									<!-- deadline datetime -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="date-time-picker-create">Deadline</label>
-                                        <input type="text" name="modal-input-deadline-create" class="form-control" id="date-time-picker-create"
+                                        <label class="col-form-label" for="date-time-picker-create">Deadline (Ημερομηνία &amp; Ώρα)</label>
+                                        <input type="text" name="modal-input-picker-create" class="form-control" id="date-time-picker-create"
                                             value="" autocomplete="off" required>
                                     </div>
                                     <!-- /deadline datetime -->
@@ -258,8 +264,8 @@
 
 									<!-- deadline datetime -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="date-time-picker-edit">Deadline</label>
-                                        <input type="text" name="modal-input-deadline-edit" class="form-control" id="date-time-picker-edit"
+                                        <label class="col-form-label" for="date-time-picker-edit">Deadline (Ημερομηνία &amp; Ώρα)</label>
+                                        <input type="text" name="modal-input-picker-edit" class="form-control" id="date-time-picker-edit"
                                             value="" autocomplete="off" required>
                                     </div>
                                     <!-- /deadline datetime -->
@@ -284,14 +290,8 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-isopen-edit">Ανοιχτή?</label>
                                         <select name="modal-input-isopen-edit" id="modal-input-isopen-edit" class="form-control" required>
-											@php
-												$boolean_options = [true, false];
-											@endphp
-											@if($boolean_options == true)
-												<option value="true">Ανοιχτή</option>
-											@elseif($boolean_options == false)
-												 <option value="false">Κλειστή</option>
-											@endif
+                                            <option value="1">Ανοιχτή</option>
+                                            <option value="0">Κλειστή</option>
                                         </select>
                                     </div>
                                     <!-- /is Export Assignment Open -->
@@ -385,12 +385,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
     //console.log('Hi!');
@@ -496,7 +496,7 @@
             var warehouse = button.data('warehouse');
             var export_text = button.data('text');
             var deadline = button.data('deadline');
-			var upladedfiles = button.data('uploadedfiles');
+			var files = button.data('files');
             var comments = button.data('comments');
 			var isopen = button.data('isopen');
 
@@ -509,7 +509,7 @@
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
 			modal.find('.modal-body #modal-input-text-edit').val(export_text);
 			modal.find('.modal-body #date-time-picker-edit').val(deadline);
-            modal.find('.modal-body #modal-input-uploadedfiles-edit').val(uploadedfiles);
+            modal.find('.modal-body #modal-input-files-edit').val(files);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 			modal.find('.modal-body #modal-input-isopen-edit').val(isopen);
 
@@ -550,7 +550,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η Ανάθεση Εξαγωγής υπάρχει ήδη!';
@@ -626,7 +626,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η Ανάθεση Εξαγωγής υπάρχει ήδη!';
@@ -683,7 +683,7 @@
                 error: function(response){
                     console.log('Error:', response);
 
-                    var msg = 'Κάτι πήγε στραβά..!';
+                    var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(response.status == 500){
                         msg = 'Η Ανάθεση Εξαγωγής υπάρχει ήδη!';
@@ -718,6 +718,11 @@
 
         $('#delete-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#delete-form');
+        });
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
         });
 
 

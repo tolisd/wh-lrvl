@@ -203,9 +203,6 @@ class UserController extends Controller
             ]);
             */
 
-            //$input = $request->input();  //take ALL input values into $input, as an assoc.array
-            //$usertype = $input[''];
-
             $this->validate($request, [
                 'photo_url' => 'image|mimes:jpeg,jpg,png,gif|max:100',
             ]);
@@ -219,10 +216,11 @@ class UserController extends Controller
             $user->user_type = $request->input('modal-input-usertype-create');
             // Set other fields (if applicable)...
             // ...image upload
+            /*
             $path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
             $url = \Storage::url($path); //stores the full path
             $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
-
+            */
 
             $user->save(); //Save the new user into the database
 

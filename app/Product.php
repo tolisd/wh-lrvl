@@ -16,9 +16,13 @@ class Product extends Model
         'code', 'name', 'description', 'quantity', 'comments', 'category_id', 'type_id', 'warehouse_id',
     ];
 
-    public function warehouse(){
-        return $this->belongsToMany('App\Warehouse', 'product_warehouse', 'product_id', 'warehouse_id');
+    public function warehouses(){
+        return $this->belongsToMany('App\Warehouse', 'product_warehouse', 'product_id', 'warehouse_id')
+                    ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.
     }
+    //The third argument is the foreign key name of the model on which you are defining the relationship,
+    //while the fourth argument is the foreign key name of the model that you are joining to.
+
 
     public function import(){
         return $this->hasMany('App\Import');
@@ -27,6 +31,7 @@ class Product extends Model
     public function export(){
         return $this->hasMany('App\Export');
     }
+
 
     public function category(){
         return $this->belongsTo('App\Category', 'category_id'); //added the FK

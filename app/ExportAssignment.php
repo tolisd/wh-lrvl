@@ -16,7 +16,7 @@ class ExportAssignment extends Model
     protected $casts = [
         'uploaded_files' => 'array',
         'is_open' => 'boolean',
-        'export_deadline' => 'datetime:d-m-Y H:i:s',
+        'export_deadline' => 'datetime:d-m-Y H:i',
     ];
 
 

@@ -7,6 +7,7 @@ use App\User; //added for User
 use Auth;   //added for Auth
 
 
+
 class HomeController extends Controller
 {
     //

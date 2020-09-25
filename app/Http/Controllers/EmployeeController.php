@@ -66,12 +66,18 @@ class EmployeeController extends Controller
             $user->save(); //store the object
             */
 
-
             //  $user->employee()->associate($employee);
             //  $user->save();
 
             //$user = User::find(1);  //to the user that is associated with the employee
             //$user->employee->save($employee);
+
+            //establish the association between the 2 entities. very important!
+            $user = User::findOrFail($employee->user_id);
+            $user->employee()->save($employee);  //store the object
+
+            //dd($user);
+
 
 
             if ($request->ajax()){
@@ -132,8 +138,8 @@ class EmployeeController extends Controller
 
             $employee = Employee::findOrFail($id);
             //should check if employee/user is logged out first!
+            //or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
             $employee->delete();
-
 
 
             if ($request->ajax()){

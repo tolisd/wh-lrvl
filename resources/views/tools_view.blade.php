@@ -35,7 +35,7 @@
                             <th class="text-left">Όνομα</th>
                             <th class="text-left">Περιγραφή</th>
                             <th class="text-left">Σχόλια</th>
-                            <th class="text-left">Ποσότητα (τμχ)</th>
+                            <th class="text-left">Τμχ.</th>
                             <th class="text-left">Χρεωμένο?</th> <!-- boolean, is_charged [0,1] -->
                             <th class="text-left">Όνομα Χρεωμένου</th>
                             <th class="text-left">Χρεωστικό</th>
@@ -62,8 +62,13 @@
                                 <td>Ναι</td>
                             @endif
 
-                            <td>{{ $tool->employee_id }}</td> <!-- I need the employee's name here... -->
-                            <td>{{ $tool->file_url }}</td>
+                            <td>
+                                {{ $employees->find($tool->employee_id)->user->name ?? '' }}
+                            </td> <!-- I need the employee's name here... -->
+
+                            <td>
+                                <a href="{{ $tool->file_url ?? '' }}"></a>
+                            </td>
 
                             <td>
                                 @if($tool->is_charged == 0)
@@ -92,7 +97,7 @@
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
-                                    data-towhom="{{ $tool->employee_id }}">
+                                    data-towhom="{{ $employees->find($tool->employee_id)->user->name }}">
                                     <i class="far fa-circle" aria-hidden="true"></i>&nbsp;Ξεχρέωση
                                 </button>
                                 @endif
@@ -189,7 +194,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-charge">Κωδικός Εργαλείου</label>
                                         <input type="text" name="modal-input-name-charge" class="form-control-plaintext" id="modal-input-name-charge"
-                                            value="" required autofocus>
+                                            value="" readonly required />
                                     </div>
                                     <!-- /tool-code -->
 
@@ -197,7 +202,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-charge">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-charge" class="form-control-plaintext" id="modal-input-name-charge"
-                                            value="" required autofocus>
+                                            value="" readonly required />
                                     </div>
                                     <!-- /name -->
 
@@ -205,7 +210,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-charge">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-charge" class="form-control-plaintext" id="modal-input-description-charge"
-                                            value="" required></textarea>
+                                            value="" readonly required></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -225,11 +230,11 @@
                                     </div>
                                     /quantity -->
 
-                                    <!-- To Whom User/Employee the Tool is to be Charged-->
+                                    <!-- To Whom User/Employee the Tool Is-To-Be-Charged-->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-towhom-charge">Όνομα Εργαζόμενου</label>
-                                        <select name="modal-input-towhom-charge" id="modal-input-towhom-charge" class="form-control">
-                                        <!-- ALL The Users of the Program! -->
+                                        <label class="col-form-label" for="modal-input-towhom-charge">Όνομα Χρεωμένου</label>
+                                        <select name="modal-input-towhom-charge" id="modal-input-towhom-charge" class="form-control" required>
+                                        <!-- ALL The Employees -->
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
                                             @endforeach
@@ -240,7 +245,7 @@
                                     <!-- xrewstiko eggrafo -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-file-charge">Χρεωστικό έγγραφο</label>
-                                        <input type="file" name="modal-input-file-charge" class="form-control-plaintext" id="modal-input-file-charge"
+                                        <input type="file" name="modal-input-file-charge" class="form-control" id="modal-input-file-charge"
                                             value="" />
                                     </div>
                                     <!-- /xrewstiko eggrafo -->
@@ -297,7 +302,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-uncharge">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-uncharge" class="form-control-plaintext" id="modal-input-name-uncharge"
-                                            value="" required autofocus>
+                                            value="" readonly required />
                                     </div>
                                     <!-- /name -->
 
@@ -305,7 +310,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-uncharge">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-uncharge" class="form-control-plaintext" id="modal-input-description-uncharge"
-                                            value="" required></textarea>
+                                            value="" readonly required></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -313,14 +318,14 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-uncharge">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-uncharge" class="form-control-plaintext" id="modal-input-quantity-uncharge"
-                                            value="" required>
+                                            value="" readonly required>
                                     </div>
                                     <!-- /quantity -->
 
                                     <!-- comments -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-uncharge">Σχόλια</label>
-                                        <textarea rows="3" name="modal-input-comments-uncharge" class="form-control-plaintext" id="modal-input-comments-uncharge"
+                                        <textarea rows="3" name="modal-input-comments-uncharge" class="form-control" id="modal-input-comments-uncharge"
                                             value="" required></textarea>
                                     </div>
                                     <!-- /comments -->
@@ -329,7 +334,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-towhom-uncharge">Όνομα Χρεωμένου</label>
                                         <input type="text" name="modal-input-towhom-uncharge" class="form-control-plaintext" id="modal-input-towhom-uncharge"
-                                            value="" required>
+                                            value="" readonly required>
                                     </div>
                                     <!-- /onoma xrewmenou -->
 
@@ -385,7 +390,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-code-create">Κωδικός Εργαλείου</label>
                                         <input type="text" name="modal-input-code-create" class="form-control" id="modal-input-code-create"
-                                            value="" required autofocus>
+                                            value="" required autofocus />
                                     </div>
                                     <!-- /tool-code -->
 
@@ -393,7 +398,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus>
+                                            value="" required autofocus />
                                     </div>
                                     <!-- /name -->
 
@@ -417,7 +422,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα (σε τεμάχια)</label>
                                         <input type="text" name="modal-input-quantity-create" class="form-control" id="modal-input-quantity-create"
-                                            value="" required>
+                                            value="" required />
                                     </div>
                                     <!-- /quantity -->
 
@@ -503,7 +508,7 @@
 
                                     <!-- quantity -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα (τμχ.)</label>
+                                        <label class="col-form-label" for="modal-input-quantity-edit">Τμχ.</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
                                             value="" required>
                                     </div>
@@ -562,7 +567,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-code-delete">Κωδικός Εργαλείου</label>
                                         <input type="text" name="modal-input-code-delete" class="form-control-plaintext" id="modal-input-code-delete"
-                                            value="" required autofocus>
+                                            value="" readonly />
                                     </div>
                                     <!-- /tool-code -->
 
@@ -570,7 +575,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-delete">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-delete" class="form-control-plaintext" id="modal-input-name-delete"
-                                            value="" required autofocus>
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
 
@@ -742,7 +747,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η χρέωση υπάρχει ήδη!';
@@ -827,7 +832,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Το εργαλείο δεν είναι χρεωμένο!';
@@ -882,7 +887,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Το εργαλείο υπάρχει ήδη!';
@@ -965,7 +970,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Το εργαλείο δεν υπάρχει!';
@@ -1039,7 +1044,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Το εργαλείο δεν υπάρχει!';

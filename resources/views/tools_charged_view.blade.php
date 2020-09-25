@@ -28,20 +28,20 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
                         <th class="text-left">Περιγραφή Εργαλείου</th>
                         <th class="text-left">Όνομα Χρεωμένου Χρήστη</th>
-                        <th class="text-left">Ημ/νία Χρέωσης</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     @foreach($charged_tools as $tool)
                     <tr>
+                        <td>{{ $tool->code }}</td>
                         <td>{{ $tool->name }}</td>
                         <td>{{ $tool->description }}</td>
-                        <td>{{ $tool->user->name }}</td>
-                        <td>{{ $tool->user->created_at }}</td>
+                        <td>{{ $employees->find($tool->employee_id)->user->name ?? ''}}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -103,26 +103,44 @@
                 buttons: [
                         {
                             "extend" : "copy",
-                            "text"   : "Αντιγραφή"
+                            "text"   : "Αντιγραφή",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Χρεωμένα Εργαλεία"
+                            "title"  : "Χρεωμένα Εργαλεία",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Χρεωμένα Εργαλεία"
+                            "title"  : "Χρεωμένα Εργαλεία",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Χρεωμένα Εργαλεία"
+                            "title"  : "Χρεωμένα Εργαλεία",
+                            "orientation" : "portrait",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
+
+
                         },
                         {
                             "extend" : "print",
-                            "text"   : "Εκτύπωση"
+                            "text"   : "Εκτύπωση",
+                            exportOptions: {
+                                columns: [0,1,2,3]
+                            }
                         },
                     ],
             });

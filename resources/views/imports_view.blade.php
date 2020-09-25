@@ -493,12 +493,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
     //console.log('Hi!');
@@ -526,7 +526,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9  ]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
@@ -534,7 +534,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9  ]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
@@ -542,7 +542,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9  ]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
@@ -551,14 +551,14 @@
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9  ]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                     ],
@@ -649,7 +649,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχουν ήδη!';
@@ -725,7 +725,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχουν ήδη!';
@@ -782,7 +782,7 @@
                 error: function(response){
                     console.log('Error:', response);
 
-                    var msg = 'Κάτι πήγε στραβά..!';
+                    var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(response.status == 500){
                         msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχει ήδη!';
@@ -810,6 +810,11 @@
 
         $('#delete-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#delete-form');
+        });
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
         });
 
 

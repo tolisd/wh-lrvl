@@ -42,9 +42,13 @@ class Warehouse extends Model
         return $this->belongsTo('App\Company', 'company_id'); //added the FK
     }
 
-    public function product(){
-        return $this->belongsToMany('App\Product', 'product_warehouse', 'warehouse_id', 'product_id');
+    public function products(){
+        return $this->belongsToMany('App\Product', 'product_warehouse', 'warehouse_id', 'product_id')
+                    ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.
     }
+    //The third argument is the foreign key name of the model on which you are defining the relationship,
+    //while the fourth argument is the foreign key name of the model that you are joining to.
+
 
 
     public function importassignment(){

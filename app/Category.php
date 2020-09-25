@@ -18,4 +18,8 @@ class Category extends Model
     public function product(){
         return $this->hasMany('App\Product');
     }
+
+    public function type(){
+        return $this->hasMany('App\Type');
+    }
 }

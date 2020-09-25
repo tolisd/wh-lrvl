@@ -94,8 +94,8 @@ class WarehouseController extends Controller
             $warehouse->city            = $request->input('modal-input-city-edit');
             $warehouse->phone_number    = $request->input('modal-input-telno-edit');
             $warehouse->email           = $request->input('modal-input-email-edit');
-            $warehouse->foreman         = $request->input('modal-input-foreman-edit');
-            $warehouse->workers         = json_encode($request->input('modal-input-workers-edit'));
+            //$warehouse->foreman         = $request->input('modal-input-foreman-edit');
+            //$warehouse->workers         = json_encode($request->input('modal-input-workers-edit'));
             $warehouse->company_id     = $request->input('modal-input-company-edit');
 
 

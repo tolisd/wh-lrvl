@@ -51,8 +51,13 @@
                         <td>{{ $importassignment->import_deadline }}</td>
                         <td>{{ $importassignment->uploaded_files }}</td>
                         <td>{{ $importassignment->comments }}</td>
-						<td>{{ $importassignment->is_open }}</td>
-
+                        <td>
+                            @if($importassignment->is_open == 1)
+                                Ανοικτή
+                            @elseif($importassignment->is_open == 0)
+                                Κλειστή
+                            @endif
+                        </td>
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
@@ -60,7 +65,7 @@
 									data-warehouse="{{ $importassignment->warehouse->name }}"
                                     data-text="{{ $importassignment->import_assignment_text }}"
                                     data-deadline="{{ $importassignment->deadline }}"
-                                    data-uploadedfiles="{{ $importassignment->uploaded_files }}"
+                                    data-files="{{ $importassignment->uploaded_files }}"
 									data-comments="{{ $importassignment->comments }}"
 									data-isopen="{{ $importassignment->is_open }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
@@ -164,9 +169,9 @@
 
 									<!-- deadline datetime -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="date-time-picker-create">Deadline</label>
-                                        <input type="text" name="modal-input-deadline-create" class="form-control" id="date-time-picker-create"
-                                            value="" autocomplete="off" required>
+                                        <label class="col-form-label" for="date-time-picker-create">Deadline (Ημερομηνία &amp; Ώρα)</label>
+                                        <input type="text" name="modal-input-picker-create" class="form-control" id="date-time-picker-create"
+                                            value="" autocomplete="off" required />
                                     </div>
                                     <!-- /deadline datetime -->
 
@@ -174,7 +179,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-create">Επισυναπτόμενα Αρχεία</label>
                                         <input type="file" multiple name="modal-input-files-create[]" class="form-control" id="modal-input-files-create"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /uploaded files -->
 
@@ -257,9 +262,9 @@
 
 									<!-- deadline datetime -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="date-time-picker-edit">Deadline</label>
-                                        <input type="text" name="modal-input-deadline-edit" class="form-control" id="date-time-picker-edit"
-                                            value="" autocomplete="off" required>
+                                        <label class="col-form-label" for="date-time-picker-edit">Deadline (Ημερομηνία &amp; Ώρα)</label>
+                                        <input type="text" name="modal-input-picker-edit" class="form-control" id="date-time-picker-edit"
+                                            value="" autocomplete="off" required />
                                     </div>
                                     <!-- /deadline datetime -->
 
@@ -267,7 +272,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-edit">Επισυναπτόμενα Αρχεία</label>
                                         <input type="file" multiple name="modal-input-files-edit[]" class="form-control" id="modal-input-files-edit"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /uploaded files -->
 
@@ -283,14 +288,8 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-isopen-edit">Ανοιχτή?</label>
                                         <select name="modal-input-isopen-edit" id="modal-input-isopen-edit" class="form-control" required>
-											@php
-												$boolean_options = [true, false];
-											@endphp
-											@if($boolean_options == true)
-												<option value="true">Ανοιχτή</option>
-											@elseif($boolean_options == false)
-												 <option value="false">Κλειστή</option>
-											@endif
+                                            <option value="1">Ανοιχτή</option>
+                                            <option value="0">Κλειστή</option>
                                         </select>
                                     </div>
                                     <!-- /is Import Assignment Open -->
@@ -384,12 +383,12 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
     //console.log('Hi!');
@@ -417,7 +416,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4, 5]
                             }
                         },
                         {
@@ -425,7 +424,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [0, 1, 2, 3, 4, 5]
                             }
                         },
                         {
@@ -433,7 +432,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [0, 1, 2, 3, 4, 5]
                             }
                         },
                         {
@@ -442,14 +441,14 @@
                             "title"  : "Αναθέσεις Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [0, 1, 2, 3, 4, 5]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [0, 1, 2, 3, 4, 5]
                             }
                         },
                     ],
@@ -495,7 +494,7 @@
             var warehouse = button.data('warehouse');
             var import_text = button.data('text');
             var deadline = button.data('deadline');
-			var upladedfiles = button.data('uploadedfiles');
+			var files = button.data('files');
             var comments = button.data('comments');
 			var isopen = button.data('isopen');
 
@@ -507,8 +506,8 @@
             //modal.find('.card-body #modal-input-iid-edit').val(iid);
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
 			modal.find('.modal-body #modal-input-text-edit').val(import_text);
-			modal.find('.modal-body #date-time-picker-edit').val(deadline);
-            modal.find('.modal-body #modal-input-uploadedfiles-edit').val(uploadedfiles);
+			modal.find('.modal-body #modal-input-picker-edit').val(deadline);
+            modal.find('.modal-body #modal-input-files-edit').val(files);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 			modal.find('.modal-body #modal-input-isopen-edit').val(isopen);
 
@@ -549,7 +548,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η Ανάθεση Εισαγωγής υπάρχει ήδη!';
@@ -625,7 +624,7 @@
                     error: function(response){
                         console.log('Error:', response);
 
-                        var msg = 'Κάτι πήγε στραβά..!';
+                        var msg = 'Συνέβη κάποιο λάθος!';
 
                         if(response.status == 500){
                             msg = 'Η Ανάθεση Εισαγωγής υπάρχει ήδη!';
@@ -682,7 +681,7 @@
                 error: function(response){
                     console.log('Error:', response);
 
-                    var msg = 'Κάτι πήγε στραβά..!';
+                    var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(response.status == 500){
                         msg = 'Η Ανάθεση Εισαγωγής υπάρχει ήδη!';
@@ -717,6 +716,11 @@
 
         $('#delete-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#delete-form');
+        });
+
+        //resets the create/add form. Re-use this code snippet in other blade views!
+        $(document).on('click', '[data-dismiss="modal"]', function(e){
+            $('#add-form').find("input,textarea,select").val('');
         });
 
 
