@@ -494,7 +494,7 @@
             var warehouse = button.data('warehouse');
             var import_text = button.data('text');
             var deadline = button.data('deadline');
-			var files = button.data('files');
+			//var files = button.data('files'); //i omit this line for now
             var comments = button.data('comments');
 			var isopen = button.data('isopen');
 
@@ -507,7 +507,7 @@
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
 			modal.find('.modal-body #modal-input-text-edit').val(import_text);
 			modal.find('.modal-body #modal-input-picker-edit').val(deadline);
-            modal.find('.modal-body #modal-input-files-edit').val(files);
+            //modal.find('.modal-body #modal-input-files-edit').val(files); //I omit this line for now
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 			modal.find('.modal-body #modal-input-isopen-edit').val(isopen);
 

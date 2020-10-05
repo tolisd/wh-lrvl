@@ -52,9 +52,15 @@ class Import extends Model
         return $this->belongsTo('App\Employee', 'employee_id');
     }
 
-    //the delivery company
+    //the company
     public function company(){
         return $this->belongsTo('App\Company', 'company_id');
     }
+
+    //the shipping company
+    public function transport(){
+        return $this->belongsTo('App\Transport', 'transport_id');
+    }
+
 
 }

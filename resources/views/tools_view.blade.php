@@ -97,7 +97,7 @@
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
-                                    data-towhom="{{ $employees->find($tool->employee_id)->user->name }}">
+                                    data-towhom="{{ $employees->find($tool->employee_id)->user->name ?? '' }}">
                                     <i class="far fa-circle" aria-hidden="true"></i>&nbsp;Ξεχρέωση
                                 </button>
                                 @endif
@@ -957,7 +957,7 @@
                         Swal.fire({
                             icon: "success",
                             type: "success",
-                            text: "Επιτυχής ΔιόρθωσηΕργαλείου!",
+                            text: "Επιτυχής Διόρθωση Εργαλείου!",
                             buttons: [false, "OK"],
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){

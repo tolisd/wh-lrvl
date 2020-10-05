@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; //added for DB retrieval
+use Auth; //added for Auth
 use App\User;
 use App\Product;
 use App\Assignment;
-use Auth; //added for Auth
+use App\Tool;
+use App\Warehouse;
+use App\Employee;
+
 
 class DashboardController extends Controller
 {
@@ -46,15 +50,46 @@ class DashboardController extends Controller
             $usersCount = User::count();
             $productsCount = Product::count(); //added: 'use App\Product;'
             $assignmentsCount = Assignment::count();
+            $tools_count = Tool::count();
 
-            return view('dashboard', ['usersCount' => $usersCount,
+            //warehouses & products ([N-to-M] 1 warehouse has many products. A product can belong to more than one warehouses )
+            //$warehouses = Warehouse::with('product')->get();
+            $warehouses = Warehouse::all();
+            $employees = Employee::all();
+            $users = User::all();
+            /*
+            $employees = Employee::all();
+            $users = User::all();
+            */
+
+
+
+            //I want the name of the (1) Proistamenos of THIS (by name) Apothiki.
+            /*
+            $warehouse_ids = Warehouse::all()->pluck('id'); //get the id's of the available warehouses, as en eloquent collection
+            $user_ids = User::where('user_type', 'warehouse_foreman')->pluck('id')->get(); //eloquent collection, all the IDs of proistamenoi
+            $pr_ap = Employee::();
+
+            $proistamenoi_apothikwn = [];
+            foreach($warehouse_ids as $wh_id){
+                $proistamenoi_apothikwn = Employee::where('warehouse_id', $wh_id)->select('name');
+            }
+
+            $warehouse_id = Warehouse::where('id', '')->find('', '')->pluck('id')->first();  //get the id of this warehouse
+            $proistamenos = Employee::where('warehouse_id', $warehouse_id)->find('id', $user_id)->first(); //get the row of the employee for this warehouse
+            */
+
+            return view('dashboard', [ 'usersCount' => $usersCount,
                                         'prodCount'  => $productsCount,
-                                        'assignCount' => $assignmentsCount ]);
+                                        'assignCount' => $assignmentsCount,
+                                        'tools_count' => $tools_count,
+                                        'warehouses' => $warehouses,
+                                        'employees' => $employees,
+                                        'users' => $users ]);
         }
         else {
             return abort(403, 'Sorry you cannot view this home webpage');
         }
-
     }
 
 

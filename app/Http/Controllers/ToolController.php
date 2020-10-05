@@ -72,7 +72,7 @@ class ToolController extends Controller
             */
 
             //$url = null;
-            if($request->hasfile('modal-input-file-charge')){
+            if($request->hasFile('modal-input-file-charge')){
                     $file = $request->file('modal-input-file-charge');
                     $name = $file->getClientOriginalName();
                     $path = $file->storeAs('arxeia/xrewstika', $name);

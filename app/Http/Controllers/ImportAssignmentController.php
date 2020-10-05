@@ -33,7 +33,7 @@ class ImportAssignmentController extends Controller
             //dd(Carbon::parse($request->input('modal-input-picker-create')));
 
             $files_data = [];
-            if($request->hasfile('modal-input-files-create')){
+            if($request->hasFile('modal-input-files-create')){
                 foreach($request->file('modal-input-files-create') as $files){
                     /*
                     $name = $files->getClientOriginalName();
@@ -85,7 +85,7 @@ class ImportAssignmentController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
 
             $files_data = [];
-            if($request->hasfile('modal-input-files-edit')){
+            if($request->hasFile('modal-input-files-edit')){
                 foreach($request->file('modal-input-files-edit') as $files){
                     /*
                     $name = $files->getClientOriginalName();

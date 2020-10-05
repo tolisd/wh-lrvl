@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class Transport extends Model
 {
     //
-    protected $table = "company";
+    protected $table = "transports";
 
     //protected $primaryKey = 'company_id';
 
@@ -18,15 +18,7 @@ class Company extends Model
     //protected $guarded = [];
 
 
-    public function warehouse(){
-        return $this->hasMany('App\Warehouse');
-    }
-
-    public function employee(){
-        return $this->hasMany('App\Employee');
-    }
-
-
+    //Relationships with other models/"database tables"
     public function import(){
         return $this->hasMany('App\Import');
     }
@@ -34,5 +26,4 @@ class Company extends Model
     public function export(){
         return $this->hasMany('App\Export');
     }
-
 }

@@ -1057,6 +1057,12 @@ return [
                                         'can' => 'isSuperAdmin',
                                         'icon' => 'fas fa-warehouse',
                                     ],
+                                    [
+                                        'text' => 'Μεταφορικές',
+                                        'route'  => 'admin.shipping.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'fas fa-industry',
+                                    ],
 
                           ],
         ],
@@ -1086,6 +1092,12 @@ return [
                                         'can' => 'isCompanyCEO',
                                         'icon' => 'fas fa-warehouse',
                                     ],
+                                    [
+                                        'text' => 'Μεταφορικές',
+                                        'route'  => 'manager.shipping.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-industry',
+                                    ],
 
                           ],
         ],
@@ -1114,6 +1126,12 @@ return [
                                         'route'  => 'accountant.warehouses.view',
                                         'can' => 'isAccountant',
                                         'icon' => 'fas fa-warehouse',
+                                    ],
+                                    [
+                                        'text' => 'Μεταφορικές',
+                                        'route'  => 'accountant.shipping.view',
+                                        'can' => 'isAccountant',
+                                        'icon' => 'fas fa-industry',
                                     ],
 
                           ],

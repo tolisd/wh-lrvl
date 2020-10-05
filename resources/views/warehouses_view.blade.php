@@ -123,12 +123,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- This is where the error fields will be printed out on the screen -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -145,7 +149,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Αποθήκης</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus />
+                                            value="" autofocus />
                                     </div>
                                     <!-- /name -->
 
@@ -153,7 +157,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-address-create">Διεύθυνση</label>
                                         <input type="text" name="modal-input-address-create" class="form-control" id="modal-input-address-create"
-                                           value="" required />
+                                           value="" />
                                     </div>
                                     <!-- /address -->
 
@@ -161,7 +165,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-city-create">Πόλη</label>
                                         <input type="text" name="modal-input-city-create" class="form-control" id="modal-input-city-create"
-                                           value="" required />
+                                           value="" />
                                     </div>
                                     <!-- /city -->
 
@@ -169,7 +173,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-telno-create">Τηλέφωνο</label>
                                         <input type="text" name="modal-input-telno-create" class="form-control" id="modal-input-telno-create"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /telno -->
 
@@ -177,7 +181,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-email-create">E-mail</label>
                                         <input type="text" name="modal-input-email-create" class="form-control" id="modal-input-email-create"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /email -->
 
@@ -212,7 +216,7 @@
                                     <!-- company -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-company-create">Εταιρεία</label>
-                                        <select name="modal-input-company-create" id="modal-input-company-create" class="form-control" required>
+                                        <select name="modal-input-company-create" id="modal-input-company-create" class="form-control">
                                         @foreach($companies as $company)
                                             <option value="{{ $company->id }}">{{ $company->name }}</option>
                                         @endforeach
@@ -228,7 +232,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-warehouse-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Αποθήκη</button>
+                                data-target="#add-modal">Πρόσθεσε Αποθήκη</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -251,12 +255,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST">
+                        <form id="edit-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- This is where the error fields will be printed out on the screen -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -273,7 +281,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα Αποθήκης</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
-                                            value="" required autofocus />
+                                            value="" autofocus />
                                     </div>
                                     <!-- /name -->
 
@@ -281,7 +289,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-address-edit">Διεύθυνση</label>
                                         <input type="text" name="modal-input-address-edit" class="form-control" id="modal-input-address-edit"
-                                           value="" required />
+                                           value="" />
                                     </div>
                                     <!-- /address -->
 
@@ -289,7 +297,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-city-edit">Πόλη</label>
                                         <input type="text" name="modal-input-city-edit" class="form-control" id="modal-input-city-edit"
-                                           value="" required />
+                                           value="" />
                                     </div>
                                     <!-- /city -->
 
@@ -297,7 +305,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-telno-edit">Τηλέφωνο</label>
                                         <input type="text" name="modal-input-telno-edit" class="form-control" id="modal-input-telno-edit"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /telno -->
 
@@ -305,7 +313,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-email-edit">E-mail</label>
                                         <input type="text" name="modal-input-email-edit" class="form-control" id="modal-input-email-edit"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /email -->
 
@@ -340,7 +348,7 @@
                                     <!-- company -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-company-edit">Εταιρεία</label>
-                                        <select name="modal-input-company-edit" id="modal-input-company-edit" class="form-control" required>
+                                        <select name="modal-input-company-edit" id="modal-input-company-edit" class="form-control">
                                         @foreach($companies as $company)
                                             <option value="{{ $company->id }}">{{ $company->name }}</option>
                                         @endforeach
@@ -357,7 +365,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-warehouse-button"
-                                data-target="#edit-modal" data-toggle="modal" data-wid="">Διόρθωσε Αποθήκη</button>
+                                data-target="#edit-modal" data-wid="">Διόρθωσε Αποθήκη</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -513,6 +521,9 @@
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                //"Content-Type": "application/json",
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             }
         });
 
@@ -560,6 +571,10 @@
                 console.log(wid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -582,15 +597,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η αποθήκη υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης αποθήκης!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -657,14 +682,14 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η αποθήκη υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διαγραφής αποθήκης!';
                         }
 
@@ -714,15 +739,25 @@
                             }
                         });
                 },
-                error: function(response){
-                    console.log('Error:', response);
+                error: function(xhr){
+                    console.log('Error:', xhr);
 
                     var msg = 'Συνέβη κάποιο λάθος!';
 
-                    if(response.status == 500){
+                    if(xhr.status == 500){
                         msg = 'Η αποθήκη υπάρχει ήδη!';
-                    } else if (response.status == 403){
+                    } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας αποθήκης!';
+                    } else if (xhr.status == 422){
+                        msg = 'Δώσατε λάθος δεδομένα!';
+
+                        var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                        $('.alert-danger').html('');
+
+                        $.each(json_err.errors, function(key, value){
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>'+value+'</li>');
+                        });
                     }
 
                     Swal.fire({
@@ -750,6 +785,10 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+
+            //reset error field(s)
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
         });
 
 
