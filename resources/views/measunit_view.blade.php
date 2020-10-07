@@ -85,6 +85,9 @@
                 <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
+
+
+
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
             <!-- The 3 Modals, Add/Update/Delete -->
 
@@ -99,12 +102,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the error messages will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -121,7 +128,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Μονάδας Μέτρησης</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus>
+                                            value="" autofocus>
                                     </div>
                                     <!-- /name -->
 
@@ -129,7 +136,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-create">Περιγραφή Μονάδας Μέτρησης</label>
                                         <textarea rows="3" name="modal-input-description-create" class="form-control" id="modal-input-description-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -141,7 +148,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-type-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Είδος Προϊόντος</button>
+                                data-target="#add-modal">Πρόσθεσε Μονάδα Μέτρησης</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -164,12 +171,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST">
+                        <form id="edit-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the error messages will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -186,7 +197,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα Μονάδας Μέτρησης</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
-                                            value="" required autofocus>
+                                            value="" autofocus>
                                     </div>
                                     <!-- /name -->
 
@@ -194,7 +205,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-edit">Περιγραφή Μονάδας Μέτρησης</label>
                                         <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
-                                            value="" required></textarea>
+                                            value="" ></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -206,7 +217,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-type-button"
-                                data-target="#edit-modal" data-toggle="modal" data-mid="">Διόρθωσε Μονάδα Μέτρησης</button>
+                                data-target="#edit-modal" data-mid="">Διόρθωσε Μονάδα Μέτρησης</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -256,7 +267,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-del">Όνομα Μονάδας Μέτρησης</label>
                                         <input type="text" name="modal-input-name-del" class="form-control-plaintext" id="modal-input-name-del"
-                                            value="" readonly required autofocus />
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
                                 </div>
@@ -304,7 +315,10 @@
             //for all 3 modals/actions, POST, PUT, DELETE
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    //"Content-Type": "application/json",
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
                 }
             });
 
@@ -341,6 +355,11 @@
                 console.log(mid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
+
                 $.ajax({
                     type: "POST",
                     data: formData,
@@ -363,15 +382,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Κάτι πήγε στραβά..!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η Μονάδα Μέτρησης υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης Μονάδα Μέτρησης!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -475,6 +504,11 @@
 
             console.log(formData);
 
+            //reset the error field.
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
+
+
             $.ajax({
                 method: "POST",
                 data: formData,
@@ -497,15 +531,25 @@
                             }
                         });
                 },
-                error: function(response){
-                    console.log('Error:', response);
+                error: function(xhr){
+                    console.log('Error:', xhr);
 
                     var msg = 'Κάτι πήγε στραβά..!';
 
-                    if(response.status == 500){
+                    if(xhr.status == 500){
                         msg = 'Η Μονάδα Μέτρησης υπάρχει ήδη!';
-                    } else if (response.status == 403){
+                    } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας Μονάδας Μέτρησης!';
+                    } else if (xhr.status == 422){
+                        msg = 'Δώσατε λάθος δεδομένα!';
+
+                        var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                        $('.alert-danger').html('');
+
+                        $.each(json_err.errors, function(key, value){
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>'+value+'</li>');
+                        });
                     }
 
                     Swal.fire({
@@ -533,6 +577,9 @@
             //resets the create/add form. Re-use this code snippet in other blade views!
             $(document).on('click', '[data-dismiss="modal"]', function(e){
                 $('#add-form').find("input,textarea,select").val('');
+
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
             });
 
 

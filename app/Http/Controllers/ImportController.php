@@ -8,6 +8,8 @@ use Auth; //added for Auth
 use App\Import;
 use App\Importassignment;
 use App\Company;
+use App\Transport; //transport_companies
+use App\Employee;
 use Carbon\Carbon;
 
 class ImportController extends Controller
@@ -20,10 +22,14 @@ class ImportController extends Controller
             $importassignments = ImportAssignment::all();
             $imports = Import::all();
             $companies = Company::all();
+            $transport_companies = Transport::all();
+            $employees = Employee::all();
 
             return view('imports_view', ['importassignments' => $importassignments,
-                                                    'companies' => $companies,
-                                                    'imports' => $imports]);
+                                        'companies' => $companies,
+                                        'employees' => $employees,
+                                        'transport_companies' => $transport_companies,
+                                        'imports' => $imports]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -34,18 +40,53 @@ class ImportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
-            $import = new Import();
 
+            //validation rules
+            $validation_rules = [
 
+            ];
 
+            //custom error messages for the above validation rules
+            $custom_messages = [
 
-            $import->save();
+            ];
 
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+            if($request->ajax()){
+
+                if($validator->fails()){
+
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+
+                }
+
+                if($validator->passes()){
+                    //success
+                    //save the object
+
+                    $import = new Import();
+
+                    $import->save();
+
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -57,20 +98,52 @@ class ImportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
-            $import = Import::findOrFail($id);
+             //validation rules
+             $validation_rules = [
+
+            ];
+
+            //custom error messages for the above validation rules
+            $custom_messages = [
+
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+            if($request->ajax()){
+
+                if($validator->fails()){
+
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+
+                }
+
+                if($validator->passes()){
+                    //success
+                    //save-update the object
+                    $import = Import::findOrFail($id);
+
+                    $import->update($request->all());
 
 
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
 
 
-            $import->update($request->all());
-
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
-
             return back();
-
-
+            */
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }

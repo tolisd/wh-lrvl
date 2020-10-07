@@ -50,11 +50,11 @@
                 <tbody>
                 @foreach($imports as $import)
                     <tr class="user-row" data-iid="{{ $import->id }}">  <!-- necessary additions -->
-						<td>{{ $import->employee->name }}</td>
-                        <td>{{ $import->company->name }}</td>
+						<td>{{ $import->employee_id }}</td>
+                        <td>{{ $import->company_id }}</td>
 						<td>{{ $import->delivered_on }}</td>
 						<td>{{ $import->vehicle_reg_no }}</td>
-						<td>{{ $import->company->name }}</td>
+						<td>{{ $import->transport_id }}</td>
 						<td>{{ $import->delivery_address }}</td>
 						<td>{{ $import->chargeable_hours_worked }}</td>
 						<td>{{ $import->hours_worked }}</td>
@@ -65,11 +65,11 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-iid="{{ $import->id }}"
-									data-employee="{{ $import->employee->name }}"
-									data-company1="{{ $import->company->name }}"
+									data-employeeid="{{ $import->employee_id }}"
+									data-companyid="{{ $import->company_id }}"
 									data-deliveredOn="{{ $import->delivered_on }}"
 									data-vehicleregno="{{ $import->vehicle_reg_no }}"
-									data-company2="{{ $import->company->name }}"
+									data-transportid="{{ $import->transport_id }}"
 									data-deliveryaddress="{{ $import->delivery_address }}"
 									data-chargeablehours="{{ $import->chargeable_hours_worked }}"
 									data-hours="{{ $import->hours_worked }}"
@@ -135,12 +135,17 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this where the errors will be produced and shown -->
+                            <div class="alert alert-danger" style="display:none" role="alert">
+                            </div>
+
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -157,8 +162,15 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-recipient-create">Υπεύθυνος Παραλαβής</label>
                                         <div class="col-lg-9">
+                                        <!--
                                             <input type="text" name="modal-input-recipient-create" class="form-control" id="modal-input-recipient-create"
-                                                value="" required />
+                                                value="" />
+                                        -->
+                                        <select name="modal-input-recipient-create" id="modal-input-recipient-create"  class="form-control">
+                                            @foreach($employees as $employee)
+                                                <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
+                                            @endforeach
+                                        </select>
                                         </div>
 									</div>
 									<!-- /recipient name -->
@@ -168,7 +180,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-impco-create">Eταιρεία Εισαγωγής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-impco-create" class="form-control" id="modal-input-impco-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /import company name -->
@@ -178,7 +190,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtdeliv-create">Ημ/νία &amp; Ώρα Παραλαβής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtdeliv-create" class="form-control" id="modal-input-dtdeliv-create"
-                                                value="" autocomplete="off" required />
+                                                value="" autocomplete="off" />
                                         </div>
 									</div>
 									<!-- /date_time_delivered_on -->
@@ -188,7 +200,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-vehicleregno-create">Αρ.Κυκλοφορίας Μεταφορικού Μέσου</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-vehicleregno-create" class="form-control" id="modal-input-vehicleregno-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /vehicle_registration_no -->
@@ -198,7 +210,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-shipco-create">Μεταφορική Εταιρεία</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-shipco-create" class="form-control" id="modal-input-shipco-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /shipping_company -->
@@ -208,7 +220,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-destin-create">Τόπος Αποστολής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-destin-create" class="form-control" id="modal-input-destin-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /destination -->
@@ -218,7 +230,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-chargehrs-create">Χρεώσιμες Ώρες Εργασίας</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-chargehrs-create" class="form-control" id="modal-input-chargehrs-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /chargeable_work_hours -->
@@ -228,7 +240,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-hours-create">Ώρες Εργασίας</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-hours-create" class="form-control" id="modal-input-hours-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /work_hours -->
@@ -238,7 +250,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-create">Δελτίο Αποστολής [αρχείο PDF]</label>
                                         <div class="col-lg-9">
                                             <input type="file" name="modal-input-bulletin-create" class="form-control" id="modal-input-bulletin-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /shipping_bulletin -->
@@ -248,7 +260,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtitle-create">Διακριτός Τίτλος Παραλαβής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtitle-create" class="form-control" id="modal-input-dtitle-create"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /delivery_description -->
@@ -262,7 +274,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-import-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Στοιχεία Ανάθεσης Εισαγωγής</button>
+                                data-target="#add-modal">Πρόσθεσε Στοιχεία Ανάθεσης Εισαγωγής</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -285,12 +297,17 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this where the errors will be produced and shown -->
+                            <div class="alert alert-danger" style="display:none" role="alert">
+                            </div>
+
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -308,7 +325,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-recipient-edit">Υπεύθυνος Παραλαβής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-recipient-edit" class="form-control" id="modal-input-recipient-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /recipient name -->
@@ -318,7 +335,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-impco-edit">Eταιρεία Εισαγωγής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-impco-edit" class="form-control" id="modal-input-impco-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /import company name -->
@@ -328,7 +345,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtdeliv-create">Ημ/νία &amp; Ώρα Παραλαβής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtdeliv-create" class="form-control" id="modal-input-dtdeliv-create"
-                                                value="" autocomplete="off" required />
+                                                value="" autocomplete="off" />
                                         </div>
 									</div>
 									<!-- /date_time_delivered_on -->
@@ -338,7 +355,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-vehicleregno-edit">Αρ.Κυκλοφορίας Μεταφορικού Μέσου</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-vehicleregno-edit" class="form-control" id="modal-input-vehicleregno-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /vehicle_registration_no -->
@@ -348,7 +365,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-shipco-edit">Μεταφορική Εταιρεία</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-shipco-edit" class="form-control" id="modal-input-shipco-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /shipping_company -->
@@ -358,7 +375,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-destin-edit">Τόπος Αποστολής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-destin-edit" class="form-control" id="modal-input-destin-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /destination -->
@@ -368,7 +385,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-chargehrs-edit">Χρεώσιμες Ώρες Εργασίας</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-chargehrs-edit" class="form-control" id="modal-input-chargehrs-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /chargeable_work_hours -->
@@ -378,7 +395,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-hours-edit">Ώρες Εργασίας</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-hours-edit" class="form-control" id="modal-input-hours-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /work_hours -->
@@ -388,7 +405,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-edit">Δελτίο Αποστολής [αρχείο PDF]</label>
                                         <div class="col-lg-9">
                                             <input type="file" name="modal-input-bulletin-edit" class="form-control" id="modal-input-bulletin-edit"
-                                                value="" required />
+                                                value="" />
                                         </div>
 									</div>
 									<!-- /shipping_bulletin -->
@@ -398,7 +415,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtitle-edit">Διακριτός Τίτλος Παραλαβής</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtitle-edit" class="form-control" id="modal-input-dtitle-edit"
-                                                value="" required />
+                                                value="" />
                                         </DIV>
 									</div>
 									<!-- /delivery_description -->
@@ -412,7 +429,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-import-button"
-                                data-target="#edit-modal" data-toggle="modal" data-iid="">Διόρθωσε Ανάθεση Εισαγωγής</button>
+                                data-target="#edit-modal" data-iid="">Διόρθωσε Ανάθεση Εισαγωγής</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -462,7 +479,7 @@
 									<div class="form-group">
 										<label class="col-form-label" for="modal-input-dtdeliv-del">Ημ/νία &amp; Ώρα Παραλαβής</label>
 										<input type="text" name="modal-input-dtdeliv-create" class="form-control-plaintext" id="modal-input-dtdeliv-del"
-											value="" required />
+											value="" />
 									</div>
 									<!-- /date_time_delivered_on -->
 
@@ -567,7 +584,10 @@
         //for all 3 modals/actions, POST, PUT, DELETE
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                //"Content-Type": "application/json",
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             }
         });
 
@@ -600,7 +620,7 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var iid = button.data('iid'); // Extract info from data-* attributes
-            var company1 = button.data('company1');
+            var company = button.data('company');
 
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -646,16 +666,27 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχουν ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης Στοιχείων Ανάθεσης Εισαγωγής!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
+
 
                         Swal.fire({
                             icon: "error",
@@ -722,14 +753,14 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχουν ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διαγραφής Στοιχείων Ανάθεσης Εισαγωγής!';
                         }
 
@@ -779,15 +810,25 @@
                             }
                         });
                 },
-                error: function(response){
-                    console.log('Error:', response);
+                error: function(xhr){
+                    console.log('Error:', xhr);
 
                     var msg = 'Συνέβη κάποιο λάθος!';
 
-                    if(response.status == 500){
+                    if(xhr.status == 500){
                         msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχει ήδη!';
-                    } else if (response.status == 403){
+                    } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας Στοιχείων Ανάθεσης Εισαγωγής!';
+                    } else if (xhr.status == 422){
+                        msg = 'Δώσατε λάθος δεδομένα!';
+
+                        var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                        $('.alert-danger').html('');
+
+                        $.each(json_err.errors, function(key, value){
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>'+value+'</li>');
+                        });
                     }
 
                     Swal.fire({
@@ -815,6 +856,10 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+
+            //reset the error field(s) also
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
         });
 
 

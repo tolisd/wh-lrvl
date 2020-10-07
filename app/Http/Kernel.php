@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'accountant' => \App\Http\Middleware\Accountant::class,
         'foreman' => \App\Http\Middleware\WarehouseForeman::class,
         'worker' => \App\Http\Middleware\WarehouseWorker::class,
+        'technician' => \App\Http\Middleware\Technician::class,
         'normaluser' => \App\Http\Middleware\NormalUser::class,
     ];
 }

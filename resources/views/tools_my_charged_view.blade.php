@@ -20,9 +20,9 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-        <p>Τα Χρεωμένα μου Εργαλεία (Χρήστης: {{ \Auth::user()->name }})</p>
+        <p>Τα Χρεωμένα μου Εργαλεία (<strong>Χρήστης</strong>: {{ \Auth::user()->name }})</p>
 
-            @canany(['isWarehouseForeman', 'isWarehouseWorker'])
+            @canany(['isWarehouseForeman', 'isWarehouseWorker', 'isTechnician'])
             <!-- insert here the main my charged tools table-->
             <table class="table data-table display table-striped table-bordered"
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
@@ -50,7 +50,7 @@
 
 
 
-
+            <!--
             @can('isSuperAdmin')
                 <a href="{{ route('admin.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
@@ -58,6 +58,7 @@
             @can('isCompanyCEO')
                 <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
+            -->
 
             @can('isWarehouseForeman')
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>

@@ -8,6 +8,7 @@ use App\User;
 use Auth; //added for Auth
 use Response;
 use Datatables;
+use Validator;
 use App\Employee; //for syncing the 2 tables ('users' & 'employees') simultaneously.
 
 class UserController extends Controller

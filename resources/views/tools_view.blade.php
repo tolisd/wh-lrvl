@@ -172,12 +172,18 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="charge-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="charge-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+
+                            <!-- this is where the errors will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
+
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -192,9 +198,9 @@
 
                                     <!-- tool-code, non-editable -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-name-charge">Κωδικός Εργαλείου</label>
-                                        <input type="text" name="modal-input-name-charge" class="form-control-plaintext" id="modal-input-name-charge"
-                                            value="" readonly required />
+                                        <label class="col-form-label" for="modal-input-code-charge">Κωδικός Εργαλείου</label>
+                                        <input type="text" name="modal-input-code-charge" class="form-control-plaintext" id="modal-input-code-charge"
+                                            value="" readonly />
                                     </div>
                                     <!-- /tool-code -->
 
@@ -202,7 +208,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-charge">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-charge" class="form-control-plaintext" id="modal-input-name-charge"
-                                            value="" readonly required />
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
 
@@ -210,7 +216,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-charge">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-charge" class="form-control-plaintext" id="modal-input-description-charge"
-                                            value="" readonly required></textarea>
+                                            value="" readonly></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -218,7 +224,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-charge">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-charge" class="form-control" id="modal-input-comments-charge"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -233,7 +239,7 @@
                                     <!-- To Whom User/Employee the Tool Is-To-Be-Charged-->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-towhom-charge">Όνομα Χρεωμένου</label>
-                                        <select name="modal-input-towhom-charge" id="modal-input-towhom-charge" class="form-control" required>
+                                        <select name="modal-input-towhom-charge" id="modal-input-towhom-charge" class="form-control">
                                         <!-- ALL The Employees -->
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
@@ -258,7 +264,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="charge-button" name="charge-tool-button"
-                                data-target="#charge-modal" data-toggle="modal" data-tid="">Χρέωσε Εργαλείο</button>
+                                data-target="#charge-modal" data-tid="">Χρέωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -280,12 +286,17 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="uncharge-form" class="form-horizontal" method="POST">
+                        <form id="uncharge-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the errors will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
+
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -302,7 +313,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-uncharge">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-uncharge" class="form-control-plaintext" id="modal-input-name-uncharge"
-                                            value="" readonly required />
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
 
@@ -310,7 +321,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-uncharge">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-uncharge" class="form-control-plaintext" id="modal-input-description-uncharge"
-                                            value="" readonly required></textarea>
+                                            value="" readonly></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -318,7 +329,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-uncharge">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-uncharge" class="form-control-plaintext" id="modal-input-quantity-uncharge"
-                                            value="" readonly required>
+                                            value="" readonly />
                                     </div>
                                     <!-- /quantity -->
 
@@ -326,7 +337,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-uncharge">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-uncharge" class="form-control" id="modal-input-comments-uncharge"
-                                            value="" required></textarea>
+                                            value="" ></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -334,7 +345,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-towhom-uncharge">Όνομα Χρεωμένου</label>
                                         <input type="text" name="modal-input-towhom-uncharge" class="form-control-plaintext" id="modal-input-towhom-uncharge"
-                                            value="" readonly required>
+                                            value="" readonly />
                                     </div>
                                     <!-- /onoma xrewmenou -->
 
@@ -346,7 +357,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-danger" id="uncharge-button" name="uncharge-tool-button"
-                                data-target="#uncharge-modal" data-toggle="modal" data-tid="">Ξεχρέωσε Εργαλείο</button>
+                                data-target="#uncharge-modal" data-tid="">Ξεχρέωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -368,12 +379,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="create-form" class="form-horizontal" method="POST">
+                        <form id="create-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the error messages will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -390,7 +405,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-code-create">Κωδικός Εργαλείου</label>
                                         <input type="text" name="modal-input-code-create" class="form-control" id="modal-input-code-create"
-                                            value="" required autofocus />
+                                            value="" autofocus />
                                     </div>
                                     <!-- /tool-code -->
 
@@ -398,7 +413,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus />
+                                            value="" autofocus />
                                     </div>
                                     <!-- /name -->
 
@@ -406,7 +421,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-create">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-create" class="form-control" id="modal-input-description-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -414,7 +429,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-create">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-create" class="form-control" id="modal-input-comments-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -422,7 +437,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα (σε τεμάχια)</label>
                                         <input type="text" name="modal-input-quantity-create" class="form-control" id="modal-input-quantity-create"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /quantity -->
 
@@ -434,7 +449,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="create-button" name="create-tool-button"
-                                data-target="#create-modal" data-toggle="modal" data-tid="">Προσθήκη Εργαλείου</button>
+                                data-target="#create-modal" data-tid="">Προσθήκη Εργαλείου</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -456,12 +471,17 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+
+                            <!-- this is where the error messages will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -478,7 +498,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-code-edit">Κωδικός Εργαλείου</label>
                                         <input type="text" name="modal-input-code-edit" class="form-control" id="modal-input-code-edit"
-                                            value="" required autofocus>
+                                            value="" autofocus />
                                     </div>
                                     <!-- /tool-code -->
 
@@ -486,7 +506,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα Εργαλείου</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /name -->
 
@@ -494,7 +514,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-edit">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
 
@@ -502,7 +522,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-edit" class="form-control" id="modal-input-comments-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -510,7 +530,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-edit">Τμχ.</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
-                                            value="" required>
+                                            value=""/>
                                     </div>
                                     <!-- /quantity -->
 
@@ -522,7 +542,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-tool-button"
-                                data-target="#edit-modal" data-toggle="modal" data-tid="">Διόρθωσε Εργαλείο</button>
+                                data-target="#edit-modal" data-tid="">Διόρθωσε Εργαλείο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -678,7 +698,10 @@
             //for all 5 modals/actions, POST, PUT, DELETE
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    //"Content-Type": "application/json",
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
                 }
             });
 
@@ -722,6 +745,10 @@
                 console.log(tid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -744,15 +771,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η χρέωση υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα χρέωσης εργαλείου!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -807,6 +844,10 @@
                 console.log(tid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -829,15 +870,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Το εργαλείο δεν είναι χρεωμένο!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα ξεχρέωσης εργαλείου!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -862,6 +913,10 @@
                 //console.log(tid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -884,15 +939,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Το εργαλείο υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα δημιουργίας εργαλείου!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -945,6 +1010,11 @@
                 //console.log(tid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -967,15 +1037,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Το εργαλείο δεν υπάρχει!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης εργαλείου!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -1094,6 +1174,10 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+
+            //reset the error field.
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
         });
 
 

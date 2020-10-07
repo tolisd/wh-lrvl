@@ -525,6 +525,15 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
 });
 
 
+Route::middleware(['auth', 'technician'])->prefix('technician')->group(function(){
+
+    Route::get('/dashboard', 'DashboardController@index')->name('technician.dashboard');
+
+    Route::get('/tools/my-charged/view', 'ToolController@view_my_charged_tools')->name('technician.tools.mycharged.view');
+
+});
+
+
 Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::get('/home', 'UserController@home');
     Route::get('/dashboard', 'DashboardController@index')->name('normaluser.dashboard');

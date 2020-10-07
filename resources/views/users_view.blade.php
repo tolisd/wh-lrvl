@@ -63,6 +63,8 @@
 								<td>Προϊστάμενος Αποθήκης</td>
 							@elseif($user->user_type == 'warehouse_worker')
 								<td>Αποθηκάριος</td>
+                            @elseif($user->user_type == 'technician')
+								<td>Τεχνίτης</td>
 							@elseif($user->user_type == 'normal_user')
 								<td>Απλός Χρήστης</td>
 							@else
@@ -196,7 +198,7 @@
                                         -->
                                         <select name="modal-input-usertype-edit" class="form-control" id="modal-input-usertype-edit">
                                         @php
-                                            $usrtype = ['super_admin','company_ceo','warehouse_foreman','accountant','warehouse_worker','normal_user'];
+                                            $usrtype = ['super_admin','company_ceo','warehouse_foreman','accountant','warehouse_worker','technician' ,'normal_user'];
                                         @endphp
                                         @foreach($usrtype as $ut)
                                             @if($ut == 'super_admin')
@@ -209,6 +211,8 @@
                                                 <option value="accountant">Λογιστήριο</option>
                                             @elseif($ut == 'warehouse_worker')
                                                 <option value="warehouse_worker">Αποθηκάριος</option>
+                                            @elseif($ut == 'technician')
+                                                <option value="technician">Τεχνίτης</option>
                                             @elseif($ut == 'normal_user')
                                                 <option value="normal_user">Απλός Χρήστης</option>
                                             @else
@@ -284,7 +288,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-del">Όνομα</label>
                                         <input type="text" name="modal-input-name-del" class="form-control-plaintext" id="modal-input-name-del"
-                                            value="" readonly required autofocus />
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
                                     <!--
@@ -384,7 +388,7 @@
                                             -->
                                             <select name="modal-input-usertype-create" class="form-control" id="modal-input-usertype-create">
                                             @php
-                                                $usrtype = ['super_admin','company_ceo','warehouse_foreman','accountant','warehouse_worker', 'normal_user'];
+                                                $usrtype = ['super_admin','company_ceo','warehouse_foreman','accountant','warehouse_worker','technician' , 'normal_user'];
                                             @endphp
                                             @foreach($usrtype as $ut)
                                                 @if($ut == 'super_admin')
@@ -397,6 +401,8 @@
                                                     <option value="accountant">Λογιστήριο</option>
                                                 @elseif($ut == 'warehouse_worker')
                                                     <option value="warehouse_worker">Αποθηκάριος</option>
+                                                @elseif($ut == 'technician')
+                                                    <option value="technician">Τεχνίτης</option>
                                                 @elseif($ut == 'normal_user')
                                                     <option value="normal_user">Απλός Χρήστης</option>
                                                 @else

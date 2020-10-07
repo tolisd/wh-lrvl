@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
+use Validator;
 use App\Tool;
 use App\User;
 use App\Employee;
@@ -52,7 +53,6 @@ class ToolController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
             //dd($id);
-            $tool_for_charging = Tool::findOrFail($id);
 
             /*
             $this->validate($request, [
@@ -60,34 +60,74 @@ class ToolController extends Controller
             ]);
             */
 
-            $tool_for_charging->is_charged    = 1; //$request->input('modal-input-ischarged-charge');
-            $tool_for_charging->employee_id   = $request->input('modal-input-towhom-charge');
-            $tool_for_charging->comments      = $request->input('modal-input-comments-charge');
-            //also, now upload the xrewstiko eggrafo...it is NECESSARY for the charging to be completed successfully
-            //uncomment the following block for the file to be uploaded!
-            /*
-            $path = $request->file('modal-input-file-charge')->store('arxeia/xrewstika');  //stored in storage/app/arxeia/xrewstika/
-            $url = \Storage::url($path); //stores the full path
-            $tool_for_charging->file_url = $url; //access it in Blade as:: {{ $tool->file_url }}
-            */
+            $validation_rules = [
+                'modal-input-towhom-charge' => 'required|exists:employees,id',
+                'modal-input-comments-charge' => 'required',
+                'modal-input-file-charge' => 'required|mimes:zip,pdf,txt',  //maximumFileSize = 250kB, zip means: both, doc & docx
+            ];
 
-            //$url = null;
-            if($request->hasFile('modal-input-file-charge')){
-                    $file = $request->file('modal-input-file-charge');
-                    $name = $file->getClientOriginalName();
-                    $path = $file->storeAs('arxeia/xrewstika', $name);
-                    $url  = \Storage::url($path);
+            $custom_messages = [
+                'modal-input-towhom-charge.required' => 'Το όνομα εργαζομένου απαιτείται',
+                'modal-input-comments-charge.required' => 'Τα σχόλια απαιτούνται',
+                'modal-input-file-charge.required' => 'Το αρχείο απαιτείται',
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+
+            if($request->ajax()){
+
+                if($validator->fails()){
+                    //failure
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+                }
+
+                if($validator->passes()){
+
+                    $tool_for_charging = Tool::findOrFail($id);
+
+                    $tool_for_charging->is_charged    = 1; //$request->input('modal-input-ischarged-charge');
+                    $tool_for_charging->employee_id   = $request->input('modal-input-towhom-charge');
+                    $tool_for_charging->comments      = $request->input('modal-input-comments-charge');
+                    //also, now upload the xrewstiko eggrafo...it is NECESSARY for the charging to be completed successfully
+                    //uncomment the following block for the file to be uploaded!
+                    /*
+                    $path = $request->file('modal-input-file-charge')->store('arxeia/xrewstika');  //stored in storage/app/arxeia/xrewstika/
+                    $url = \Storage::url($path); //stores the full path
+                    $tool_for_charging->file_url = $url; //access it in Blade as:: {{ $tool->file_url }}
+                    */
+
+                    //$url = null;
+                    if($request->hasFile('modal-input-file-charge')){
+                            $file = $request->file('modal-input-file-charge');
+                            $name = $file->getClientOriginalName();
+                            $path = $file->storeAs('arxeia/xrewstika', $name);
+                            $url  = \Storage::url($path);
+                    }
+                    $tool_for_charging->file_url = $url;
+
+                    $tool_for_charging->update($request->all());
+                    //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
+
+                    //success
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
             }
-            $tool_for_charging->file_url = $url;
 
-            $tool_for_charging->update($request->all());
-            //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
-
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
              return back();
+            */
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -100,23 +140,55 @@ class ToolController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
 
-            $tool_for_uncharging = Tool::findOrFail($id);
+            $rules = [
+                'modal-input-comments-uncharge' => 'required',
+            ];
 
-            $tool_for_uncharging->is_charged  = 0; //$request->input('modal-input-ischarged-uncharge');
-            $tool_for_uncharging->employee_id = null;
-            $tool_for_uncharging->file_url    = null; //Important! Also, delete the actual xrewstiko arxeio/file here!!
-            $tool_for_uncharging->comments    = $request->input('modal-input-comments-uncharge');
+            $custom_messages = [
+                'modal-input-comments-uncharge.required' => 'Τα σχόλια απαιτούνται',
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $custom_messages);
 
 
-            $tool_for_uncharging->update($request->all());
-            //$tool_for_uncharging->update($request->only(['modal-input-ischarged-uncharge']));
+            if($request->ajax()){
 
+                if($validator->fails()){
+                    //failure
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+                }
 
+                if($validator->passes()){
+
+                    $tool_for_uncharging = Tool::findOrFail($id);
+
+                    $tool_for_uncharging->is_charged  = 0; //$request->input('modal-input-ischarged-uncharge');
+                    $tool_for_uncharging->employee_id = null;
+                    $tool_for_uncharging->file_url    = null; //Important! Also, delete the actual xrewstiko arxeio/file here!!
+                    $tool_for_uncharging->comments    = $request->input('modal-input-comments-uncharge');
+
+                    $tool_for_uncharging->update($request->all());
+                    //$tool_for_uncharging->update($request->only(['modal-input-ischarged-uncharge']));
+
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+
+            }
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
              return back();
+            */
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -128,25 +200,63 @@ class ToolController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
 
-            $tool = new Tool();
 
-            $tool->name         = $request->input('modal-input-name-create');
-            $tool->code         = $request->input('modal-input-code-create');
-            $tool->description  = $request->input('modal-input-description-create');
-            $tool->comments     = $request->input('modal-input-comments-create');
-            $tool->quantity     = $request->input('modal-input-quantity-create');
-            $tool->is_charged   = 0; //$request->input('modal-input-ischarged-create');  //should just be false? because a new tool is not charged yet...
-            //$tool->employee_id  = //$request->input('modal-input-towhom-create');
-            //$tool->file_url     = $request->input('modal-input-file-create');
+            $validation_rules = [
+                'modal-input-name-create' => 'required',
+                'modal-input-code-create' => 'required|unique:tools,code',
+                'modal-input-description-create' => 'required',
+                'modal-input-comments-create' => 'required',
+                'modal-input-quantity-create' => 'required',
+            ];
 
-            $tool->save();
+            $custom_messages = [
+                'modal-input-name-create.required' => 'Το όνομα απαιτείται',
+                'modal-input-code-create.required' => 'Ο κωδικός απαιτείται',
+                'modal-input-description-create.required' => 'Η περιγραφή απαιτείται',
+                'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
+                'modal-input-quantity-create.required' => 'Η ποσότητα απαιτείται',
+            ];
 
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
 
+            if($request->ajax()){
+                if($validator->fails()){
+
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+
+                }
+                if($validator->passes()){
+
+                    $tool = new Tool();
+
+                    $tool->name         = $request->input('modal-input-name-create');
+                    $tool->code         = $request->input('modal-input-code-create');
+                    $tool->description  = $request->input('modal-input-description-create');
+                    $tool->comments     = $request->input('modal-input-comments-create');
+                    $tool->quantity     = $request->input('modal-input-quantity-create');
+                    $tool->is_charged   = 0; //$request->input('modal-input-ischarged-create');  //should just be false? because a new tool is not charged yet...
+                    //$tool->employee_id  = //$request->input('modal-input-towhom-create');
+                    //$tool->file_url     = $request->input('modal-input-file-create');
+                    $tool->save();
+
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -159,25 +269,66 @@ class ToolController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
 
-            $tool = Tool::findOrFail($id);
-
-            $tool->name         = $request->input('modal-input-name-edit');
-            $tool->code         = $request->input('modal-input-code-edit');
-            $tool->description  = $request->input('modal-input-description-edit');
-            $tool->comments     = $request->input('modal-input-comments-edit');
-            $tool->quantity     = $request->input('modal-input-quantity-edit');
-            //$tool->is_charged   = $request->input('modal-input-ischarged-update');
-            //$tool->employee_id  = $request->input('modal-input-towhom-update');
-            //$tool->file_url     = $request->input('modal-input-file-update');
-
-            $tool->update($request->all());
 
 
+            $validation_rules = [
+                'modal-input-name-edit' => ['required'],
+                'modal-input-code-edit' => ['required', \Illuminate\Validation\Rule::unique('tools', 'code')->ignore($id)],
+                'modal-input-description-edit' => ['required'],
+                'modal-input-comments-edit' => ['required'],
+                'modal-input-quantity-edit' => ['required'],
+            ];
+
+            $custom_messages = [
+                'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
+                'modal-input-code-edit.required' => 'Ο κωδικός απαιτείται',
+                'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται',
+                'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
+                'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+            if($request->ajax()){
+                if($validator->fails()){
+
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+
+                }
+                if($validator->passes()){
+
+                    $tool = Tool::findOrFail($id);
+
+                    $tool->name         = $request->input('modal-input-name-edit');
+                    $tool->code         = $request->input('modal-input-code-edit');
+                    $tool->description  = $request->input('modal-input-description-edit');
+                    $tool->comments     = $request->input('modal-input-comments-edit');
+                    $tool->quantity     = $request->input('modal-input-quantity-edit');
+                    //$tool->is_charged   = $request->input('modal-input-ischarged-update');
+                    //$tool->employee_id  = $request->input('modal-input-towhom-update');
+                    //$tool->file_url     = $request->input('modal-input-file-update');
+
+                    $tool->update($request->all());
+
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
+
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -253,7 +404,7 @@ class ToolController extends Controller
     public function view_my_charged_tools(){
 
         //Administrator & Manager cannot access this page, because it makes no sense to.
-        if(\Gate::any(['isWarehouseForeman', 'isWarehouseWorker'])){
+        if(\Gate::any(['isWarehouseForeman', 'isWarehouseWorker', 'isTechnician'])){
 
             $u_id        = Auth::user()->id;  //get the authenticated user's ID
             //dd($u_id);

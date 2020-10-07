@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
+use Validator;
 use App\MeasureUnit;
 
 class MeasureController extends Controller
@@ -18,7 +19,7 @@ class MeasureController extends Controller
 
             return view('measunit_view', ['measunits' => $measunits]);
 
-        } else{
+        } else {
             return abort(403, 'Sorry you cannot view this page');
         }
     }
@@ -27,19 +28,52 @@ class MeasureController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $measunit = new MeasureUnit();
+            $rules = [
+                'modal-input-name-create' => 'required',
+                'modal-input-description-create' => 'required'
+            ];
 
-            $measunit->name            = $request->input('modal-input-name-create');
-            $measunit->description     = $request->input('modal-input-description-create');
+            $custom_messages = [
+                'modal-input-name-create.required' => 'Το όνομα απαιτείται',
+                'modal-input-description-create.required' => 'Η περιγραφή απαιτείται'
+            ];
 
-            $measunit->save();
+            $validator = Validator::make($request->all(), $rules, $custom_messages);
+
+            if($request->ajax()){
+                if($validator->fails()){
+
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+
+                }
+
+                if($validator->passes()){
+
+                    $measunit = new MeasureUnit();
+
+                    $measunit->name            = $request->input('modal-input-name-create');
+                    $measunit->description     = $request->input('modal-input-description-create');
+
+                    $measunit->save();
 
 
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+                }
+            }
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -51,19 +85,52 @@ class MeasureController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $measunit = MeasureUnit::findOrFail($id);
+            $rules = [
+                'modal-input-name-edit' => 'required',
+                'modal-input-description-edit' => 'required'
+            ];
 
-            $measunit->name            = $request->input('modal-input-name-edit');
-            $measunit->description     = $request->input('modal-input-description-edit');
+            $custom_messages = [
+                'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
+                'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται'
+            ];
 
-            $measunit->update($request->all());
+            $validator = Validator::make($request->all(), $rules, $custom_messages);
+
+            if($request->ajax()){
+                if($validator->fails()){
+
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+
+                }
+
+                if($validator->passes()){
+
+                    $measunit = MeasureUnit::findOrFail($id);
+
+                    $measunit->name            = $request->input('modal-input-name-edit');
+                    $measunit->description     = $request->input('modal-input-description-edit');
+
+                    $measunit->update($request->all());
 
 
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+                }
+            }
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
 
         } else{
             return abort(403, 'Sorry you cannot view this page');

@@ -98,6 +98,10 @@ class User extends Authenticatable
         return \Auth::check() && \Auth::user()->user_type === 'warehouse_worker';
     }
 
+    public function isTechnician(){
+        return \Auth::check() && \Auth::user()->user_type === 'technician';
+    }
+
     public function isNormalUser(){
         return \Auth::check() && \Auth::user()->user_type === 'normal_user';
     }

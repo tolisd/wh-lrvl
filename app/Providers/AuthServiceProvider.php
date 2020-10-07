@@ -32,11 +32,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //added the following 6 Roles within the company
+        //added the following 7 Roles within the application/company
         //check if specific user is authorised
-        
-        Gate::define('isSuperAdmin', function($user){            
-            return $user->user_type == 'super_admin'; 
+
+        Gate::define('isSuperAdmin', function($user){
+            return $user->user_type == 'super_admin';
         });
 
         Gate::define('isCompanyCEO', function($user){
@@ -55,13 +55,17 @@ class AuthServiceProvider extends ServiceProvider
             return $user->user_type == 'warehouse_worker';
         });
 
+        Gate::define('isTechnician', function($user){ //added new role
+            return $user->user_type == 'technician';
+        });
+
         Gate::define('isNormalUser', function($user){
             return $user->user_type == 'normal_user';
         });
-        
 
-        //Permissions on Actions        
-        Gate::define('see-dashboard', 'DashboardController@view_dashboard');    
+
+        //Permissions on Actions
+        Gate::define('see-dashboard', 'DashboardController@view_dashboard');
 
         //Assignment Gates Definitions
         Gate::define('create-assignment', 'AssignmentPolicy@create_assignment');
@@ -75,6 +79,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view-single-product', 'ProductPolicy@view_single_product');
         Gate::define('create-new-product', 'ProductPolicy@create_new_product');
         Gate::define('update-product', 'ProductPolicy@update_product');
-        Gate::define('delete-product', 'ProductPolicy@delete_product');   
+        Gate::define('delete-product', 'ProductPolicy@delete_product');
     }
 }

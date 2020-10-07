@@ -167,8 +167,8 @@ return [
 
     'use_route_url' => false,
 
-    //'dashboard_url' => 'home', //is changed to the following line:
-    'dashboard_url' => 'dashboard',
+    'dashboard_url' => 'home', //is changed to the following line:
+    //'dashboard_url' => 'dashboard',
 
     'logout_url' => 'logout',
 
@@ -246,6 +246,12 @@ return [
             'text' => 'Αρχική Σελίδα',
             'route' => 'worker.dashboard',
             'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-globe',
+        ],
+        [
+            'text' => 'Αρχική Σελίδα',
+            'route' => 'technician.dashboard',
+            'can' => 'isTechnician',
             'icon' => 'fas fa-globe',
         ],
 		[
@@ -373,6 +379,21 @@ return [
                                         'text' => 'Τα Χρεωμένα μου Εργαλεία',
                                         'route'  => 'worker.tools.mycharged.view',
                                         'can' => 'isWarehouseWorker',
+                                        'icon' => 'fas fa-toolbox',
+                                    ],
+                          ],
+        ],
+        [
+            'text' => 'Επιλογές Εργαλείων',
+            'url' => '',
+            'can' => 'isTechnician',
+            'icon' => 'fas fa-wrench',
+
+            'submenu' => [
+                                    [
+                                        'text' => 'Τα Χρεωμένα μου Εργαλεία',
+                                        'route'  => 'technician.tools.mycharged.view',
+                                        'can' => 'isTechnician',
                                         'icon' => 'fas fa-toolbox',
                                     ],
                           ],

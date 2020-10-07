@@ -22,11 +22,13 @@
 
         <p>Προϊόντα Αποθήκης (@foreach($warehouse_data as $wh) <strong>{{ $wh->name }}</strong> @endforeach)</p>
 
+        <p><strong>Προϊστάμενος:</strong> &nbsp;
         @foreach($employees_in_warehouse as $employee)
             @if($employee->user->user_type == 'warehouse_foreman')
-                <p><strong>Προϊστάμενος:</strong> &nbsp; {{ $employee->user->name }}</p>
+                {{ $employee->user->name }}
             @endif
         @endforeach
+        </p>
 
         <strong>Αποθηκάριοι:</strong>
         <ul>

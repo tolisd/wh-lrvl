@@ -135,7 +135,7 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
@@ -143,7 +143,7 @@
                         <div class="modal-body">
 
 
-                            <div class="alert alert-danger" style="display:none">
+                            <div class="alert alert-danger" style="display:none" role="alert">
                             </div>
 
                             <!--
@@ -168,7 +168,6 @@
                                 </div>
                             @endif
                             -->
-
 
                             <!-- will display only the first error message it encounters -->
                             <!--
@@ -665,19 +664,19 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η μεταφορική εταιρεία υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης μεταφορικής εταιρείας!';
-                        } else if (response.status == 422){
+                        } else if (xhr.status == 422){
                             msg = 'Δώσατε λάθος δεδομένα!';
 
-                            var json_err = $.parseJSON(response.responseText); //responseJSON
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
                             $('.alert-danger').html('');
 
                             $.each(json_err.errors, function(key, value){

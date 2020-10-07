@@ -45,7 +45,7 @@ class DashboardController extends Controller
         }
         */
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker', 'isNormalUser'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker', 'isNormalUser', 'isTechnician'])){
 
             $usersCount = User::count();
             $productsCount = Product::count(); //added: 'use App\Product;'

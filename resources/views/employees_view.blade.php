@@ -59,6 +59,8 @@
                             <td>Λογιστήριο</td>
                         @elseif($employee->user->user_type == 'warehouse_worker')
                             <td>Αποθηκάριος</td>
+                        @elseif($employee->user->user_type == 'technician')
+                            <td>Τεχνίτης</td>
                         @elseif($employee->user->user_type == 'normal_user')
                             <td>Απλός Χρήστης</td>
                         @else
@@ -136,12 +138,17 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- This is where the validation errors will show up -->
+                            <div class="alert alert-danger" style="display:none" role="alert">
+                            </div>
+
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -161,7 +168,7 @@
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
                                             value="" required autofocus />
                                         -->
-                                        <select name="modal-input-name-create" class="form-control" id="modal-input-name-create" required>
+                                        <select name="modal-input-name-create" class="form-control" id="modal-input-name-create">
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
@@ -200,7 +207,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-address-create">Διεύθυνση</label>
                                         <input type="text" name="modal-input-address-create" class="form-control" id="modal-input-address-create"
-                                           value="" required />
+                                           value="" />
                                     </div>
                                     <!-- /address -->
 
@@ -208,7 +215,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-telno-create">Τηλέφωνο</label>
                                         <input type="text" name="modal-input-telno-create" class="form-control" id="modal-input-telno-create"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /telno -->
 
@@ -235,7 +242,7 @@
                                     <!-- company -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-company-create">Εταιρεία</label>
-                                        <select name="modal-input-company-create" class="form-control" id="modal-input-company-create" required>
+                                        <select name="modal-input-company-create" class="form-control" id="modal-input-company-create">
                                         @foreach($companies as $company)
                                             <option value="{{ $company->id }}">{{ $company->name }}</option>
                                         @endforeach
@@ -246,7 +253,7 @@
                                     <!-- warehouse -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-create">Αποθήκη</label>
-                                        <select name="modal-input-warehouse-create" class="form-control" id="modal-input-warehouse-create" required>
+                                        <select name="modal-input-warehouse-create" class="form-control" id="modal-input-warehouse-create">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -262,7 +269,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-company-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Εργαζόμενο</button>
+                                data-target="#add-modal">Πρόσθεσε Εργαζόμενο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -292,6 +299,11 @@
                         <!-- Modal body -->
                         <div class="modal-body">
 
+                            <!-- This is where the validation errors will show up -->
+                            <div class="alert alert-danger" style="display:none" role="alert">
+                            </div>
+
+
                             <div class="card text-white bg-white mb-0">
                                 <!--
                                 <div class="card-header">
@@ -310,7 +322,7 @@
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
                                             value="" required autofocus />
                                         -->
-                                        <select name="modal-input-name-edit" class="form-control" id="modal-input-name-edit" required>
+                                        <select name="modal-input-name-edit" class="form-control" id="modal-input-name-edit">
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
@@ -348,7 +360,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-address-edit">Διεύθυνση</label>
                                         <input type="text" name="modal-input-address-edit" class="form-control" id="modal-input-address-edit"
-                                           value="" required />
+                                           value="" />
                                     </div>
                                     <!-- /address -->
 
@@ -356,7 +368,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-telno-edit">Τηλέφωνο</label>
                                         <input type="text" name="modal-input-telno-edit" class="form-control" id="modal-input-telno-edit"
-                                            value="" required />
+                                            value="" />
                                     </div>
                                     <!-- /telno -->
 
@@ -383,7 +395,7 @@
                                     <!-- company -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-company-edit">Εταιρεία</label>
-                                        <select name="modal-input-company-edit" class="form-control" id="modal-input-company-edit" required>
+                                        <select name="modal-input-company-edit" class="form-control" id="modal-input-company-edit">
                                         @foreach($companies as $company)
                                             <option value="{{ $company->id }}">{{ $company->name }}</option>
                                         @endforeach
@@ -394,9 +406,9 @@
                                     <!-- warehouse -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη</label>
-                                        <select name="modal-input-warehouse-edit" class="form-control" id="modal-input-warehouse-edit" required>
-                                        @foreach($warehouses as $warehouse1)
-                                            <option value="{{ $warehouse1->id }}">{{ $warehouse1->name }}</option>
+                                        <select name="modal-input-warehouse-edit" class="form-control" id="modal-input-warehouse-edit">
+                                        @foreach($warehouses as $warehouse)
+                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
                                         </select>
                                     </div>
@@ -410,7 +422,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-company-button"
-                                data-target="#edit-modal" data-toggle="modal" data-eid="">Διόρθωσε Εργαζόμενο</button>
+                                data-target="#edit-modal" data-eid="">Διόρθωσε Εργαζόμενο</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -567,6 +579,9 @@
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    //"Content-Type": "application/json",
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
                 }
             });
 
@@ -614,6 +629,10 @@
                     console.log(eid);
                     console.log(formData);
 
+                    //reset the error field.
+                    $('.alert-danger').hide();
+                    $('.alert-danger').html('');
+
                     $.ajax({
                         method: "POST",
                         data: formData,
@@ -636,15 +655,25 @@
                                 }
                             });
                         },
-                        error: function(response){
-                            console.log('Error:', response);
+                        error: function(xhr){
+                            console.log('Error:', xhr);
 
                             var msg = 'Συνέβη κάποιο λάθος!';
 
-                            if(response.status == 500){
+                            if(xhr.status == 500){
                                 msg = 'Ο εργαζόμενος υπάρχει ήδη!';
-                            } else if (response.status == 403){
+                            } else if (xhr.status == 403){
                                 msg = 'Δεν έχετε to δικαίωμα διόρθωσης εργαζόμενου!';
+                            } else if (xhr.status == 422){
+                                msg = 'Δώσατε λάθος δεδομένα!';
+
+                                var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                                $('.alert-danger').html('');
+
+                                $.each(json_err.errors, function(key, value){
+                                    $('.alert-danger').show();
+                                    $('.alert-danger').append('<li>'+value+'</li>');
+                                });
                             }
 
                             Swal.fire({
@@ -711,14 +740,14 @@
                                 }
                             });
                         },
-                        error: function(response){
-                            console.log('Error:', response);
+                        error: function(xhr){
+                            console.log('Error:', xhr);
 
                             var msg = 'Συνέβη κάποιο λάθος!';
 
-                            if(response.status == 500){
+                            if(xhr.status == 500){
                                 msg = 'Ο εργαζόμενος υπάρχει ήδη!';
-                            } else if (response.status == 403){
+                            } else if (xhr.status == 403){
                                 msg = 'Δεν έχετε to δικαίωμα διαγραφής εργαζόμενου!';
                             }
 
@@ -746,6 +775,10 @@
 
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -768,15 +801,25 @@
                                 }
                             });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Ο εργαζόμενος υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα δημιουργίας εργαζόμενου!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -804,7 +847,12 @@
             //resets the create/add form. Re-use this code snippet in other blade views!
             $(document).on('click', '[data-dismiss="modal"]', function(e){
                 $('#add-form').find("input,textarea,select").val('');
+
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
             });
+
+
 
 
 

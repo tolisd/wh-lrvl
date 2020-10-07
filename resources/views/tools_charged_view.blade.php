@@ -65,9 +65,11 @@
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
+            <!--
             @can('isWarehouseWorker')
                 <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
+            -->
 
         </div>
       </div>
