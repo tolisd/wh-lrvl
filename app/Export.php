@@ -24,6 +24,7 @@ class Export extends Model
 
         'product_id',
         'company_id',
+        'transport_id',
         'exportassignment_id',
         'employee_id',
     ];

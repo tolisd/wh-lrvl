@@ -1161,7 +1161,7 @@ return [
 
         [
             'header' => 'ΑΠΟΣΥΝΔΕΣΗ',
-            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isWarehouseWorker', 'isNormalUser'],
+            'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isWarehouseWorker', 'isNormalUser', 'isTechnician'],
         ],
 
 
@@ -1199,6 +1199,12 @@ return [
             'text' => 'Αποσύνδεση',
             'url'  => '/logout',
             'can' => 'isNormalUser',
+            'icon' => 'fas fa-power-off text-danger',
+        ],
+        [
+            'text' => 'Αποσύνδεση',
+            'url'  => '/logout',
+            'can' => 'isTechnician',
             'icon' => 'fas fa-power-off text-danger',
         ],
 

@@ -44,13 +44,30 @@ class ExportController extends Controller
             //validation rules
             $validation_rules = [
                 'modal-input-exportassignment-create' => 'required',
-
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
+                'modal-input--create' => 'required',
             ];
 
             //custom error messages for the above validation rules
             $custom_messages = [
                 'modal-input-exportassignment-create.required' => 'Το πεδίο Ανάθεση Εξαγωγής απαιτείται',
-
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
             ];
 
             //prepare the $validator variable for these validation rules
@@ -108,16 +125,38 @@ class ExportController extends Controller
 
             //validation rules
             $validation_rules = [
-
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
+                'modal-input--edit' => 'required',
             ];
 
             //custom error messages for the above validation rules
             $custom_messages = [
-
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
+                'modal-input--edit.required' => '',
             ];
+
 
             //prepare the $validator variable for these validation rules and custom error messages
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
 
             if($request->ajax()){
 
@@ -134,6 +173,8 @@ class ExportController extends Controller
                     //success
                     //save the object
                     $export = Export::findOrFail($id);
+
+
 
                     $export->update($request->all());
 

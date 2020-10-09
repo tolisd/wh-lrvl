@@ -132,12 +132,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the error messages will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -153,7 +157,7 @@
                                     <!-- warehouse name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-create">Αποθήκη</label>
-                                        <select name="modal-input-warehouse-create" id="modal-input-warehouse-create" class="form-control" required>
+                                        <select name="modal-input-warehouse-create" id="modal-input-warehouse-create" class="form-control">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -165,7 +169,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-text-create">Κείμενο Ανάθεσης Εξαγωγής</label>
                                         <textarea rows="3" name="modal-input-text-create" class="form-control" id="modal-input-text-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /assignment text -->
 
@@ -173,7 +177,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="date-time-picker-create">Deadline (Ημερομηνία &amp; Ώρα)</label>
                                         <input type="text" name="modal-input-picker-create" class="form-control" id="date-time-picker-create"
-                                            value="" autocomplete="off" required>
+                                            value="" autocomplete="off" />
                                     </div>
                                     <!-- /deadline datetime -->
 
@@ -181,7 +185,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-create">Επισυναπτόμενα Αρχεία</label>
                                         <input type="file" multiple name="modal-input-files-create[]" class="form-control" id="modal-input-files-create"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /uploaded files -->
 
@@ -189,7 +193,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-create">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-create" class="form-control" id="modal-input-comments-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -202,7 +206,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-exportassignment-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Ανάθεση Εξαγωγής</button>
+                                data-target="#add-modal">Πρόσθεσε Ανάθεση Εξαγωγής</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -225,12 +229,17 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        <form id="edit-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the error messages will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
+
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -246,7 +255,7 @@
 									<!-- warehouse name -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη</label>
-                                        <select name="modal-input-warehouse-edit" id="modal-input-warehouse-edit" class="form-control" required>
+                                        <select name="modal-input-warehouse-edit" id="modal-input-warehouse-edit" class="form-control">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -258,7 +267,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-text-edit">Κείμενο Ανάθεσης Εξαγωγής</label>
                                         <textarea rows="3" name="modal-input-text-edit" class="form-control" id="modal-input-text-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /assignment text -->
 
@@ -266,7 +275,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="date-time-picker-edit">Deadline (Ημερομηνία &amp; Ώρα)</label>
                                         <input type="text" name="modal-input-picker-edit" class="form-control" id="date-time-picker-edit"
-                                            value="" autocomplete="off" required>
+                                            value="" autocomplete="off" />
                                     </div>
                                     <!-- /deadline datetime -->
 
@@ -274,7 +283,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-edit">Επισυναπτόμενα Αρχεία</label>
                                         <input type="file" multiple name="modal-input-files-edit[]" class="form-control" id="modal-input-files-edit"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /uploaded files -->
 
@@ -282,14 +291,14 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-edit" class="form-control" id="modal-input-comments-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
 									<!-- is Export Assignment Open -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-isopen-edit">Ανοιχτή?</label>
-                                        <select name="modal-input-isopen-edit" id="modal-input-isopen-edit" class="form-control" required>
+                                        <select name="modal-input-isopen-edit" id="modal-input-isopen-edit" class="form-control">
                                             <option value="1">Ανοιχτή</option>
                                             <option value="0">Κλειστή</option>
                                         </select>
@@ -304,7 +313,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-exportassignment-button"
-                                data-target="#edit-modal" data-toggle="modal" data-eid="">Διόρθωσε Ανάθεση Εξαγωγής</button>
+                                data-target="#edit-modal" data-eid="">Διόρθωσε Ανάθεση Εξαγωγής</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -354,7 +363,7 @@
                                     <div class="form-group">
                                        <label class="col-form-label" for="modal-input-text-del">Ανάθεση Εξαγωγής</label>
                                        <textarea rows="3" name="modal-input-text-del" class="form-control-plaintext" id="modal-input-text-del"
-                                            value=""></textarea>
+                                            value="" readonly></textarea>
                                     </div>
                                     <!-- /name -->
 
@@ -459,7 +468,10 @@
         //for all 3 modals/actions, POST, PUT, DELETE
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                //"Content-Type": "application/json",
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             }
         });
 
@@ -525,6 +537,10 @@
                 console.log(eid);
                 console.log(formData);
 
+                //reset the error field.
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -547,15 +563,25 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η Ανάθεση Εξαγωγής υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης Ανάθεσης Εξαγωγής!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            $('.alert-danger').html('');
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>'+value+'</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -569,9 +595,6 @@
             });
 
         });
-
-
-
 
 
 
@@ -647,9 +670,6 @@
 
 
 
-
-
-
         //AJAX for Add/Create New Product submit
         //event delegation here..
         $(document).on("submit", "#add-form", function(evt){
@@ -657,6 +677,10 @@
             var formData = new FormData(this);
 
             console.log(formData);
+
+            //reset the error field.
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
 
             $.ajax({
                 method: "POST",
@@ -680,15 +704,25 @@
                             }
                         });
                 },
-                error: function(response){
-                    console.log('Error:', response);
+                error: function(xhr){
+                    console.log('Error:', xhr);
 
                     var msg = 'Συνέβη κάποιο λάθος!';
 
-                    if(response.status == 500){
+                    if(xhr.status == 500){
                         msg = 'Η Ανάθεση Εξαγωγής υπάρχει ήδη!';
-                    } else if (response.status == 403){
+                    } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας Ανάθεσης Εξαγωγής!';
+                    }  else if (xhr.status == 422){
+                        msg = 'Δώσατε λάθος δεδομένα!';
+
+                        var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                        $('.alert-danger').html('');
+
+                        $.each(json_err.errors, function(key, value){
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>'+value+'</li>');
+                        });
                     }
 
                     Swal.fire({
@@ -723,6 +757,10 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+
+            //reset the error field.
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
         });
 
 

@@ -38,6 +38,7 @@ class UserController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO'])){
 
+
             /*
             $request->validate([
                 'name'      => 'required',
@@ -46,29 +47,84 @@ class UserController extends Controller
             ]);
             */
 
+
+            //the validation rules
+            $validation_rules = [
+                'modal-input-name-edit' => 'required',
+                'modal-input-email-edit' => 'required',
+                'modal-input-passwd-edit' => 'required',
+                'modal-input-usertype-edit' => 'required',
+                'modal-input-photo-edit' => 'nullable',
+            ];
+
+            //the custom error messages for the above validation rules
+            $custom_messages = [
+                'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
+                'modal-input-email-edit.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-passwd-edit.required' => 'Το συνθηματικό απαιτείται',
+                'modal-input-usertype-edit.required' => 'Ο ρόλος χρήστη απαιτείται',
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+            if($request->ajax()){
+
+                if($validator->fails()){
+                    //validatiun failure, error 422
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+                }
+
+                if($validator->passes()){
+
+                    $user = User::findOrFail($id); //was findOrFail($u_id);
+
+                    $user->name      = $request->input('modal-input-name-edit');
+                    $user->email     = $request->input('modal-input-email-edit');
+                    $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
+                    $user->user_type = $request->input('modal-input-usertype-edit');
+                    // ...image upload
+                    /*
+                    $path = $request->file('modal-input-photo-edit')->store('images/profile');  //stored in storage/app/images/
+                    $url = \Storage::url($path);
+                    */
+                    if($request->hasFile('modal-input-photo-edit')){
+                        //$path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
+                        $file = $request->file('modal-input-photo-edit');
+                        $name = $file->getClientOriginalName();
+                        $path = $file->storeAs('images/profile', $name);
+                        $url = \Storage::url($path); //stores the full path
+
+                        $user->photo_url = $url;
+                    }
+
+
+                    $user->update($request->all());
+
+                    //validation success, 200 OK.
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
+
+
             //$input = $request->input();  //take ALL input values into $input, as an assoc.array
             //$u_id = $input['data-uid'];
             //dd($u_id);
 
             //$user = DB::table('users')->where('id', $u_id)->first();
-            $user = User::findOrFail($id); //was findOrFail($u_id);
-
-            $user->name      = $request->input('modal-input-name-edit');
-            $user->email     = $request->input('modal-input-email-edit');
-            $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
-            $user->user_type = $request->input('modal-input-usertype-edit');
-            // ...image upload
-            $path = $request->file('modal-input-photo-edit')->store('images/profile');  //stored in storage/app/images/
-            $url = \Storage::url($path);
-            $user->photo_url = $url;
 
 
-            $user->update($request->all());
-
-
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
+            */
 
             /*
             if ($request()->ajax()){
@@ -79,7 +135,7 @@ class UserController extends Controller
 
             //return Datatables::of($user)->make(true);
             //return response()->json($user);
-            return back();
+            //return back();
         }
         else
         {
@@ -204,46 +260,94 @@ class UserController extends Controller
             ]);
             */
 
+            /*
             $this->validate($request, [
                 'photo_url' => 'image|mimes:jpeg,jpg,png,gif|max:100',
             ]);
-
-
-            $user = new User();
-
-            $user->name      = $request->input('modal-input-name-create');
-            $user->email     = $request->input('modal-input-email-create');
-            $user->password  = \Hash::make($request->input('modal-input-passwd-create'));
-            $user->user_type = $request->input('modal-input-usertype-create');
-            // Set other fields (if applicable)...
-            // ...image upload
-            /*
-            $path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
-            $url = \Storage::url($path); //stores the full path
-            $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
             */
 
-            $user->save(); //Save the new user into the database
+            $validation_rules = [
+                'modal-input-name-create' => 'required',
+                'modal-input-email-create' => 'required',
+                'modal-input-passwd-create' => 'required',
+                'modal-input-usertype-create' => 'required',
+                'modal-input-photo-create' => 'nullable',
+            ];
+
+            $custom_messages = [
+                'modal-input-name-create.required' => 'Το όνομα απαιτείται',
+                'modal-input-email-create.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-passwd-create.required' => 'Το συνθηματικό απαιτείται',
+                'modal-input-usertype-create.required' => 'Ο ρόλος χρήστη απαιτείται',
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+
+
+            if($request->ajax()){
+
+                if($validator->fails()){
+                    //validatiun failure, error 422
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+                }
+
+                if($validator->passes()){
+
+                    $user = new User();
+
+                    $user->name      = $request->input('modal-input-name-create');
+                    $user->email     = $request->input('modal-input-email-create');
+                    $user->password  = \Hash::make($request->input('modal-input-passwd-create'));
+                    $user->user_type = $request->input('modal-input-usertype-create');
+                    // Set other fields (if applicable)...
+                    // ...image upload
+                    if($request->hasFile('modal-input-photo-create')){
+                        //$path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
+                        $file = $request->file('modal-input-photo-create');
+                        $name = $file->getClientOriginalName();
+                        $path = $file->storeAs('images/profile', $name);
+                        $url = \Storage::url($path); //stores the full path
+
+                        $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
+                    }
+
+                    $user->save(); //Save the new user into the database
+
+                    /*
+                    //Also, CREATE a new row in 'employees' table
+                    $employee = new Employee();
+
+                    $employee->name = $user->name;
+                    $employee->email = $user->email;
+                    $employee->employee_type = $user->user_type;
+
+                    //$employee->save();
+
+                    //$user = User::find(1);
+                    $user->profile()->save($employee); //when I create a new User, ALSO create a NEW Employee with/from the same(almost) data as the User.
+                    */
+
+                    //success, 200 OK.
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
+
 
             /*
-            //Also, CREATE a new row in 'employees' table
-            $employee = new Employee();
-
-            $employee->name = $user->name;
-            $employee->email = $user->email;
-            $employee->employee_type = $user->user_type;
-
-            //$employee->save();
-
-            //$user = User::find(1);
-            $user->profile()->save($employee); //when I create a new User, ALSO create a NEW Employee with/from the same(almost) data as the User.
-            */
-
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
 
         } else {
             return abort(403, 'Sorry, you cannot add users.');

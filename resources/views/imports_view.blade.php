@@ -162,10 +162,8 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-recipient-create">Υπεύθυνος Παραλαβής</label>
                                         <div class="col-lg-9">
-                                        <!--
-                                            <input type="text" name="modal-input-recipient-create" class="form-control" id="modal-input-recipient-create"
-                                                value="" />
-                                        -->
+                                        <!-- <input type="text" name="modal-input-recipient-create" class="form-control" id="modal-input-recipient-create"
+                                                value="" />  -->
                                         <select name="modal-input-recipient-create" id="modal-input-recipient-create"  class="form-control">
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
@@ -644,6 +642,10 @@
                 console.log(iid);
                 console.log(formData);
 
+                //reset the error field(s).
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -787,6 +789,10 @@
             var formData = new FormData(this);
 
             console.log(formData);
+
+            //reset the error field(s).
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
 
             $.ajax({
                 method: "POST",

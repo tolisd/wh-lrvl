@@ -24,6 +24,7 @@ class Import extends Model
         'product_id',
         'employee_id',
         'company_id',
+        'transport_id',
         'importassignment_id',
     ];
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;  //added for DB retrieval
 use Auth; //added for Auth
+use Validator;
 use App\Product;
 use App\Category;
 use App\Type;
@@ -44,26 +45,74 @@ class ProductController extends Controller
         //if ($authenticatedUser){
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $product = new Product();
+            $validation_rules = [
+                'modal-input-code-create' => 'required|unique:products,code',
+                'modal-input-name-create' => 'required',
+                'modal-input-type-create' => 'required|exists:types,id',
+                'modal-input-category-create' => 'required|exists:category,id',
+                'modal-input-description-create' => 'required',
+                'modal-input-quantity-create' => 'required',
+                'modal-input-measureunit-create' => 'required|exists:measunits,id',
+                'modal-input-comments-create' => 'required',
+            ];
 
-            $product->code            = $request->input('modal-input-code-create');
-            $product->name            = $request->input('modal-input-name-create');
-            $product->type_id         = $request->input('modal-input-type-create');             //references 'id' in types table
-            $product->category_id     = $request->input('modal-input-category-create');         //references 'id' in category table
-            $product->description     = $request->input('modal-input-description-create');
-            $product->quantity        = $request->input('modal-input-quantity-create');
-            $product->measunit_id     = $request->input('modal-input-measureunit-create');
-            $product->comments        = $request->input('modal-input-comments-create');
-            //$product->assignment_id   = $request->input('modal-input-assignment-create');        //references 'id' in assignments table
-            // Set other fields (if applicable)...
+            $custom_messages = [
+                'modal-input-code-create.required' => 'Ο κωδικός απαιτείται',
+                'modal-input-name-create.required' => 'Το όνομα απαιτείται',
+                'modal-input-type-create.required' => 'Το είδος απαιτείται',
+                'modal-input-category-create.required' => 'Η κατηγορία απαιτείται',
+                'modal-input-description-create.required' => 'Η περιγραφή απαιτείται',
+                'modal-input-quantity-create.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-measureunit-create.required' => 'Η μονάδα μέτρησης απαιτείται',
+                'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
+            ];
 
-            $product->save(); //Save the new user into the database
+            //prepare the $validator variable
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
 
+            if($request->ajax()){
+
+                if($validator->fails()){
+                    //failure, 422
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+                }
+
+                if($validator->passes()){
+
+                    $product = new Product();
+
+                    $product->code            = $request->input('modal-input-code-create');
+                    $product->name            = $request->input('modal-input-name-create');
+                    $product->type_id         = $request->input('modal-input-type-create');             //references 'id' in types table
+                    $product->category_id     = $request->input('modal-input-category-create');         //references 'id' in category table
+                    $product->description     = $request->input('modal-input-description-create');
+                    $product->quantity        = $request->input('modal-input-quantity-create');
+                    $product->measunit_id     = $request->input('modal-input-measureunit-create');
+                    $product->comments        = $request->input('modal-input-comments-create');
+                    //$product->assignment_id   = $request->input('modal-input-assignment-create');        //references 'id' in assignments table
+                    // Set other fields (if applicable)...
+                    $product->save(); //Save the new user into the database
+
+                    //success, 200
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
+
+
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
             //return view('create_product');
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -79,26 +128,74 @@ class ProductController extends Controller
          //if ($authenticatedUser){
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $product = Product::findOrFail($id); //was findOrFail($u_id);
+            $validation_rules = [
+                'modal-input-code-edit' => ['required', \Illuminate\Validation\Rule::unique('products', 'code')->ignore($id)],
+                'modal-input-name-edit' => ['required'],
+                'modal-input-type-edit' => ['required', 'exists:types,id'],
+                'modal-input-category-edit' => ['required', 'exists:category,id'],
+                'modal-input-description-edit' => ['required'],
+                'modal-input-quantity-edit' => ['required'],
+                'modal-input-measureunit-edit' => ['required', 'exists:measunits,id'],
+                'modal-input-comments-edit' => ['required'],
+            ];
 
-            $product->code            = $request->input('modal-input-code-edit');
-            $product->name            = $request->input('modal-input-name-edit');
-            $product->type_id         = $request->input('modal-input-type-edit');             //references 'id' in types table
-            $product->category_id     = $request->input('modal-input-category-edit');         //references 'id' in category table
-            $product->description     = $request->input('modal-input-description-edit');
-            $product->quantity        = $request->input('modal-input-quantity-edit');
-            $product->measunit_id     = $request->input('modal-input-measureunit-edit');
-            $product->comments        = $request->input('modal-input-comments-edit');
-            //$product->assignment_id   = $request->input('modal-input-assgncode-edit');        //references 'id' in assignments table
+            $custom_messages = [
+                'modal-input-code-edit.required' => 'Ο κωδικός απαιτείται',
+                'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
+                'modal-input-type-edit.required' => 'Το είδος απαιτείται',
+                'modal-input-category-edit.required' => 'Η κατηγορία απαιτείται',
+                'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται',
+                'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-measureunit-edit.required' => 'Η μονάδα μέτρησης απαιτείται',
+                'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
+            ];
+
+            //prepare the $validator variable
+            $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
+
+            if($request->ajax()){
+
+                if($validator->fails()){
+                    //failure, 422
+                    return \Response::json([
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->toArray(),
+                    ], 422);
+                }
+
+                if($validator->passes()){
+
+                    $product = Product::findOrFail($id); //was findOrFail($u_id);
+
+                    $product->code            = $request->input('modal-input-code-edit');
+                    $product->name            = $request->input('modal-input-name-edit');
+                    $product->type_id         = $request->input('modal-input-type-edit');             //references 'id' in types table
+                    $product->category_id     = $request->input('modal-input-category-edit');         //references 'id' in category table
+                    $product->description     = $request->input('modal-input-description-edit');
+                    $product->quantity        = $request->input('modal-input-quantity-edit');
+                    $product->measunit_id     = $request->input('modal-input-measureunit-edit');
+                    $product->comments        = $request->input('modal-input-comments-edit');
+                    //$product->assignment_id   = $request->input('modal-input-assgncode-edit');        //references 'id' in assignments table
+
+                    $product->update($request->all());  //configure the $fillable & $guarded properties/columns in this Model!
+
+                    //success, 200
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                }
+            }
 
 
-            $product->update($request->all());  //configure the $fillable & $guarded properties/columns in this Model!
-
+            /*
             if ($request->ajax()){
                 return \Response::json();
             }
 
             return back();
+            */
             //return view('update_product');
          } else {
             return abort(403, 'Sorry you cannot view this page');

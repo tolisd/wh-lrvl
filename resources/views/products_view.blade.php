@@ -132,12 +132,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the errors will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -154,7 +158,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-code-create">Αναγνωριστικό</label>
                                         <input type="text" name="modal-input-code-create" class="form-control" id="modal-input-code-create"
-                                            value="" required autofocus>
+                                            value="" autofocus />
                                     </div>
                                     <!-- /code -->
 
@@ -162,7 +166,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Προϊόντος</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /name -->
 
@@ -170,9 +174,20 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-create">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-create" class="form-control" id="modal-input-description-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
+
+                                    <!-- product category -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-category-create">Κατηγορία</label>
+                                        <select name="modal-input-category-create" id="modal-input-category-create" class="form-control">
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /product category -->
 
                                     <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
@@ -181,7 +196,7 @@
                                         <input type="text" name="modal-input-type-create" class="form-control" id="modal-input-type-create"
                                            value="" required />
                                         -->
-                                        <select name="modal-input-type-create" id="modal-input-type-create" class="form-control" required>
+                                        <select name="modal-input-type-create" id="modal-input-type-create" class="form-control">
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
@@ -189,29 +204,19 @@
                                     </div>
                                     <!-- /prod_type -->
 
-                                    <!-- product category -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-category-create">Κατηγορία</label>
-                                        <select name="modal-input-category-create" id="modal-input-category-create" class="form-control" required>
-                                        @foreach($categories as $cat)
-                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                        @endforeach
-                                        </select>
-                                    </div>
-                                    <!-- /product category -->
 
                                     <!-- quantity -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-create" class="form-control" id="modal-input-quantity-create"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /quantity -->
 
                                     <!-- measure_unit -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-measureunit-create">Μονάδα Μέτρησης</label>
-                                        <select name="modal-input-measureunit-create" id="modal-input-measureunit-create" class="form-control" required>
+                                        <select name="modal-input-measureunit-create" id="modal-input-measureunit-create" class="form-control">
                                         @foreach($measunits as $mu)
                                                 <option value="{{ $mu->id }}">{{ $mu->name }}</option>
                                         @endforeach
@@ -223,7 +228,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-create">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-create" class="form-control" id="modal-input-comments-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -235,7 +240,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-product-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Προϊόν</button>
+                                data-target="#add-modal">Πρόσθεσε Προϊόν</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -258,12 +263,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST">
+                        <form id="edit-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the errors will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -280,7 +289,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-code-edit">Αναγνωριστικό</label>
                                         <input type="text" name="modal-input-code-edit" class="form-control" id="modal-input-code-edit"
-                                            value="" required autofocus>
+                                            value="" autofocus />
                                     </div>
                                     <!-- /code -->
 
@@ -288,7 +297,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα Προϊόντος</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
-                                            value="" required autofocus>
+                                            value="" />
                                     </div>
                                     <!-- /name -->
 
@@ -296,9 +305,20 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-edit">Περιγραφή</label>
                                         <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
+
+                                    <!-- product category -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-category-edit">Κατηγορία</label>
+                                        <select name="modal-input-category-edit" id="modal-input-category-edit" class="form-control">
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /category -->
 
                                     <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
@@ -307,7 +327,7 @@
                                         <input type="text" name="modal-input-type-edit" class="form-control" id="modal-input-type-edit"
                                            value="" required />
                                         -->
-                                        <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control" required>
+                                        <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control">
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
@@ -315,29 +335,18 @@
                                     </div>
                                     <!-- /prod_type -->
 
-                                    <!-- product category -->
-                                    <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-category-edit">Κατηγορία</label>
-                                        <select name="modal-input-category-edit" id="modal-input-category-edit" class="form-control" required>
-                                        @foreach($categories as $cat)
-                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                        @endforeach
-                                        </select>
-                                    </div>
-                                    <!-- /category -->
-
                                     <!-- quantity -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
-                                            value="" required>
+                                            value="" />
                                     </div>
                                     <!-- /quantity -->
 
                                     <!-- measure_unit -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-measureunit-edit">Μονάδα Μέτρησης</label>
-                                        <select name="modal-input-measureunit-edit" id="modal-input-measureunit-edit" class="form-control" required>
+                                        <select name="modal-input-measureunit-edit" id="modal-input-measureunit-edit" class="form-control">
                                         @foreach($measunits as $mu)
                                                 <option value="{{ $mu->id }}">{{ $mu->name }}</option>
                                         @endforeach
@@ -349,7 +358,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-comments-edit">Σχόλια</label>
                                         <textarea rows="3" name="modal-input-comments-edit" class="form-control" id="modal-input-comments-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /comments -->
 
@@ -375,7 +384,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-product-button"
-                                data-target="#edit-modal" data-toggle="modal" data-pid="">Διόρθωσε Προϊόν</button>
+                                data-target="#edit-modal" data-pid="">Διόρθωσε Προϊόν</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -423,9 +432,9 @@
 
                                     <!-- name -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-code-del">Κωδικός Προϊόντος</label>
+                                        <label class="col-form-label" for="modal-input-code-del">Αναγνωριστικό Προϊόντος</label>
                                         <input type="text" name="modal-input-code-del" class="form-control-plaintext" id="modal-input-code-del"
-                                            value="" readonly required />
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
 
@@ -433,7 +442,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-del">Όνομα</label>
                                         <input type="text" name="modal-input-name-del" class="form-control-plaintext" id="modal-input-name-del"
-                                            value="" readonly required />
+                                            value="" readonly />
                                     </div>
                                     <!-- /name -->
                                 </div>
@@ -537,7 +546,10 @@
         //for all 3 modals/actions, POST, PUT, DELETE
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                //"Content-Type": "application/json",
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             }
         });
 
@@ -586,6 +598,10 @@
                 console.log(pid);
                 console.log(formData);
 
+                //also, reset the error field(s).
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     method: "POST",
                     data: formData,
@@ -608,15 +624,28 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Συνέβη κάποιο λάθος!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Το προϊόν υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης προϊόντος!';
+                        }  else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            //console.log(json_err); //correct json!
+
+                            $('.alert-danger').html('');
+                            $('.alert-danger').show();
+
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>' + value[0] + '</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -630,9 +659,6 @@
             });
 
         });
-
-
-
 
 
 
@@ -709,9 +735,6 @@
 
 
 
-
-
-
         //AJAX for Add/Create New Product submit
         //event delegation here..
         $(document).on("submit", "#add-form", function(evt){
@@ -719,6 +742,10 @@
             var formData = new FormData(this);
 
             console.log(formData);
+
+            //also, reset the error field(s).
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
 
             $.ajax({
                 method: "POST",
@@ -742,15 +769,28 @@
                             }
                         });
                 },
-                error: function(response){
-                    console.log('Error:', response);
+                error: function(xhr){
+                    console.log('Error:', xhr);
 
                     var msg = 'Συνέβη κάποιο λάθος!';
 
-                    if(response.status == 500){
+                    if(xhr.status == 500){
                         msg = 'Το προϊόν υπάρχει ήδη!';
-                    } else if (response.status == 403){
+                    } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας προϊόντος!';
+                    } else if (xhr.status == 422){
+                        msg = 'Δώσατε λάθος δεδομένα!';
+
+                        var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                        //console.log(json_err); //correct json!
+
+                        $('.alert-danger').html('');
+                        $('.alert-danger').show();
+
+                        $.each(json_err.errors, function(key, value){
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>' + value[0] + '</li>');
+                        });
                     }
 
                     Swal.fire({
@@ -785,6 +825,10 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+
+            //also, reset the error field(s).
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
         });
 
 

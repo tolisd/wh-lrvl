@@ -555,12 +555,6 @@
         });
 
 
-
-
-
-
-
-
         //AJAX for Add/Create New Products Category submit
         //event delegation here..
         $(document).on("submit", "#add-form", function(evt){
@@ -629,7 +623,6 @@
 
 
         //necessary additions for when the modals get hidden
-
 
             $('#edit-modal').on('hidden.bs.modal', function(e){
                 //console.log('EDIT modal event, is off!')

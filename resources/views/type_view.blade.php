@@ -32,6 +32,8 @@
                     <tr>
                         <th class="text-left">Όνομα Είδους</th>
                         <th class="text-left">Περιγραφή Είδους</th>
+                        <th class="text-left">Κατηγορία</th>
+
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
                     </tr>
@@ -42,12 +44,14 @@
                     <tr class="user-row" data-tid="{{ $type->id }}">  <!-- necessary additions -->
                         <td>{{ $type->name }}</td>
                         <td>{{ $type->description }}</td>
+                        <td>{{ $type->category_id }}</td>
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-tid="{{ $type->id }}"
                                     data-name="{{ $type->name }}"
-                                    data-description="{{ $type->description}}">
+                                    data-description="{{ $type->description}}"
+                                    data-categoryid="{{ $type->category_id}}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -107,12 +111,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST">
+                        <form id="add-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                            <!-- this is where the errors will be displayed -->
+                            <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -129,7 +137,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα Είδους</label>
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus>
+                                            value="" autofocus //>
                                     </div>
                                     <!-- /name -->
 
@@ -137,9 +145,20 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-create">Περιγραφή Είδους</label>
                                         <textarea rows="3" name="modal-input-description-create" class="form-control" id="modal-input-description-create"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
+
+                                    <!-- category -->
+                                    <div class="form-group">
+                                        <label for="modal-input-category-create" class="col-form-label">Κατηγορία</label>
+                                        <select name="modal-input-category-create" id="modal-input-category-create" class="form-control">
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- category -->
 
                                 </div>
                             </div>
@@ -149,7 +168,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="add-button" name="add-type-button"
-                                data-target="#add-modal" data-toggle="modal">Πρόσθεσε Είδος Προϊόντος</button>
+                                data-target="#add-modal">Πρόσθεσε Είδος Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -172,12 +191,16 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="edit-form" class="form-horizontal" method="POST">
+                        <form id="edit-form" class="form-horizontal" method="POST" novalidate>
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('PUT')
 
                         <!-- Modal body -->
                         <div class="modal-body">
+
+                             <!-- this is where the errors will be displayed -->
+                             <div class="alert alert-danger" style="display:none">
+                            </div>
 
                             <div class="card text-white bg-white mb-0">
                                 <!--
@@ -194,7 +217,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα Είδους</label>
                                         <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
-                                            value="" required autofocus>
+                                            value="" autofocus />
                                     </div>
                                     <!-- /name -->
 
@@ -202,9 +225,20 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-description-edit">Περιγραφή Είδους</label>
                                         <textarea rows="3" name="modal-input-description-edit" class="form-control" id="modal-input-description-edit"
-                                            value="" required></textarea>
+                                            value=""></textarea>
                                     </div>
                                     <!-- /description -->
+
+                                    <!-- category -->
+                                    <div class="form-group">
+                                        <label for="modal-input-category-edit" class="col-form-label">Κατηγορία</label>
+                                        <select name="modal-input-category-edit" id="modal-input-category-edit" class="form-control">
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- category -->
 
                                 </div>
                             </div>
@@ -214,7 +248,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="edit-button" name="edit-type-button"
-                                data-target="#edit-modal" data-toggle="modal" data-tid="">Διόρθωσε Είδος Προϊόντος</button>
+                                data-target="#edit-modal" data-tid="">Διόρθωσε Είδος Προϊόντος</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
 
@@ -327,7 +361,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0,1]
+                                columns: [0,1,2]
                             }
                         },
                         {
@@ -335,7 +369,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Είδη Προϊόντων",
                             exportOptions: {
-                                columns: [0,1]
+                                columns: [0,1,2]
                             }
                         },
                         {
@@ -343,7 +377,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Είδη Προϊόντων",
                             exportOptions: {
-                                columns: [0,1]
+                                columns: [0,1,2]
                             }
                         },
                         {
@@ -352,14 +386,14 @@
                             "title"  : "Είδη Προϊόντων",
                             "orientation" : "portrait",
                             exportOptions: {
-                                columns: [0,1]
+                                columns: [0,1,2]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0,1]
+                                columns: [0,1,2]
                             }
                         },
                     ],
@@ -368,7 +402,10 @@
         //for all 3 modals/actions, POST, PUT, DELETE
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                //"Content-Type": "application/json",
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             }
         });
 
@@ -410,6 +447,9 @@
                 console.log(tid);
                 console.log(formData);
 
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
+
                 $.ajax({
                     type: "POST",
                     data: formData,
@@ -432,15 +472,28 @@
                             }
                         });
                     },
-                    error: function(response){
-                        console.log('Error:', response);
+                    error: function(xhr){
+                        console.log('Error:', xhr);
 
                         var msg = 'Κάτι πήγε στραβά..!';
 
-                        if(response.status == 500){
+                        if(xhr.status == 500){
                             msg = 'Η κατηγορία υπάρχει ήδη!';
-                        } else if (response.status == 403){
+                        } else if (xhr.status == 403){
                             msg = 'Δεν έχετε to δικαίωμα διόρθωσης είδους!';
+                        } else if (xhr.status == 422){
+                            msg = 'Δώσατε λάθος δεδομένα!';
+
+                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            //console.log(json_err); //correct json!
+
+                            $('.alert-danger').html('');
+                            $('.alert-danger').show();
+                            //I do not need this on top, as I now have individual error messages below
+                            $.each(json_err.errors, function(key, value){
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<li>' + value[0] + '</li>');
+                            });
                         }
 
                         Swal.fire({
@@ -544,6 +597,9 @@
 
             console.log(formData);
 
+            $('.alert-danger').hide();
+            $('.alert-danger').html('');
+
             $.ajax({
                 method: "POST",
                 data: formData,
@@ -566,15 +622,28 @@
                             }
                         });
                 },
-                error: function(response){
-                    console.log('Error:', response);
+                error: function(xhr){
+                    console.log('Error:', xhr);
 
                     var msg = 'Κάτι πήγε στραβά..!';
 
-                    if(response.status == 500){
+                    if(xhr.status == 500){
                         msg = 'Η κατηγορία υπάρχει ήδη!';
-                    } else if (response.status == 403){
+                    } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας είδους!';
+                    } else if (xhr.status == 422){
+                        msg = 'Δώσατε λάθος δεδομένα!';
+
+                        var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                        //console.log(json_err); //correct json!
+
+                        $('.alert-danger').html('');
+                        $('.alert-danger').show();
+                         //I do not need this on top, as I now have individual error messages below
+                        $.each(json_err.errors, function(key, value){
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<li>' + value[0] + '</li>');
+                        });
                     }
 
                     Swal.fire({
@@ -604,6 +673,10 @@
             //resets the create/add form. Re-use this code snippet in other blade views!
             $(document).on('click', '[data-dismiss="modal"]', function(e){
                 $('#add-form').find("input,textarea,select").val('');
+
+                //reset the error field(s).
+                $('.alert-danger').hide();
+                $('.alert-danger').html('');
             });
 
 

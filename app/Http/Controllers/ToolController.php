@@ -102,12 +102,13 @@ class ToolController extends Controller
 
                     //$url = null;
                     if($request->hasFile('modal-input-file-charge')){
-                            $file = $request->file('modal-input-file-charge');
-                            $name = $file->getClientOriginalName();
-                            $path = $file->storeAs('arxeia/xrewstika', $name);
-                            $url  = \Storage::url($path);
+                        $file = $request->file('modal-input-file-charge');
+                        $name = $file->getClientOriginalName();
+                        $path = $file->storeAs('arxeia/xrewstika', $name);
+                        $url  = \Storage::url($path);
+
+                        $tool_for_charging->file_url = $url;
                     }
-                    $tool_for_charging->file_url = $url;
 
                     $tool_for_charging->update($request->all());
                     //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
