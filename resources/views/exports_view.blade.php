@@ -94,7 +94,7 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-eid="{{ $export->id }}"
-                                    data-text="{{ $export->exportassignment->export_assignment_text }}">
+                                    data-deliveredon="{{ $export->delivered_on }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -506,12 +506,19 @@
                                     </div>
 
                                     <!-- date_time_delivered_on -->
+                                    <!--
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtdeliv-del">Ημ/νία &amp; Ώρα Παράδοσης</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtdeliv-del" class="form-control-plaintext" id="modal-input-dtdeliv-del"
                                                 value="" autocomplete="off" />
                                         </div>
+									</div>
+                                    -->
+                                    <div class="form-group">
+										<label class="col-form-label" for="modal-input-dtdeliv-del">Ημ/νία &amp; Ώρα Παράδοσης</label>
+										<input type="text" name="modal-input-dtdeliv-del" class="form-control-plaintext" id="modal-input-dtdeliv-del"
+											value="" />
 									</div>
 									<!-- /date_time_delivered_on -->
 

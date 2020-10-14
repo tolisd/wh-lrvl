@@ -11,6 +11,7 @@ use App\Exportassignment;
 use App\Company;
 use App\Transport; //transport_companies
 use App\Employee;
+use App\Product;
 use Carbon\Carbon;
 
 
@@ -26,12 +27,14 @@ class ExportController extends Controller
             $companies = Company::all();
             $transport_companies = Transport::all();
             $employees = Employee::all();
+            $products = Product::all(); //what if there a lot of products in the DB? chunk()? => use Query Builder instead..
 
             return view('exports_view', ['exportassignments' => $exportassignments,
                                         'companies' => $companies,
                                         'employees' => $employees,
                                         'transport_companies' => $transport_companies,
-                                        'exports' => $exports]);
+                                        'exports' => $exports,
+                                        'products' => $products]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -44,30 +47,35 @@ class ExportController extends Controller
             //validation rules
             $validation_rules = [
                 'modal-input-exportassignment-create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
-                'modal-input--create' => 'required',
+                'modal-input-recipient-create' => 'required',
+                'modal-input-expco-create' => 'required',
+                'modal-input-dtdeliv-create' => 'required',
+                'modal-input-vehicleregno-create' => 'required',
+                'modal-input-shipco-create' => 'required',
+                'modal-input-sendplace-create' => 'required',
+                'modal-input-destin-create' => 'required',
+                'modal-input-chargehrs-create' => 'required',
+                'modal-input-hours-create' => 'required',
+                'modal-input-bulletin-create' => 'required',
+                'modal-input-dtitle-create' => 'required',
+                'modal-input-products-create' => 'required',
             ];
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-exportassignment-create.required' => 'Το πεδίο Ανάθεση Εξαγωγής απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
-                'modal-input--create.required' => 'Το πεδίο <> απαιτείται',
+                'modal-input-exportassignment-create.required' => 'Το πεδίο ανάθεση εξαγωγής απαιτείται',
+                'modal-input-recipient-create.required' => 'Ο υπεύθυνος παράδοσης απαιτείται',
+                'modal-input-expco-create.required' => 'Η εταιρεία παράδοσης απαιτείται',
+                'modal-input-dtdeliv-create.required' => 'Η ημ/νία & ώρα παράδοσης απαιτείται',
+                'modal-input-vehicleregno-create.required' => 'Ο αριθμός κυκλοφορίας μεταφορικού μέσου απαιτείται',
+                'modal-input-shipco-create.required' => 'Η μεταφορική εταιρεία απαιτείται',
+                'modal-input-sendplace-create.required' => 'Ο τόπος αποστολής απαιτείται',
+                'modal-input-destin-create.required' => 'Ο προορισμός απαιτείται',
+                'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
+                'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-bulletin-create.required' => 'Το δελτίο αποστολής απαιτείται',
+                'modal-input-dtitle-create.required' => 'Ο διακριτός τίτλος παράδοσης απαιτείται',
+                'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
             ];
 
             //prepare the $validator variable for these validation rules
@@ -125,32 +133,36 @@ class ExportController extends Controller
 
             //validation rules
             $validation_rules = [
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
-                'modal-input--edit' => 'required',
+                'modal-input-exportassignment-edit' => 'required',
+                'modal-input-recipient-edit' => 'required',
+                'modal-input-expco-edit' => 'required',
+                'modal-input-dtdeliv-edit' => 'required',
+                'modal-input-vehicleregno-edit' => 'required',
+                'modal-input-shipco-edit' => 'required',
+                'modal-input-sendplace-edit' => 'required',
+                'modal-input-destin-edit' => 'required',
+                'modal-input-chargehrs-edit' => 'required',
+                'modal-input-hours-edit' => 'required',
+                'modal-input-bulletin-edit' => 'required',
+                'modal-input-dtitle-edit' => 'required',
+                'modal-input-products-edit' => 'required',
             ];
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
-                'modal-input--edit.required' => '',
+                'modal-input-exportassignment-edit.required' => 'Το πεδίο ανάθεση εξαγωγής απαιτείται',
+                'modal-input-recipient-edit.required' => 'Ο υπεύθυνος παράδοσης απαιτείται',
+                'modal-input-expco-edit.required' => 'Η εταιρεία παράδοσης απαιτείται',
+                'modal-input-dtdeliv-edit.required' => 'Η ημ/νία & ώρα παράδοσης απαιτείται',
+                'modal-input-vehicleregno-edit.required' => 'Ο αριθμός κυκλοφορίας μεταφορικού μέσου απαιτείται',
+                'modal-input-shipco-edit.required' => 'Η μεταφορική εταιρεία απαιτείται',
+                'modal-input-sendplace-edit.required' => 'Ο τόπος αποστολής απαιτείται',
+                'modal-input-destin-edit.required' => 'Ο προορισμός απαιτείται',
+                'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
+                'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-bulletin-edit.required' => 'Το δελτίο αποστολής απαιτείται',
+                'modal-input-dtitle-edit.required' => 'Ο διακριτός τίτλος παράδοσης απαιτείται',
+                'modal-input-products-edit.required' => 'Τα προϊόντα απαιτούνται',
             ];
 
 

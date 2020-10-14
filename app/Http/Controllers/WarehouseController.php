@@ -45,8 +45,8 @@ class WarehouseController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])){
 
             //3 Eloquent queries:
-            $warehouse_data = Warehouse::where('id', $id)->get();
-            $employees_in_warehouse = Employee::where('warehouse_id', $id)->get(); //returns an eloqiuent collection
+            $warehouse_data = Warehouse::with('products')->where('id', $id)->get();
+            $employees_in_warehouse = Employee::where('warehouse_id', $id)->get(); //returns an eloquent collection
             $products_in_warehouse = Product::has('warehouses')->get();
 
             return view('warehouse_show', ['warehouse_data'         => $warehouse_data,

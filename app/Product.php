@@ -16,6 +16,7 @@ class Product extends Model
         'code', 'name', 'description', 'quantity', 'comments', 'category_id', 'type_id', 'warehouse_id',
     ];
 
+    //warehouses is many-to-many with products
     public function warehouses(){
         return $this->belongsToMany('App\Warehouse', 'product_warehouse', 'product_id', 'warehouse_id')
                     ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.

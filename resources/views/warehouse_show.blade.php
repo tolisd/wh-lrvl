@@ -53,13 +53,15 @@
                 </thead>
 
                 <tbody>
-                    @foreach($products_in_warehouse as $product)
+                @foreach($warehouse_data as $wh)
+                    @foreach($wh->products as $product)
                     <tr>
                         <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->description }}</td>
                     </tr>
                     @endforeach
+                @endforeach
                 </tbody>
             </table>
             @endcanany <!-- isWarehouseForeman, isWarehouseWorker -->

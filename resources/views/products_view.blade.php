@@ -32,12 +32,13 @@
                     <tr>
                         <th class="text-left">Αναγνωριστικό</th>
                         <th class="text-left">Όνομα</th>
-                        <th class="text-left">Είδος</th>  <!-- product type -->
                         <th class="text-left">Κατηγορία</th>
+                        <th class="text-left">Είδος</th>  <!-- product type -->
                         <th class="text-left">Περιγραφή</th>
                         <th class="text-left">Ποσότητα</th>
                         <th class="text-left">Μον.Μέτρ.</th>
                         <th class="text-left">Σχόλια</th>
+                        <th class="text-left">Αποθήκη/-ες</th>
                         <!--
                         <th class="text-left">Κωδικός Ανάθεσης</th>
                         --> <!-- assignment_code, nullable()? -->
@@ -54,12 +55,20 @@
                     <tr class="user-row" data-pid="{{ $product->id }}">  <!-- necessary additions -->
                         <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
-                        <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
                         <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
+                        <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->quantity }}</td>
                         <td>{{ $product->measureunit->name }}</td> <!-- measureunit() in App\Product.php -->
                         <td>{{ $product->comments }}</td>
+
+                        <td>
+                            <ul>
+                            @foreach($product->warehouses as $warehouse)
+                                <li>{{ $warehouse->name }}</li>
+                            @endforeach
+                            </ul>
+                        </td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -192,14 +201,13 @@
                                     <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-type-create">Είδος</label>
-                                        <!--
-                                        <input type="text" name="modal-input-type-create" class="form-control" id="modal-input-type-create"
-                                           value="" required />
-                                        -->
                                         <select name="modal-input-type-create" id="modal-input-type-create" class="form-control">
+                                        <!-- this select will receive its values via ajax below -->
+                                        <!--
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
+                                        -->
                                         </select>
                                     </div>
                                     <!-- /prod_type -->
@@ -231,6 +239,17 @@
                                             value=""></textarea>
                                     </div>
                                     <!-- /comments -->
+
+                                    <!-- warehouses, to which warehouses this product belongs to -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-warehouses-create">Αποθήκη/-ες</label>
+                                        <select name="modal-input-warehouses-create[]" id="modal-input-warehouses-create" multiple="multiple">
+                                        @foreach($warehouses as $warehouse)
+                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /warehouses -->
 
                                 </div>
                             </div>
@@ -323,14 +342,13 @@
                                     <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-type-edit">Είδος</label>
-                                        <!--
-                                        <input type="text" name="modal-input-type-edit" class="form-control" id="modal-input-type-edit"
-                                           value="" required />
-                                        -->
                                         <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control">
+                                        <!-- this select will get its values via ajax below -->
+                                        <!--
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
+                                        -->
                                         </select>
                                     </div>
                                     <!-- /prod_type -->
@@ -361,6 +379,17 @@
                                             value=""></textarea>
                                     </div>
                                     <!-- /comments -->
+
+                                    <!-- warehouses, to which warehouses this product belongs to -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-warehouses-edit">Αποθήκη/-ες</label>
+                                        <select name="modal-input-warehouses-edit[]" id="modal-input-warehouses-edit" multiple="multiple">
+                                        @foreach($warehouses as $warehouse)
+                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                    <!-- /warehouses -->
 
                                     <!--
                                     <div class="form-group">
@@ -483,6 +512,12 @@
     //console.log('Hi!');
 
     $(document).ready(function(){
+
+        //initialise the select2 components.
+        $('#modal-input-warehouses-create').select2();
+        $('#modal-input-warehouses-edit').select2();
+
+
 
          //configure & initialise the (Products) DataTable
          $('.table').DataTable({
@@ -802,6 +837,62 @@
                 }
             });
 
+        });
+
+
+        //ajax for dropdown lists in add and edit modals
+
+        //ajax add modal
+        $(document).on('change', '#modal-input-category-create', function(evt){
+
+            var categ_id = evt.target.value;
+
+            if(categ_id){
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: '{{ url(request()->route()->getPrefix()) }}' + '/products/type/' + categ_id,
+
+                    success: function(data){
+                        $('#modal-input-type-create').empty();
+                        $.each(data, function(key, value){
+                            $('#modal-input-type-create').append('<option value="'+ value +'">'+ key +'</option>');
+
+                            console.log('key='+key+ ', value='+value);
+                        });
+                    },
+
+                });
+            } else {
+                $('#modal-input-type-create').empty();
+            }
+        });
+
+
+        //ajax edit modal
+        $(document).on('change', '#modal-input-category-edit', function(evt){
+
+            var categ_id = evt.target.value;
+
+            if(categ_id){
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: '{{ url(request()->route()->getPrefix()) }}' + '/products/type/' + categ_id,
+
+                    success: function(data){
+                        $('#modal-input-type-edit').empty();
+                        $.each(data, function(key, value){
+                            $('#modal-input-type-edit').append('<option value="'+ value +'">'+ key +'</option>');
+
+                            console.log('key='+key+ ', value='+value);
+                        });
+                    },
+
+                });
+            } else {
+                $('#modal-input-type-create').empty();
+            }
         });
 
 

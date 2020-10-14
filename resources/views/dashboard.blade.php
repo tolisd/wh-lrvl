@@ -85,19 +85,19 @@
                   <i class="fas fa-cubes fa-sm" aria-hidden="true"></i>
                 </div>
                 @can('isSuperAdmin')
-                  <a href="{{ route('admin.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('admin.products.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isCompanyCEO')
-                  <a href="{{ route('manager.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('manager.products.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isWarehouseForeman')
-                  <a href="{{ route('foreman.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('foreman.products.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isWarehouseWorker')
-                  <a href="{{ route('worker.products.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('worker.products.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
             </div>
             @endcanany
@@ -113,19 +113,19 @@
                   <i class="fas fa-tools fa-sm" aria-hidden="true"></i>
                 </div>
                 @can('isSuperAdmin')
-                  <a href="{{ route('admin.tools.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('admin.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isCompanyCEO')
-                  <a href="{{ route('manager.tools.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('manager.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isWarehouseForeman')
-                  <a href="{{ route('foreman.tools.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('foreman.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isWarehouseWorker')
-                  <a href="{{ route('worker.tools.view') }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('worker.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
             </div>
             @endcanany
@@ -210,19 +210,19 @@
                         @endcanany
                         -->
                         @can('isSuperAdmin')
-                        <a href="{{ route('admin.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('admin.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                         @endcan
 
                         @can('isCompanyCEO')
-                        <a href="{{ route('manager.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('manager.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                         @endcan
 
                         @can('isWarehouseForeman')
-                        <a href="{{ route('foreman.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('foreman.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                         @endcan
 
                         @can('isAccountant')
-                        <a href="{{ route('accountant.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('accountant.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                         @endcan
 
 

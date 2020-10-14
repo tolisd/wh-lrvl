@@ -15,7 +15,7 @@ class AddUserIdToEmployees extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->unique();  //I want JUST 1 user info, for each user that is created
 
             $table->foreign('user_id')
                     ->references('id')

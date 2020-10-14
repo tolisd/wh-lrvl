@@ -41,6 +41,8 @@
 						<th class="text-left">Ώρες Εργασίας</th>
 						<th class="text-left">Δελτίο Αποστολής</th>
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
+                        <th class="text-left">Προϊόντα</th>
+                        <th class="text-left">Ανάθεση Εισαγωγής</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -60,6 +62,8 @@
 						<td>{{ $import->hours_worked }}</td>
 						<td>{{ $import->shipment_bulletin }}</td>
 						<td>{{ $import->discrete_description }}</td>
+                        <td>{{ $import->product_id }}</td>
+                        <td>{{ $import->importasignment_id }}</td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -67,14 +71,16 @@
                                     data-iid="{{ $import->id }}"
 									data-employeeid="{{ $import->employee_id }}"
 									data-companyid="{{ $import->company_id }}"
-									data-deliveredOn="{{ $import->delivered_on }}"
+									data-deliveredon="{{ $import->delivered_on }}"
 									data-vehicleregno="{{ $import->vehicle_reg_no }}"
 									data-transportid="{{ $import->transport_id }}"
 									data-deliveryaddress="{{ $import->delivery_address }}"
 									data-chargeablehours="{{ $import->chargeable_hours_worked }}"
 									data-hours="{{ $import->hours_worked }}"
 									data-bulletin="{{ $import->shipment_bulletin }}"
-									data-description="{{ $import->discrete_description }}">
+									data-description="{{ $import->discrete_description }}"
+                                    data-importassignmentid="{{ $import->importassignment_id }}"
+                                    data-products="{{ $import->product_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -82,7 +88,7 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-iid="{{ $import->id }}"
-                                    data-deliveredOn="{{ $import->delivered_on }}">
+                                    data-deliveredon="{{ $import->delivered_on }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -262,6 +268,40 @@
                                         </div>
 									</div>
 									<!-- /delivery_description -->
+
+                                    <!-- import_assignment -->
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-create">Ανάθεση Εισαγωγής</label>
+                                        <div class="col-lg-9">
+                                            <!--
+                                            <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
+                                                value="" />
+                                            -->
+                                            <select name="modal-input-importassignment-create" id="modal-input-importassignment-create">
+                                            @foreach(@import_assignments as $impassgnm)
+                                                <option value="{{ $impassgnm->id }}">{{ $impassgnm->import_assignment_text }}</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!-- /import_assignment -->
+
+                                    <!-- products -->
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-create">Προϊόντα</label>
+                                        <div class="col-lg-9">
+                                            <!--
+                                            <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
+                                                value="" />
+                                            -->
+                                            <select name="modal-input-products-create" id="modal-input-products-create">
+                                            @foreach(@products as $product)
+                                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!-- /products -->
 
 
                                 </div>
@@ -476,7 +516,7 @@
 									<!-- date_time_delivered_on -->
 									<div class="form-group">
 										<label class="col-form-label" for="modal-input-dtdeliv-del">Ημ/νία &amp; Ώρα Παραλαβής</label>
-										<input type="text" name="modal-input-dtdeliv-create" class="form-control-plaintext" id="modal-input-dtdeliv-del"
+										<input type="text" name="modal-input-dtdeliv-del" class="form-control-plaintext" id="modal-input-dtdeliv-del"
 											value="" />
 									</div>
 									<!-- /date_time_delivered_on -->
@@ -618,8 +658,18 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var iid = button.data('iid'); // Extract info from data-* attributes
-            var company = button.data('company');
-
+            var employeeid = data('employeeid');
+            var companyid = button.data('companyid');
+            var deliveredon = button.data('deliveredon');
+            var vehicleregno = button.data('vehicleregno');
+            var transportid = button.data('transportid');
+            var deliveryaddress = button.data('deliveryaddress');
+            var chargeablehours = button.data('chargeablehours');
+            var hours = button.data('hours');
+            var bulletin = button.data('bulletin');
+            var description = button.data('description');
+            var importassignmentid = button.data('importassignmentid');
+            var products = button.data('productid');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -627,8 +677,18 @@
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-iid-edit').val(iid);
-            modal.find('.modal-body #modal-input-company1-edit').val(company1);
-
+            modal.find('.modal-body #modal-input-impco-edit').val(companyid);
+            modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
+            modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
+            modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
+            modal.find('.modal-body #modal-input-shipco-edit').val(transportid);
+            modal.find('.modal-body #modal-input-destin-edit').val(deliveryaddress);
+            modal.find('.modal-body #modal-input-chargehrs-edit').val(chargeablehours);
+            modal.find('.modal-body #modal-input-hours-edit').val(hours);
+            modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
+            modal.find('.modal-body #modal-input-dtitle-edit').val(description);
+            modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
+            modal.find('.modal-body #modal-input-products-edit').val(products);
 
             modal.find('.modal-footer #edit-button').attr("data-iid", iid);  //SET import assignment id value in data-iid attribute
 
@@ -713,13 +773,13 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var iid = button.data('iid'); // Extract info from data-* attributes
-            var import_text = button.data('text1');
+            var dtdeliv = button.data('deliveredon');
 
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             modal.find('.modal-body .card .card-body #modal-input-iid-del').val(iid); //change the value to...
-            modal.find('.modal-body .card .card-body #modal-input-text-del').val(import_text);
+            modal.find('.modal-body .card .card-body #modal-input-dtdeliv-del').val(dtdeliv);
 
             modal.find('.modal-footer #delete-button').attr("data-iid", iid); //SET user id value in data-iid attribute
 

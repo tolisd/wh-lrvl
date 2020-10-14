@@ -42,6 +42,7 @@ class Warehouse extends Model
         return $this->belongsTo('App\Company', 'company_id'); //added the FK
     }
 
+    //products is many-to-many with warehouses
     public function products(){
         return $this->belongsToMany('App\Product', 'product_warehouse', 'warehouse_id', 'product_id')
                     ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.

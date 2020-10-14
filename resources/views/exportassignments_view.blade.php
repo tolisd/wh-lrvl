@@ -184,6 +184,7 @@
 									<!-- uploaded files -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-create">Επισυναπτόμενα Αρχεία</label>
+                                        <i class="fas fa-paperclip text-danger" aria-hidden="true"></i>
                                         <input type="file" multiple name="modal-input-files-create[]" class="form-control" id="modal-input-files-create"
                                             value="" />
                                     </div>
@@ -282,6 +283,7 @@
 									<!-- uploaded files -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-edit">Επισυναπτόμενα Αρχεία</label>
+                                        <i class="fas fa-paperclip text-danger" aria-hidden="true"></i>
                                         <input type="file" multiple name="modal-input-files-edit[]" class="form-control" id="modal-input-files-edit"
                                             value="" />
                                     </div>

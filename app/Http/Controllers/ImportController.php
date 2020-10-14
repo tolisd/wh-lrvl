@@ -11,6 +11,7 @@ use App\Importassignment;
 use App\Company;
 use App\Transport; //transport_companies
 use App\Employee;
+use App\Product;
 use Carbon\Carbon;
 
 class ImportController extends Controller
@@ -25,12 +26,14 @@ class ImportController extends Controller
             $companies = Company::all();
             $transport_companies = Transport::all();
             $employees = Employee::all();
+            $products = Product::all(); //what if there are a lot of products in the DB?
 
             return view('imports_view', ['importassignments' => $importassignments,
                                         'companies' => $companies,
                                         'employees' => $employees,
                                         'transport_companies' => $transport_companies,
-                                        'imports' => $imports]);
+                                        'imports' => $imports,
+                                        'products' => $products]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -102,8 +105,8 @@ class ImportController extends Controller
                     $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
                     $import->transport_id            = $request->input('modal-input-shipco-create');
                     $import->delivery_address        = $request->input('modal-input-destin-create');
-                    $import->chargeable_hours_worked = $request->input('modal-input--create');
-                    $import->hours_worked            = $request->input('modal-input--create');
+                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
+                    $import->hours_worked            = $request->input('modal-input-hours-create');
                     $import->discrete_description    = $request->input('modal-input-dtitle-create');
                     //$import->shipment_address = $request->input('modal-input--create');
                     //$import->product_id = $request->input('modal-input-products-create');
@@ -149,12 +152,36 @@ class ImportController extends Controller
 
              //validation rules
              $validation_rules = [
+                'modal-input-recipient-edit' => 'required',
+                'modal-input-impco-edit' => 'required',
+                'modal-input-dtdeliv-edit' => 'required',
+                'modal-input-vehicleregno-edit' => 'required',
+                'modal-input-shipco-edit' => 'required',
+                'modal-input-destin-edit' => 'required',
+                'modal-input-chargehrs-edit' => 'required',
+                'modal-input-hours-edit' => 'required',
+                'modal-input-bulletin-edit' => 'required|mimes:pdf,zip,txt',
+                'modal-input-dtitle-edit' => 'required',
 
+                'modal-input-products-edit' => 'required',
+                'modal-input-importassignment-edit' => 'required',
             ];
 
             //custom error messages for the above validation rules
             $custom_messages = [
+                'modal-input-recipient-edit.required' => 'ο υπεύθυνος παραλαβής απαιτείται',
+                'modal-input-impco-edit.required' => 'Η εταιρεία εισαγωγής απαιτείται',
+                'modal-input-dtdeliv-edit.required' => 'Η ημ/νία & ώρα παραλαβής απαιτείται',
+                'modal-input-vehicleregno-edit.required' => 'Ο αρ.κυκλ. μεταφορικού μέσου απαιτείται',
+                'modal-input-shipco-edit.required' => 'Η μεταφορική εταιρεία απαιτείται',
+                'modal-input-destin-edit.required' => 'Ο τόπος αποστολής απαιτείται',
+                'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
+                'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-bulletin-edit.required' => 'Το δελτίο αποστολής απαιτείται',
+                'modal-input-dtitle-edit.required' => 'Ο διακριτός τίτλος παραλαβής απαιτείται',
 
+                'modal-input-products-edit.required' => 'Τα προϊόντα απαιτούνται',
+                'modal-input-importassignment-edit.required' => 'Ο αριθμός Ανάθεσης Εισαγωγής απαιτείται',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);

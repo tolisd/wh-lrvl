@@ -32,6 +32,16 @@ class CreateProductWarehouseTable extends Migration
      */
     public function down()
     {
+        //added this for dropping the 2 FKs
+        Schema::table('product_warehouse', function (Blueprint $table){
+            $table->dropForeign(['product_id']);
+            $table->dropColumn('product_id');
+
+            $table->dropForeign(['warehouse_id']);
+            $table->dropColumn('warehouse_id');
+        });
+
+
         Schema::dropIfExists('product_warehouse');
     }
 }

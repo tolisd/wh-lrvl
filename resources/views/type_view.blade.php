@@ -44,7 +44,7 @@
                     <tr class="user-row" data-tid="{{ $type->id }}">  <!-- necessary additions -->
                         <td>{{ $type->name }}</td>
                         <td>{{ $type->description }}</td>
-                        <td>{{ $type->category_id }}</td>
+                        <td>{{ $type->category->name }}</td>
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
@@ -447,6 +447,7 @@
                 console.log(tid);
                 console.log(formData);
 
+                //reset the error field(s).
                 $('.alert-danger').hide();
                 $('.alert-danger').html('');
 

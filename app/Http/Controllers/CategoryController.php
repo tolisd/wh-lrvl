@@ -9,6 +9,7 @@ use Validator;
 use App\Product;
 use App\Category;
 
+
 class CategoryController extends Controller
 {
     //
@@ -185,6 +186,23 @@ class CategoryController extends Controller
               return abort(403, 'Sorry you cannot view this page');
          }
 
+    }
+
+    //ajax json method in products_view.blade.php, for dynamic dropdownlist
+    public function get_types($id){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
+
+            //Query Builder is 10x faster than Eloquent ORM.
+            $types = DB::table('types')
+                    ->where("category_id", $id)
+                    ->pluck("id", "name");
+
+            return json_encode($types);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
     }
 
 

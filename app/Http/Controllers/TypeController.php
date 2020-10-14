@@ -8,6 +8,7 @@ use Auth; //added for Auth
 use Validator;
 use App\Product;
 use App\Type;
+use App\Category;
 
 class TypeController extends Controller
 {
@@ -20,9 +21,11 @@ class TypeController extends Controller
         //4 user types -> Admin, CEO, Foreman, Worker
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $types = DB::table('types')->get(); // $types = Type::all();
+            $types = Type::all(); // Eloquent, both variables.
+            $categories = Category::all();
 
-            return view('type_view', ['types' => $types]);
+            return view('type_view', ['types' => $types,
+                                      'categories' => $categories]);
 
         } else {
             return abort(403, 'Sorry you cannot view this page');

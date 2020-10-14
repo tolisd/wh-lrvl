@@ -10,6 +10,7 @@ use App\Product;
 use App\Category;
 use App\Type;
 use App\MeasureUnit;
+use App\Warehouse; //for the N-to-M relationship
 
 class ProductController extends Controller
 {
@@ -21,16 +22,18 @@ class ProductController extends Controller
          //if ($authenticatedUser){
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            //$products = DB::table('products')->get(); //Get ALL product(s) row(s) from products db table. ---> Product::all();
+            //$products = DB::table('products')->get(); //Get ALL product(s) row(s) from products db table. ---> Product::all();, in Eloquent ORM
             $products = Product::with('category')->get(); //because I want to display Categories also
             $categories = Category::all();
             $measunits = MeasureUnit::all();
             $types = Type::all();
+            $warehouses = Warehouse::has('products')->get();
 
             return view('products_view', ['products' => $products,
                                           'categories' => $categories,
                                           'types' => $types,
-                                          'measunits' => $measunits]); //also, send the $products & $categories variable to the 'products_view' Blade View.
+                                          'measunits' => $measunits,
+                                          'warehouses' => $warehouses]); //also, send the $products & $categories variable to the 'products_view' Blade View.
 
          } else {
              return abort(403, 'Sorry you cannot view this page');
@@ -54,6 +57,7 @@ class ProductController extends Controller
                 'modal-input-quantity-create' => 'required',
                 'modal-input-measureunit-create' => 'required|exists:measunits,id',
                 'modal-input-comments-create' => 'required',
+                'modal-input-warehouses-create' => 'required',
             ];
 
             $custom_messages = [
@@ -65,6 +69,7 @@ class ProductController extends Controller
                 'modal-input-quantity-create.required' => 'Η ποσότητα απαιτείται',
                 'modal-input-measureunit-create.required' => 'Η μονάδα μέτρησης απαιτείται',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
+                'modal-input-warehouses-create.required' => 'Η/Οι αποθήκη/-ες απαιτούνται',
             ];
 
             //prepare the $validator variable
@@ -82,6 +87,8 @@ class ProductController extends Controller
 
                 if($validator->passes()){
 
+                    //you want to wrap this WHOLE block into a DB transaction.
+
                     $product = new Product();
 
                     $product->code            = $request->input('modal-input-code-create');
@@ -94,7 +101,15 @@ class ProductController extends Controller
                     $product->comments        = $request->input('modal-input-comments-create');
                     //$product->assignment_id   = $request->input('modal-input-assignment-create');        //references 'id' in assignments table
                     // Set other fields (if applicable)...
+
                     $product->save(); //Save the new user into the database
+
+                     //also, state here TO WHICH warehouse they belong, via N-to-M relationship between them!
+                    //also save the relation in the pivot table!
+                    $product->warehouses()->sync($request->input('modal-input-warehouses-create'));
+
+
+
 
                     //success, 200
                     return \Response::json([
@@ -137,6 +152,7 @@ class ProductController extends Controller
                 'modal-input-quantity-edit' => ['required'],
                 'modal-input-measureunit-edit' => ['required', 'exists:measunits,id'],
                 'modal-input-comments-edit' => ['required'],
+                'modal-input-warehouses-edit' => ['required'],
             ];
 
             $custom_messages = [
@@ -148,6 +164,7 @@ class ProductController extends Controller
                 'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
                 'modal-input-measureunit-edit.required' => 'Η μονάδα μέτρησης απαιτείται',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
+                'modal-input-warehouses-edit' => 'Η/Οι αποθήκη/-ες απαιτούνται',
             ];
 
             //prepare the $validator variable
@@ -178,6 +195,9 @@ class ProductController extends Controller
                     //$product->assignment_id   = $request->input('modal-input-assgncode-edit');        //references 'id' in assignments table
 
                     $product->update($request->all());  //configure the $fillable & $guarded properties/columns in this Model!
+
+                    //also save the relation in the pivot table!
+                    $product->warehouses()->sync($request->input('modal-input-warehouses-edit'));
 
                     //success, 200
                     return \Response::json([
@@ -212,6 +232,7 @@ class ProductController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
             $product = Product::findOrFail($id);
+            $product->warehouses()->detach();
             $product->delete();
 
             if ($request->ajax()){

@@ -132,6 +132,8 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::post('/products/create', 'ProductController@create_product')->name('admin.product.create'); //create new product
     Route::put('/products/update/{id}', 'ProductController@update_product')->name('admin.product.update'); //update a product
     Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('admin.product.delete'); //delete a product
+    Route::get('/products/type/{id}', 'CategoryController@get_types')->name('admin.categorytypes'); //ajax route
+
 
     Route::post('/users/create', 'UserController@create_user')->name('admin.user.create'); //create a new user
     Route::put('/users/update/{id}', 'UserController@update_user')->name('admin.user.update'); //update a user
@@ -144,6 +146,8 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::post('/product_category/create', 'CategoryController@create_category')->name('admin.category.create');
     Route::put('/product_category/update/{id}','CategoryController@update_category')->name('admin.category.update');
     Route::delete('/product_category/delete/{id}', 'CategoryController@delete_category')->name('admin.category.delete');
+
+
 
     Route::get('/product_type/view', 'TypeController@view_types')->name('admin.type.view');
     Route::post('/product_type/create', 'TypeController@create_type')->name('admin.type.create');
@@ -262,6 +266,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::post('/products/create', 'ProductController@create_product')->name('manager.product.create'); //create new product
    Route::put('/products/update/{id}', 'ProductController@update_product')->name('manager.product.update'); //update product
    Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('manager.product.delete'); //delete product
+   Route::get('/products/type/{id}', 'CategoryController@get_types')->name('manager.categorytypes'); //ajax route
 
    Route::post('/users/create', 'UserController@create_user')->name('manager.user.create'); //create a new user
    Route::put('/users/update/{id}', 'UserController@update_user')->name('manager.user.update'); //update a user
@@ -470,6 +475,7 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::post('/products/create', 'ProductController@create_product')->name('foreman.product.create'); //create new product
     Route::put('/products/update/{id}', 'ProductController@update_product')->name('foreman.product.update'); //update product
     Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('foreman.product.delete'); //delete product
+    Route::get('/products/type/{id}', 'CategoryController@get_types')->name('foreman.categorytypes'); //ajax route
 
     Route::get('/product_category/view', 'CategoryController@view_categories')->name('foreman.category.view');
     Route::post('/product_category/create', 'CategoryController@create_category')->name('foreman.category.create');
@@ -507,6 +513,7 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     Route::post('/products/create', 'ProductController@create_product')->name('worker.product.create'); //create new product
     Route::put('/products/update/{id}', 'ProductController@update_product')->name('worker.product.update'); //update product
     Route::delete('/products/delete/{id}', 'ProductController@delete_product')->name('worker.product.delete'); //delete product
+    Route::get('/products/type/{id}', 'CategoryController@get_types')->name('worker.categorytypes'); //ajax route
 
     Route::get('/product_category/view', 'CategoryController@view_categories')->name('worker.category.view');
     Route::post('/product_category/create', 'CategoryController@create_category')->name('worker.category.create');
