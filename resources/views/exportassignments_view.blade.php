@@ -90,7 +90,7 @@
             <br/><br/>
 
             <!--Create New User button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέας Ανάθεσης Εξαγωγής</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-expassgn-btn">Προσθήκη Νέας Ανάθεσης Εξαγωγής</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -763,6 +763,10 @@
             //reset the error field.
             $('.alert-danger').hide();
             $('.alert-danger').html('');
+        });
+
+        $('#add-expassgn-btn').on('click', function(evt){
+            $('#add-form').find('select').val('');
         });
 
 

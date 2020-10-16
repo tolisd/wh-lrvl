@@ -101,7 +101,7 @@
             <br/><br/>
 
             <!--Create New User button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Στοιχείων Ανάθεσης Εισαγωγής</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-import-btn">Προσθήκη Στοιχείων Ανάθεσης Εισαγωγής</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -170,7 +170,7 @@
                                         <div class="col-lg-9">
                                         <!-- <input type="text" name="modal-input-recipient-create" class="form-control" id="modal-input-recipient-create"
                                                 value="" />  -->
-                                        <select name="modal-input-recipient-create" id="modal-input-recipient-create"  class="form-control">
+                                        <select name="modal-input-recipient-create" id="modal-input-recipient-create" class="form-control">
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
                                             @endforeach
@@ -183,8 +183,15 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-impco-create">Eταιρεία Εισαγωγής</label>
                                         <div class="col-lg-9">
+                                        <!--
                                             <input type="text" name="modal-input-impco-create" class="form-control" id="modal-input-impco-create"
                                                 value="" />
+                                        -->
+                                            <select name="modal-input-impco-create" id="modal-input-impco-create" class="form-control">
+                                            @foreach($companies as $company)
+                                                <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                            @endforeach
+                                            </select>
                                         </div>
 									</div>
 									<!-- /import company name -->
@@ -213,8 +220,15 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-shipco-create">Μεταφορική Εταιρεία</label>
                                         <div class="col-lg-9">
+                                            <!--
                                             <input type="text" name="modal-input-shipco-create" class="form-control" id="modal-input-shipco-create"
                                                 value="" />
+                                            -->
+                                            <select name="modal-input-shipco-create" id="modal-input-shipco-create" class="form-control">
+                                            @foreach($transport_companies as $transcomp)
+                                                <option value="{{ $transcomp->id }}">{{ $transcomp->name }}</option>
+                                            @endforeach
+                                            </select>
                                         </div>
 									</div>
 									<!-- /shipping_company -->
@@ -251,7 +265,8 @@
 
 									<!-- shipping_bulletin -->
 									<div class="form-group row">
-										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-create">Δελτίο Αποστολής [αρχείο PDF]</label>
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-create">Δελτίο Αποστολής [αρχείο PDF]
+                                        <i class="fas fa-paperclip text-danger" aria-hidden="true"></i></label>
                                         <div class="col-lg-9">
                                             <input type="file" name="modal-input-bulletin-create" class="form-control" id="modal-input-bulletin-create"
                                                 value="" />
@@ -277,8 +292,8 @@
                                             <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
                                                 value="" />
                                             -->
-                                            <select name="modal-input-importassignment-create" id="modal-input-importassignment-create">
-                                            @foreach(@import_assignments as $impassgnm)
+                                            <select name="modal-input-importassignment-create" id="modal-input-importassignment-create" class="form-control">
+                                            @foreach($importassignments as $impassgnm)
                                                 <option value="{{ $impassgnm->id }}">{{ $impassgnm->import_assignment_text }}</option>
                                             @endforeach
                                             </select>
@@ -294,8 +309,8 @@
                                             <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
                                                 value="" />
                                             -->
-                                            <select name="modal-input-products-create" id="modal-input-products-create">
-                                            @foreach(@products as $product)
+                                            <select name="modal-input-products-create[]" id="modal-input-products-create" class="form-control" multiple="multiple">
+                                            @foreach($products as $product)
                                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                             @endforeach
                                             </select>
@@ -362,8 +377,15 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-recipient-edit">Υπεύθυνος Παραλαβής</label>
                                         <div class="col-lg-9">
+                                            <!--
                                             <input type="text" name="modal-input-recipient-edit" class="form-control" id="modal-input-recipient-edit"
                                                 value="" />
+                                            -->
+                                            <select name="modal-input-recipient-edit" id="modal-input-recipient-edit" class="form-control">
+                                            @foreach($employees as $employee)
+                                                <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                            @endforeach
+                                            </select>
                                         </div>
 									</div>
 									<!-- /recipient name -->
@@ -372,8 +394,15 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-impco-edit">Eταιρεία Εισαγωγής</label>
                                         <div class="col-lg-9">
+                                        <!--
                                             <input type="text" name="modal-input-impco-edit" class="form-control" id="modal-input-impco-edit"
                                                 value="" />
+                                        -->
+                                            <select name="modal-input-impco-edit" id="modal-input-impco-edit" class="form-control">
+                                            @foreach($companies as $company)
+                                                <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                            @endforeach
+                                            </select>
                                         </div>
 									</div>
 									<!-- /import company name -->
@@ -402,8 +431,15 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-shipco-edit">Μεταφορική Εταιρεία</label>
                                         <div class="col-lg-9">
+                                        <!--
                                             <input type="text" name="modal-input-shipco-edit" class="form-control" id="modal-input-shipco-edit"
                                                 value="" />
+                                        -->
+                                            <select name="modal-input-shipco-edit" id="modal-input-shipco-edit" class="form-control">
+                                            @foreach($transport_companies as $transcomp)
+                                                <option value="{{ $transcomp->id }}">{{ $transcomp->name }}</option>
+                                            @endforeach
+                                            </select>
                                         </div>
 									</div>
 									<!-- /shipping_company -->
@@ -440,7 +476,8 @@
 
 									<!-- shipping_bulletin -->
 									<div class="form-group row">
-										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-edit">Δελτίο Αποστολής [αρχείο PDF]</label>
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-edit">Δελτίο Αποστολής [αρχείο PDF]
+                                        <i class="fas fa-paperclip text-danger" aria-hidden="true"></i></label>
                                         <div class="col-lg-9">
                                             <input type="file" name="modal-input-bulletin-edit" class="form-control" id="modal-input-bulletin-edit"
                                                 value="" />
@@ -454,9 +491,35 @@
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtitle-edit" class="form-control" id="modal-input-dtitle-edit"
                                                 value="" />
-                                        </DIV>
+                                        </div>
 									</div>
 									<!-- /delivery_description -->
+
+                                    <!-- import_assignment -->
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-edit">Ανάθεση Εισαγωγής</label>
+                                        <div class="col-lg-9">
+                                            <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control">
+                                            @foreach($importassignments as $impassgnm)
+                                                <option value="{{ $impassgnm->id }}">{{ $impassgnm->import_assignment_text }}</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!-- /import_assignment -->
+
+                                    <!-- products -->
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-edit">Προϊόντα</label>
+                                        <div class="col-lg-9">
+                                            <select name="modal-input-products-edit[]" id="modal-input-products-edit" class="form-control" multiple="multiple">
+                                            @foreach($products as $product)
+                                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!-- /products -->
 
 
                                 </div>
@@ -559,6 +622,11 @@
     //console.log('Hi!');
 
     $(document).ready(function(){
+
+        //initialise the select2 components.
+        $('#modal-input-products-create').select2();
+        $('#modal-input-products-edit').select2();
+
 
          //configure & initialise the (Import Assignments) DataTable
          $('.table').DataTable({
@@ -926,6 +994,11 @@
             //reset the error field(s) also
             $('.alert-danger').hide();
             $('.alert-danger').html('');
+        });
+
+
+        $('#add-import-btn').on('click', function(evt){
+            $('#add-form').find('select').val('');
         });
 
 

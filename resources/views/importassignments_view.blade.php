@@ -88,7 +88,7 @@
             <br/><br/>
 
             <!--Create New User button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέας Ανάθεσης Εισαγωγής</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-impassgn-btn">Προσθήκη Νέας Ανάθεσης Εισαγωγής</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -769,6 +769,10 @@
             //reset the error field.
             $('.alert-danger').hide();
             $('.alert-danger').html('');
+        });
+
+        $('#add-impassgn-btn').on('click', function(evt){
+            $('#add-form').find('select').val('');
         });
 
 

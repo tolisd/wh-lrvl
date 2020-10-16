@@ -24,9 +24,11 @@ class ProductController extends Controller
 
             //$products = DB::table('products')->get(); //Get ALL product(s) row(s) from products db table. ---> Product::all();, in Eloquent ORM
             $products = Product::with('category')->get(); //because I want to display Categories also
-            $categories = Category::all();
+
+            $categories = Category::has('type')->get(); //::all();
+            $types = Type::with('category')->get(); //::all();
+
             $measunits = MeasureUnit::all();
-            $types = Type::all();
             $warehouses = Warehouse::has('products')->get();
 
             return view('products_view', ['products' => $products,
@@ -231,9 +233,14 @@ class ProductController extends Controller
          //if ($authenticatedUser){
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
+            //Wrap this in a DB transaction, as shown below? No it is not possible, eloquent does not have transactions..
             $product = Product::findOrFail($id);
             $product->warehouses()->detach();
             $product->delete();
+            /*
+            DB::transaction(function(){});
+            */
+
 
             if ($request->ajax()){
                 return \Response::json();

@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-        <p>Προϊόντα Αποθήκης (@foreach($warehouse_data as $wh) <strong>{{ $wh->name }}</strong> @endforeach)</p>
+        <p><h5>Προϊόντα Αποθήκης (@foreach($warehouse_data as $wh) <strong>{{ $wh->name }}</strong> @endforeach)</h5></p>
 
         <p><strong>Προϊστάμενος:</strong> &nbsp;
         @foreach($employees_in_warehouse as $employee)

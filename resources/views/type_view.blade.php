@@ -72,7 +72,7 @@
             <br/><br/>
 
             <!--Create New Products Type button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Είδους Προϊόντος</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-producttype-btn">Προσθήκη Είδους Προϊόντος</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -678,6 +678,10 @@
                 //reset the error field(s).
                 $('.alert-danger').hide();
                 $('.alert-danger').html('');
+            });
+
+            $('#add-producttype-btn').on('click', function(evt){
+                $('#add-form').find('select').val('');
             });
 
 

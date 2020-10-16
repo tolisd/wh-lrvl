@@ -32,9 +32,9 @@
                     <tr>
                         <th class="text-left">Αναγνωριστικό</th>
                         <th class="text-left">Όνομα</th>
+                        <th class="text-left">Περιγραφή</th>
                         <th class="text-left">Κατηγορία</th>
                         <th class="text-left">Είδος</th>  <!-- product type -->
-                        <th class="text-left">Περιγραφή</th>
                         <th class="text-left">Ποσότητα</th>
                         <th class="text-left">Μον.Μέτρ.</th>
                         <th class="text-left">Σχόλια</th>
@@ -55,13 +55,12 @@
                     <tr class="user-row" data-pid="{{ $product->id }}">  <!-- necessary additions -->
                         <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->description }}</td>
                         <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
                         <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
-                        <td>{{ $product->description }}</td>
                         <td>{{ $product->quantity }}</td>
                         <td>{{ $product->measureunit->name }}</td> <!-- measureunit() in App\Product.php -->
                         <td>{{ $product->comments }}</td>
-
                         <td>
                             <ul>
                             @foreach($product->warehouses as $warehouse)
@@ -69,16 +68,15 @@
                             @endforeach
                             </ul>
                         </td>
-
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-pid="{{ $product->id }}"
                                     data-code="{{ $product->code }}"
                                     data-name="{{ $product->name }}"
-                                    data-type="{{ $product->type_id }}"
-                                    data-category="{{ $product->category_id }}"
                                     data-description="{{ $product->description }}"
+                                    data-category="{{ $product->category_id }}"
+                                    data-type="{{ $product->type_id }}"
                                     data-quantity="{{ $product->quantity }}"
                                     data-measunit="{{ $product->measunit_id }}"
                                     data-comments="{{ $product->comments }}">
@@ -103,7 +101,7 @@
             <br/><br/>
 
             <!--Create New User button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Προϊόντος</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-product-btn">Προσθήκη Νέου Προϊόντος</button>
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
@@ -243,7 +241,7 @@
                                     <!-- warehouses, to which warehouses this product belongs to -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouses-create">Αποθήκη/-ες</label>
-                                        <select name="modal-input-warehouses-create[]" id="modal-input-warehouses-create" multiple="multiple">
+                                        <select name="modal-input-warehouses-create[]" id="modal-input-warehouses-create" class="form-control" multiple="multiple">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -339,16 +337,21 @@
                                     </div>
                                     <!-- /category -->
 
-                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl -->
+                                    <!-- prod_type, eidos px Ergaleio(Tool), Psygeio ktl., dependent on the above category, 1-to-N rel/ship -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-type-edit">Είδος</label>
                                         <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control">
-                                        <!-- this select will get its values via ajax below -->
-                                        <!--
-                                        @foreach($types as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        <!-- this select will get its values via ajax below, so I leave it empty -->
+
+                                        <!-- I need only the types for the specific category EACH TIME -->
+                                        @foreach($categories as $category)
+                                            @foreach($category->type as $type)
+                                                @if($category->id == $type->category_id)
+                                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                @endif
+                                            @endforeach
                                         @endforeach
-                                        -->
+
                                         </select>
                                     </div>
                                     <!-- /prod_type -->
@@ -383,7 +386,7 @@
                                     <!-- warehouses, to which warehouses this product belongs to -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouses-edit">Αποθήκη/-ες</label>
-                                        <select name="modal-input-warehouses-edit[]" id="modal-input-warehouses-edit" multiple="multiple">
+                                        <select name="modal-input-warehouses-edit[]" id="modal-input-warehouses-edit" class="form-control" multiple="multiple">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -599,9 +602,9 @@
             var pid = button.data('pid'); // Extract info from data-* attributes
             var code = button.data('code');
             var name = button.data('name');
-            var type = button.data('type');
             var description = button.data('description');
             var category = button.data('category');
+            var type = button.data('type');
             var quantity = button.data('quantity');
             var munit = button.data('measunit');
             var comments = button.data('comments');
@@ -614,14 +617,24 @@
             //modal.find('.card-body #modal-input-pid-edit').val(pid);
             modal.find('.modal-body #modal-input-code-edit').val(code);
             modal.find('.modal-body #modal-input-name-edit').val(name);
-            modal.find('.modal-body #modal-input-type-edit').val(type);
             modal.find('.modal-body #modal-input-description-edit').val(description);
             modal.find('.modal-body #modal-input-category-edit').val(category);
+            modal.find('.modal-body #modal-input-type-edit').val(type);
             modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
-            modal.find('.modal-body #modal-input-unit-edit').val(munit);
+            modal.find('.modal-body #modal-input-measureunit-edit').val(munit);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+
+
+
+
+
+
+
+
+
+
 
 
             //AJAX Update/Edit User
@@ -857,8 +870,7 @@
                         $('#modal-input-type-create').empty();
                         $.each(data, function(key, value){
                             $('#modal-input-type-create').append('<option value="'+ value +'">'+ key +'</option>');
-
-                            console.log('key='+key+ ', value='+value);
+                            //console.log('key='+key+ ', value='+value);
                         });
                     },
 
@@ -869,10 +881,10 @@
         });
 
 
-        //ajax edit modal
-        $(document).on('change', '#modal-input-category-edit', function(evt){
-
+         //ajax edit modal
+         $(document).on('change', '#modal-input-category-edit', function(evt){
             var categ_id = evt.target.value;
+            //var data = evt.params.data;
 
             if(categ_id){
                 $.ajax({
@@ -881,19 +893,23 @@
                     url: '{{ url(request()->route()->getPrefix()) }}' + '/products/type/' + categ_id,
 
                     success: function(data){
+                        console.log('Data : ', data);
                         $('#modal-input-type-edit').empty();
                         $.each(data, function(key, value){
                             $('#modal-input-type-edit').append('<option value="'+ value +'">'+ key +'</option>');
-
-                            console.log('key='+key+ ', value='+value);
+                            //console.log('key='+key+ ', value='+value);
                         });
                     },
 
                 });
             } else {
-                $('#modal-input-type-create').empty();
+                $('#modal-input-type-edit').empty();
             }
         });
+
+
+
+
 
 
         //necessary addition
@@ -920,6 +936,14 @@
             //also, reset the error field(s).
             $('.alert-danger').hide();
             $('.alert-danger').html('');
+
+            //empty the types select tag (hint: its already emptied)
+            //$('#modal-input-type-edit').empty();
+            //$('#modal-input-type-edit').val('');
+        });
+
+        $('#add-product-btn').on('click', function(evt){
+            $('#add-form').find('select').val('');
         });
 
 

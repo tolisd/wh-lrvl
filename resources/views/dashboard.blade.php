@@ -204,11 +204,7 @@
                         <i class="fas fa-warehouse fa-sm" aria-hidden="true"></i>
                         </div>
 
-                        <!--
-                        @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
-                        <a href="{{ url(request()->route()->getPrefix()) . '/warehouse/show/'. $warehouse->id }}" class="small-box-footer">Περισότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                        @endcanany
-                        -->
+
                         @can('isSuperAdmin')
                         <a href="{{ route('admin.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                         @endcan

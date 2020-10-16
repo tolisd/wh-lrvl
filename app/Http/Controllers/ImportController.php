@@ -26,7 +26,7 @@ class ImportController extends Controller
             $companies = Company::all();
             $transport_companies = Transport::all();
             $employees = Employee::all();
-            $products = Product::all(); //what if there are a lot of products in the DB?
+            $products = Product::all(); //what if there are a lot of products in the DB? ==> chunk & DB Facade (aka Query Builder)
 
             return view('imports_view', ['importassignments' => $importassignments,
                                         'companies' => $companies,
@@ -57,9 +57,9 @@ class ImportController extends Controller
                 'modal-input-hours-create' => 'required',
                 'modal-input-bulletin-create' => 'required|mimes:pdf,zip,txt',
                 'modal-input-dtitle-create' => 'required',
-
-                'modal-input-products-create' => 'required',
                 'modal-input-importassignment-create' => 'required',
+                'modal-input-products-create' => 'required',
+
             ];
 
             //custom error messages for the above validation rules
@@ -74,9 +74,8 @@ class ImportController extends Controller
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-bulletin-create.required' => 'Το δελτίο αποστολής απαιτείται',
                 'modal-input-dtitle-create.required' => 'Ο διακριτός τίτλος παραλαβής απαιτείται',
-
-                'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
                 'modal-input-importassignment-create.required' => 'Ο αριθμός Ανάθεσης Εισαγωγής απαιτείται',
+                'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -113,7 +112,7 @@ class ImportController extends Controller
                     $import->importassignment_id = $request->input('modal-input-importassignment-create');
 
                     if($request->hasFile('modal-input-bulletin-create')){
-                        $file = $request->file('modal-input-bulletin-charge');
+                        $file = $request->file('modal-input-bulletin-create');
                         $name = $file->getClientOriginalName();
                         $path = $file->storeAs('arxeia/eisagwgis', $name);
                         $url  = \Storage::url($path);
@@ -162,9 +161,9 @@ class ImportController extends Controller
                 'modal-input-hours-edit' => 'required',
                 'modal-input-bulletin-edit' => 'required|mimes:pdf,zip,txt',
                 'modal-input-dtitle-edit' => 'required',
-
-                'modal-input-products-edit' => 'required',
                 'modal-input-importassignment-edit' => 'required',
+                'modal-input-products-edit' => 'required',
+
             ];
 
             //custom error messages for the above validation rules
@@ -179,9 +178,8 @@ class ImportController extends Controller
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-bulletin-edit.required' => 'Το δελτίο αποστολής απαιτείται',
                 'modal-input-dtitle-edit.required' => 'Ο διακριτός τίτλος παραλαβής απαιτείται',
-
-                'modal-input-products-edit.required' => 'Τα προϊόντα απαιτούνται',
                 'modal-input-importassignment-edit.required' => 'Ο αριθμός Ανάθεσης Εισαγωγής απαιτείται',
+                'modal-input-products-edit.required' => 'Τα προϊόντα απαιτούνται',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -201,6 +199,28 @@ class ImportController extends Controller
                     //success
                     //save-update the object
                     $import = Import::findOrFail($id);
+
+                    $import->employee_id             = $request->input('modal-input-recipient-create');
+                    $import->company_id              = $request->input('modal-input-impco-create');
+                    $import->delivered_on            = $request->input('modal-input-dtdeliv-create');
+                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
+                    $import->transport_id            = $request->input('modal-input-shipco-create');
+                    $import->delivery_address        = $request->input('modal-input-destin-create');
+                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
+                    $import->hours_worked            = $request->input('modal-input-hours-create');
+                    $import->discrete_description    = $request->input('modal-input-dtitle-create');
+                    //$import->shipment_address = $request->input('modal-input--create');
+                    //$import->product_id = $request->input('modal-input-products-create');
+                    $import->importassignment_id = $request->input('modal-input-importassignment-create');
+
+                    if($request->hasFile('modal-input-bulletin-create')){
+                        $file = $request->file('modal-input-bulletin-create');
+                        $name = $file->getClientOriginalName();
+                        $path = $file->storeAs('arxeia/eisagwgis', $name);
+                        $url  = \Storage::url($path);
+
+                        $import->shipment_bulletin = $url;
+                    }
 
                     $import->update($request->all());
 
