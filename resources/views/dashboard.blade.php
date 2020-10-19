@@ -22,31 +22,65 @@
               <div class="small-box bg-yellow">
 
                 <div class="inner">
-                      <h3>{{ $assignCount }}</h3>
-                      <p>Ανοιχτές Αναθέσεις</p>
+                      <h3>{{ $import_assignments_count }}</h3>
+                      <p>Ανοιχτές Αναθέσεις Εισαγωγής</p>
                 </div>
 
                 <div class="icon">
-                  <i class="fas fa-briefcase fa-sm" aria-hidden="true"></i>
+                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
                 </div>
 
                 @can('isSuperAdmin')
-                  <a href="{{ route('admin.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('admin.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isCompanyCEO')
-                  <a href="{{ route('manager.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('manager.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isWarehouseForeman')
-                  <a href="{{ route('foreman.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('foreman.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isAccountant')
-                  <a href="{{ route('accountant.assignments.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('accountant.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
               </div>
+
+
+
+
+              <div class="small-box bg-orange">
+
+                <div class="inner">
+                      <h3>{{ $export_assignments_count }}</h3>
+                      <p>Ανοιχτές Αναθέσεις Εξαγωγής</p>
+                </div>
+
+                <div class="icon">
+                  <i class="fas fa-arrow-right fa-sm" aria-hidden="true"></i>
+                </div>
+
+                @can('isSuperAdmin')
+                  <a href="{{ route('admin.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isCompanyCEO')
+                  <a href="{{ route('manager.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isWarehouseForeman')
+                  <a href="{{ route('foreman.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+                @can('isAccountant')
+                  <a href="{{ route('accountant.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+              </div>
+
+
             @endcanany
 
             @canany(['isSuperAdmin', 'isCompanyCEO'])

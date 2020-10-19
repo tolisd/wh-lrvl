@@ -28,6 +28,21 @@ class ExportAssignmentController extends Controller
         }
     }
 
+    public function view_open_export_assignments(){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+
+            $exportassignments = ExportAssignment::where('is_open', '=', 1)->get();
+            $warehouses = Warehouse::all();
+
+            return view('exportassignmentsopen_view', ['exportassignments' => $exportassignments,
+                                                    'warehouses' => $warehouses]);
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
     public function create_export_assignment(Request $request){
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){

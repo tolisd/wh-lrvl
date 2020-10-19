@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;  //added for DB retrieval
+//use Illuminate\Support\Facades\Input;
 use Auth; //added for Auth
 use Validator;
 use App\Product;
@@ -26,8 +27,12 @@ class ProductController extends Controller
             $products = Product::with('category')->get(); //because I want to display Categories also
 
             $categories = Category::has('type')->get(); //::all();
-            $types = Type::with('category')->get(); //::all();
 
+            //get the types, aka the subcategories
+            $category_id = \Request::get('category_id');
+            $types = Type::where('category_id', '=', $category_id)->get();
+
+            //$types = Type::with('category')->get(); //::all();
             $measunits = MeasureUnit::all();
             $warehouses = Warehouse::has('products')->get();
 

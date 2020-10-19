@@ -27,6 +27,22 @@ class ImportAssignmentController extends Controller
         }
     }
 
+    public function view_open_import_assignments(){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+
+            $importassignments = ImportAssignment::where('is_open', '=', 1)->get();
+            $warehouses = Warehouse::all();
+
+            return view('importassignmentsopen_view', ['importassignments' => $importassignments,
+                                                        'warehouses' => $warehouses]);
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
+
 
     public function create_import_assignment(Request $request){
 

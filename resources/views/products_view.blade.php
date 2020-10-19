@@ -343,14 +343,11 @@
                                         <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control">
                                         <!-- this select will get its values via ajax below, so I leave it empty -->
 
-                                        <!-- I need only the types for the specific category EACH TIME -->
-                                        @foreach($categories as $category)
-                                            @foreach($category->type as $type)
-                                                @if($category->id == $type->category_id)
+                                            @foreach($types as $type)
+
                                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                                @endif
+
                                             @endforeach
-                                        @endforeach
 
                                         </select>
                                     </div>
@@ -625,15 +622,6 @@
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
-
-
-
-
-
-
-
-
-
 
 
 
@@ -944,6 +932,7 @@
 
         $('#add-product-btn').on('click', function(evt){
             $('#add-form').find('select').val('');
+            $('#add-form').find('select[name="modal-input-type-create"]').empty();
         });
 
 

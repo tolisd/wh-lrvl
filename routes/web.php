@@ -100,6 +100,9 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     //Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('admin.assignment.export.delete');
 
 
+    //Open Import/Export Assignments Views
+    Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('admin.assignments.import.open.view');
+    Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('admin.assignments.export.open.view');
 
     //import assignments
     Route::get('/assignments/import-assignments/view', 'ImportAssignmentController@view_import_assignments')->name('admin.assignments.import.view');
@@ -237,6 +240,11 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    //Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('manager.assignment.import.delete'); //delete assignment
    //Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('manager.assignment.export.delete');
 
+
+    //Open Import/Export Assignments Views
+    Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('manager.assignments.import.open.view');
+    Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('manager.assignments.export.open.view');
+
     //import assignments
     Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('manager.assignments.import.view');
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('manager.assignment.import.create');
@@ -369,6 +377,10 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     //Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('accountant.assignment.import.delete'); //delete assignment
     //Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('accountant.assignment.export.delete');
 
+    //Open Import/Export Assignments Views
+    Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('accountant.assignments.import.open.view');
+    Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('accountant.assignments.export.open.view');
+
     //import assignments
     Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('accountant.assignments.import.view');
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('accountant.assignment.import.create');
@@ -445,6 +457,10 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     //Route::put('/assignments/export/update/{id}', 'AssignmentController@update_export_assignment')->name('foreman.assignment.export.update');
     //Route::delete('/assignments/import/delete/{id}', 'AssignmentController@delete_import_assignment')->name('foreman.assignment.import.delete'); //delete assignment
     //Route::delete('/assignments/export/delete/{id}', 'AssignmentController@delete_export_assignment')->name('foreman.assignment.export.delete');
+
+    //Open Import/Export Assignments Views
+    Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('foreman.assignments.import.open.view');
+    Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('foreman.assignments.export.open.view');
 
     //import assignments
     Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('foreman.assignments.import.view');

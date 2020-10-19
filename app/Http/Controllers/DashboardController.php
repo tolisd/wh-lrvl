@@ -7,10 +7,15 @@ use Illuminate\Support\Facades\DB; //added for DB retrieval
 use Auth; //added for Auth
 use App\User;
 use App\Product;
+
 use App\Assignment;
+use App\ImportAssignment;
+use App\ExportAssignment;
+
 use App\Tool;
 use App\Warehouse;
 use App\Employee;
+
 
 
 class DashboardController extends Controller
@@ -49,7 +54,12 @@ class DashboardController extends Controller
 
             $usersCount = User::count();
             $productsCount = Product::count(); //added: 'use App\Product;'
-            $assignmentsCount = Assignment::count();
+
+            //$assignmentsCount = Assignment::count(); //I do NOT use this table anymore..
+            //...instead, I use the 2 following tables
+            $import_assignments_count = ImportAssignment::where('is_open', '=', 1)->count();
+            $export_assignments_count = ExportAssignment::where('is_open', '=', 1)->count();
+
             $tools_count = Tool::count();
 
             //warehouses & products ([N-to-M] 1 warehouse has many products. A product can belong to more than one warehouses )
@@ -81,7 +91,9 @@ class DashboardController extends Controller
 
             return view('dashboard', [ 'usersCount' => $usersCount,
                                         'prodCount'  => $productsCount,
-                                        'assignCount' => $assignmentsCount,
+                                        //'assignCount' => $assignmentsCount,
+                                        'import_assignments_count' => $import_assignments_count,
+                                        'export_assignments_count' => $export_assignments_count,
                                         'tools_count' => $tools_count,
                                         'warehouses' => $warehouses,
                                         'employees' => $employees,
