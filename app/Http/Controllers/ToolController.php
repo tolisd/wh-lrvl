@@ -63,13 +63,14 @@ class ToolController extends Controller
             $validation_rules = [
                 'modal-input-towhom-charge' => 'required|exists:employees,id',
                 'modal-input-comments-charge' => 'required',
-                'modal-input-file-charge' => 'required|mimes:zip,pdf,txt',  //maximumFileSize = 250kB, zip means: both, doc & docx
-            ];
+                'modal-input-file-charge' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+            ]; //maximumFileSize = 250kB, zip means: both, doc & docx
 
             $custom_messages = [
                 'modal-input-towhom-charge.required' => 'Το όνομα εργαζομένου απαιτείται',
                 'modal-input-comments-charge.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-file-charge.required' => 'Το αρχείο απαιτείται',
+                'modal-input-file-charge.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);

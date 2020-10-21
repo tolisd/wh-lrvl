@@ -49,7 +49,16 @@
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
                         <td>{{ $importassignment->import_deadline }}</td>
-                        <td>{{ $importassignment->uploaded_files }}</td>
+                        @php
+                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                        @endphp
+                        <td>
+                            <ul>
+                            @foreach($attached_files as $att_file)
+                                <li><a href="{{ $att_file }}">{{ $att_file }}</a></li>
+                            @endforeach
+                            </ul>
+                        </td>
                         <td>{{ $importassignment->comments }}</td>
                         <td>
                             @if($importassignment->is_open == 1)
@@ -130,7 +139,7 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
-                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data" novalidate>
+                        <form id="add-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                         @csrf <!-- necessary fields for CSRF & Method type-->
                         @method('POST')
 

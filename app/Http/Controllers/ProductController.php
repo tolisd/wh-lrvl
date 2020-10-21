@@ -34,7 +34,7 @@ class ProductController extends Controller
 
             //$types = Type::with('category')->get(); //::all();
             $measunits = MeasureUnit::all();
-            $warehouses = Warehouse::has('products')->get();
+            $warehouses = Warehouse::all(); //has('products')->get();
 
             return view('products_view', ['products' => $products,
                                           'categories' => $categories,
@@ -111,7 +111,7 @@ class ProductController extends Controller
 
                     $product->save(); //Save the new user into the database
 
-                     //also, state here TO WHICH warehouse they belong, via N-to-M relationship between them!
+                    //also, state here TO WHICH warehouse they belong, via N-to-M relationship between them!
                     //also save the relation in the pivot table!
                     $product->warehouses()->sync($request->input('modal-input-warehouses-create'));
 

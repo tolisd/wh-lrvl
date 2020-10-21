@@ -52,7 +52,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-warehouse-create' => 'required|exists:warehouse,id',
                 'modal-input-text-create' => 'required',
                 'modal-input-picker-create' => 'required',
-                'modal-input-files-create' => 'required|mimes:pdf,txt,zip',
+                'modal-input-files-create.*' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-create' => 'required',
             ];
 
@@ -61,6 +61,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-text-create.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-create.required' => 'Η ημερομηνία/ώρα απαιτείται',
                 'modal-input-files-create.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
+                'modal-input-files-create.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
             ];
 
@@ -138,7 +139,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-warehouse-edit' => 'required|exists:warehouse,id',
                 'modal-input-text-edit' => 'required',
                 'modal-input-picker-edit' => 'required',
-                'modal-input-files-edit' => 'required|mimes:pdf,txt,zip',
+                'modal-input-files-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-edit' => 'required',
                 'modal-input-isopen-edit' => 'required',
             ];
@@ -148,6 +149,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-text-edit.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-edit.required' => 'Η ημερομηνία/ώρα απαιτείται',
                 'modal-input-files-edit.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
+                'modal-input-files-edit.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-isopen-edit.required' => 'Το πεδίο Ανοικτή/Κλειστή απαιτείται',
             ];

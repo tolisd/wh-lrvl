@@ -24,14 +24,26 @@ class Product extends Model
     //The third argument is the foreign key name of the model on which you are defining the relationship,
     //while the fourth argument is the foreign key name of the model that you are joining to.
 
+    public function imports(){
+        return $this->belongsToMany('App\Import', 'import_product', 'product_id', 'import_id')
+                    ->withTimestamps();
+    }
 
+    public function exports(){
+        return $this->belongsToMany('App\Export', 'export_product', 'product_id', 'export_id')
+                    ->withTimestamps();
+    }
+
+    /*
     public function import(){
         return $this->hasMany('App\Import');
     }
 
+
     public function export(){
         return $this->hasMany('App\Export');
     }
+    */
 
 
     public function category(){

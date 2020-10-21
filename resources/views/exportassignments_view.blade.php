@@ -50,7 +50,16 @@
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
                         <td>{{ $exportassignment->export_deadline }}</td>
-                        <td>{{ $exportassignment->uploaded_files }}</td>
+                        @php
+                            $attached_files = json_decode($exportassignment->uploaded_files, true);
+                        @endphp
+                        <td>
+                            <ul>
+                            @foreach($attached_files as $att_file)
+                                <li><a href="{{ $att_file }}">{{ $att_file }}</a></li>
+                            @endforeach
+                            </ul>
+                        </td>
                         <td>{{ $exportassignment->comments }}</td>
 						<td>
                             @if($exportassignment->is_open == 1)

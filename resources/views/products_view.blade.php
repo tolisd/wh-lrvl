@@ -75,10 +75,10 @@
                                     data-code="{{ $product->code }}"
                                     data-name="{{ $product->name }}"
                                     data-description="{{ $product->description }}"
-                                    data-category="{{ $product->category_id }}"
-                                    data-type="{{ $product->type_id }}"
+                                    data-categoryid="{{ $product->category_id }}"
+                                    data-typeid="{{ $product->type_id }}"
                                     data-quantity="{{ $product->quantity }}"
-                                    data-measunit="{{ $product->measunit_id }}"
+                                    data-measunitid="{{ $product->measunit_id }}"
                                     data-comments="{{ $product->comments }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
@@ -341,12 +341,9 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-type-edit">Είδος</label>
                                         <select name="modal-input-type-edit" id="modal-input-type-edit" class="form-control">
-                                        <!-- this select will get its values via ajax below, so I leave it empty -->
 
                                             @foreach($types as $type)
-
-                                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-
+                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
                                             @endforeach
 
                                         </select>
@@ -588,6 +585,7 @@
             }
         });
 
+
     });
 
 
@@ -600,10 +598,10 @@
             var code = button.data('code');
             var name = button.data('name');
             var description = button.data('description');
-            var category = button.data('category');
-            var type = button.data('type');
+            var categoryid = button.data('categoryid');
+            var typeid = button.data('typeid');
             var quantity = button.data('quantity');
-            var munit = button.data('measunit');
+            var measunitid = button.data('measunitid');
             var comments = button.data('comments');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -615,13 +613,14 @@
             modal.find('.modal-body #modal-input-code-edit').val(code);
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-description-edit').val(description);
-            modal.find('.modal-body #modal-input-category-edit').val(category);
-            modal.find('.modal-body #modal-input-type-edit').val(type);
+            modal.find('.modal-body #modal-input-category-edit').val(categoryid);
+            modal.find('.modal-body #modal-input-type-edit').val(typeid);
             modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
-            modal.find('.modal-body #modal-input-measureunit-edit').val(munit);
+            modal.find('.modal-body #modal-input-measureunit-edit').val(measunitid);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
+
 
 
 
@@ -909,7 +908,7 @@
 
         //necessary additions for when the modals get hidden
 
-        $('#edit-modal').on('hidden.bs.modal', function(e){
+        $('#edit-modal').on('hidden.bs.modal', function(evt){
             $(document).off('submit', '#edit-form');
         });
 
@@ -934,6 +933,43 @@
             $('#add-form').find('select').val('');
             $('#add-form').find('select[name="modal-input-type-create"]').empty();
         });
+
+
+        //the following is correct but cannot display the name!!
+
+        $('#edit-modal').on('shown.bs.modal', function(evt){
+            console.log('evt: ', evt);
+
+            //keep old value in type-edit, apparently it doesnt work...
+            const typeedit_oldvalue = '{{ old("modal-input-type-edit") }}';
+            console.log(typeedit_oldvalue);
+
+            if(typeedit_oldvalue != ''){
+                $('#modal-input-type-edit').val(typeedit_oldvalue);
+            }
+
+            /*
+            //var type_id = evt.target.attributes[8];
+            var type_id = evt.relatedTarget.getAttribute("data-type"); //attributes[8].attr();
+            console.log(type_id);
+            //$('select[name="modal-input-type-edit"]').val(type_id);
+            $('#modal-input-type-edit').empty();
+            $('#modal-input-type-edit').append('<option value="'+ type_id +'">'+$(evt.relatedTarget).text()+'</option>');
+
+            $('#modal-input-type-edit').val(evt.relatedTarget.attributes[8]);
+            */
+        });
+
+
+        $('#edit-modal').on('shown.bs.modal', function(evt){
+            console.log('Evt:: ',evt);
+
+
+        });
+
+
+
+
 
 
 

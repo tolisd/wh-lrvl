@@ -54,7 +54,7 @@ class UserController extends Controller
                 'modal-input-email-edit' => 'required',
                 'modal-input-passwd-edit' => 'required',
                 'modal-input-usertype-edit' => 'required',
-                'modal-input-photo-edit' => 'nullable',
+                'modal-input-photo-edit' => 'nullable|mimes:jpg,jpeg,png',
             ];
 
             //the custom error messages for the above validation rules
@@ -63,6 +63,7 @@ class UserController extends Controller
                 'modal-input-email-edit.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
                 'modal-input-passwd-edit.required' => 'Το συνθηματικό απαιτείται',
                 'modal-input-usertype-edit.required' => 'Ο ρόλος χρήστη απαιτείται',
+                'modal-input-photo-edit.mimes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -271,7 +272,7 @@ class UserController extends Controller
                 'modal-input-email-create' => 'required',
                 'modal-input-passwd-create' => 'required',
                 'modal-input-usertype-create' => 'required',
-                'modal-input-photo-create' => 'nullable',
+                'modal-input-photo-create' => 'nullable|mimes:jpg,jpeg,png',
             ];
 
             $custom_messages = [
@@ -279,6 +280,7 @@ class UserController extends Controller
                 'modal-input-email-create.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
                 'modal-input-passwd-create.required' => 'Το συνθηματικό απαιτείται',
                 'modal-input-usertype-create.required' => 'Ο ρόλος χρήστη απαιτείται',
+                'modal-input-photo-create.mimes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
