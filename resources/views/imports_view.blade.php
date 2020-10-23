@@ -60,7 +60,7 @@
 						<td>{{ $import->delivery_address }}</td>
 						<td>{{ $import->chargeable_hours_worked }}</td>
 						<td>{{ $import->hours_worked }}</td>
-						<td>{{ $import->shipment_bulletin }}</td>
+						<td>{{ basename($import->shipment_bulletin) }}</td>
 						<td>{{ $import->discrete_description }}</td>
                         <td>{{ $import->product_id }}</td>
                         <td>{{ $import->importasignment_id }}</td>
@@ -737,7 +737,7 @@
             var bulletin = button.data('bulletin');
             var description = button.data('description');
             var importassignmentid = button.data('importassignmentid');
-            var products = button.data('productid');
+            //var products = button.data('productid');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -756,7 +756,7 @@
             modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
             modal.find('.modal-body #modal-input-dtitle-edit').val(description);
             modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
-            modal.find('.modal-body #modal-input-products-edit').val(products);
+            //modal.find('.modal-body #modal-input-products-edit').val(products);
 
             modal.find('.modal-footer #edit-button').attr("data-iid", iid);  //SET import assignment id value in data-iid attribute
 

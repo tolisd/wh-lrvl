@@ -67,7 +67,7 @@
                             </td> <!-- I need the employee's name here... -->
 
                             <td>
-                                <a href="{{ $tool->file_url ?? '' }}"></a>
+                               {{ basename($tool->file_url) ?? '' }}
                             </td>
 
                             <td>

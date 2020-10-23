@@ -63,11 +63,10 @@
                         <td>{{ $export->destination_address }}</td>
                         <td>{{ $export->chargeable_hours_worked }}</td>
                         <td>{{ $export->hours_worked }}</td>
-                        <td>{{ $export->shipment_bulletin }}</td>
+                        <td>{{ basename($export->shipment_bulletin) }}</td> <!-- attached pdf file -->
                         <td>{{ $export->item_description }}</td>
                         <td>{{ $export->product_id }}</td>
                         <td>{{ $export->exportassignment_id }}</td>
-                        <td>{{ $export->_id }}</td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -76,7 +75,6 @@
                                     data-employeeid="{{ $export->employee_id }}"
                                     data-companyid="{{ $export->company_id }}"
                                     data-transportid="{{ $export->transport_id }}"
-                                    data-exportassignmentid="{{ $export->exportassignment_id }}"
                                     data-vehicleregno="{{ $export->vehicle_reg_no }}"
                                     data-deliveredon="{{ $export->delivered_on }}"
                                     data-shipmentaddress="{{ $export->shipment_address }}"
@@ -235,7 +233,7 @@
                                         -->
                                         <select name="modal-input-shipco-create" id="modal-input-shipco-create" class="form-control">
                                         @foreach($transport_companies as $transcomp)
-                                            <option value="{{ $trancsomp->id }}">{{ $transcomp->name }}</option>
+                                            <option value="{{ $transcomp->id }}">{{ $transcomp->name }}</option>
                                         @endforeach
                                         </select>
                                         </div>
@@ -660,7 +658,6 @@
         $('#modal-input-products-edit').select2();
 
 
-
          //configure & initialise the (Export Assignments) DataTable
          $('.table').DataTable({
             autoWidth: true,
@@ -760,7 +757,21 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var eid = button.data('eid'); // Extract info from data-* attributes
-            var warehouse = button.data('warehouse');
+            //var warehouse = button.data('warehouse');
+            var employeeid = button.data('employeeid');
+            var companyid = button.data('companyid');
+            var transportid = button.data('transportid');
+            var exportassignmentid = button.data('exportassignmentid');
+            var vehicleregno = button.data('vehicleregno');
+            var deliveredon = button.data('deliveredon');
+            var shipmentaddress = button.data('shipmentaddress');
+            var destinationaddress = button.data('destinationaddress');
+            var chargeablehours = button.data('chargeablehours');
+            var hours = button.data('hours');
+            var shipmentbulletin = button.data('shipmentbulletin');
+            var itemdescription = button.data('itemdescription');
+            //var  = button.data('');
+
 
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -769,7 +780,19 @@
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-eid-edit').val(eid);
-            modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
+            //modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
+            modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
+            modal.find('.modal-body #modal-input-expco-edit').val(companyid);
+            modal.find('.modal-body #modal-input-shipco-edit').val(transportid);
+            modal.find('.modal-body #modal-input-exportassignment-edit').val(exportassignmentid);
+            modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
+            modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
+            modal.find('.modal-body #modal-input-sendplace-edit').val(shipmentaddress);
+            modal.find('.modal-body #modal-input-destin-edit').val(destinationaddress);
+            modal.find('.modal-body #modal-input-chargehrs-edit').val(chargeablehours);
+            modal.find('.modal-body #modal-input-hours-edit').val(hours);
+            modal.find('.modal-body #modal-input-bulletin-edit').val(shipmentbulletin);
+            modal.find('.modal-body #modal-input-dtitle-edit').val(itemdescription);
 
 
             modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET Export assignment id value in data-eid attribute

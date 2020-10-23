@@ -104,7 +104,9 @@ class ToolController extends Controller
                     //$url = null;
                     if($request->hasFile('modal-input-file-charge')){
                         $file = $request->file('modal-input-file-charge');
-                        $name = $file->getClientOriginalName();
+                        $datetime_now = date_create();
+                        $datetime = date_format($datetime_now, 'YmdHis');
+                        $name = $datetime . '-' . $file->getClientOriginalName();
                         $path = $file->storeAs('arxeia/xrewstika', $name);
                         $url  = \Storage::url($path);
 

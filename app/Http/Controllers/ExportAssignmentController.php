@@ -91,7 +91,9 @@ class ExportAssignmentController extends Controller
                             //$files_data[] = $name;
                             array_push($files_data, $name);
                             */
-                            $name = $files->getClientOriginalName();
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $files->getClientOriginalName();
                             $path = $files->storeAs('/arxeia/eksagwgi', $name);
                             $url  = \Storage::url($path);
                             array_push($files_data, $url);
@@ -139,7 +141,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-warehouse-edit' => 'required|exists:warehouse,id',
                 'modal-input-text-edit' => 'required',
                 'modal-input-picker-edit' => 'required',
-                'modal-input-files-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-files-edit.*' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-edit' => 'required',
                 'modal-input-isopen-edit' => 'required',
             ];
@@ -182,7 +184,9 @@ class ExportAssignmentController extends Controller
                             //$files_data[] = $name;
                             array_push($files_data, $name);
                             */
-                            $name = $files->getClientOriginalName();
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $files->getClientOriginalName();
                             $path = $files->storeAs('/arxeia/eksagwgi', $name);
                             $url  = \Storage::url($path);
                             array_push($files_data, $url);

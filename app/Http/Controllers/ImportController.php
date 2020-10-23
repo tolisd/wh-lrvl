@@ -64,17 +64,17 @@ class ImportController extends Controller
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-recipient-create.required' => 'ο υπεύθυνος παραλαβής απαιτείται',
-                'modal-input-impco-create.required' => 'Η εταιρεία εισαγωγής απαιτείται',
-                'modal-input-dtdeliv-create.required' => 'Η ημ/νία & ώρα παραλαβής απαιτείται',
-                'modal-input-vehicleregno-create.required' => 'Ο αρ.κυκλ. μεταφορικού μέσου απαιτείται',
-                'modal-input-shipco-create.required' => 'Η μεταφορική εταιρεία απαιτείται',
-                'modal-input-destin-create.required' => 'Ο τόπος αποστολής απαιτείται',
+                'modal-input-recipient-create.required' => 'ο Υπεύθυνος Παραλαβής απαιτείται',
+                'modal-input-impco-create.required' => 'Η Εταιρεία Εισαγωγής απαιτείται',
+                'modal-input-dtdeliv-create.required' => 'Η Ημ/νία & Ώρα Παραλαβής απαιτείται',
+                'modal-input-vehicleregno-create.required' => 'Ο Αρ.κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-shipco-create.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
+                'modal-input-destin-create.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
-                'modal-input-bulletin-create.required' => 'Το δελτίο αποστολής απαιτείται',
-                'modal-input-dtitle-create.required' => 'Ο διακριτός τίτλος παραλαβής απαιτείται',
-                'modal-input-importassignment-create.required' => 'Ο αριθμός Ανάθεσης Εισαγωγής απαιτείται',
+                'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
+                'modal-input-importassignment-create.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
                 'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
             ];
 
@@ -113,7 +113,10 @@ class ImportController extends Controller
 
                     if($request->hasFile('modal-input-bulletin-create')){
                         $file = $request->file('modal-input-bulletin-create');
-                        $name = $file->getClientOriginalName();
+
+                        $datetime_now = date_create();
+                        $datetime = date_format($datetime_now, 'YmdHis');
+                        $name = $datetime . '-' . $file->getClientOriginalName();
                         $path = $file->storeAs('arxeia/eisagwgis', $name);
                         $url  = \Storage::url($path);
 
@@ -168,18 +171,18 @@ class ImportController extends Controller
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-recipient-edit.required' => 'ο υπεύθυνος παραλαβής απαιτείται',
-                'modal-input-impco-edit.required' => 'Η εταιρεία εισαγωγής απαιτείται',
-                'modal-input-dtdeliv-edit.required' => 'Η ημ/νία & ώρα παραλαβής απαιτείται',
-                'modal-input-vehicleregno-edit.required' => 'Ο αρ.κυκλ. μεταφορικού μέσου απαιτείται',
-                'modal-input-shipco-edit.required' => 'Η μεταφορική εταιρεία απαιτείται',
-                'modal-input-destin-edit.required' => 'Ο τόπος αποστολής απαιτείται',
+                'modal-input-recipient-edit.required' => 'ο Υπεύθυνος Παραλαβής απαιτείται',
+                'modal-input-impco-edit.required' => 'Η Εταιρεία Εισαγωγής απαιτείται',
+                'modal-input-dtdeliv-edit.required' => 'Η Ημ/νία & Ώρα Παραλαβής απαιτείται',
+                'modal-input-vehicleregno-edit.required' => 'Ο Αρ.κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-shipco-edit.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
+                'modal-input-destin-edit.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
-                'modal-input-bulletin-edit.required' => 'Το δελτίο αποστολής απαιτείται',
-                'modal-input-dtitle-edit.required' => 'Ο διακριτός τίτλος παραλαβής απαιτείται',
-                'modal-input-importassignment-edit.required' => 'Ο αριθμός Ανάθεσης Εισαγωγής απαιτείται',
-                'modal-input-products-edit.required' => 'Τα προϊόντα απαιτούνται',
+                'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
+                'modal-input-importassignment-edit.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
+                'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -215,7 +218,10 @@ class ImportController extends Controller
 
                     if($request->hasFile('modal-input-bulletin-create')){
                         $file = $request->file('modal-input-bulletin-create');
-                        $name = $file->getClientOriginalName();
+
+                        $datetime_now = date_create();
+                        $datetime = date_format($datetime_now, 'YmdHis');
+                        $name = $datetime . '-' . $file->getClientOriginalName();
                         $path = $file->storeAs('arxeia/eisagwgis', $name);
                         $url  = \Storage::url($path);
 

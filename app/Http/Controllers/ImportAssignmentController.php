@@ -61,10 +61,8 @@ class ImportAssignmentController extends Controller
                 'modal-input-warehouse-create.required' => 'Η αποθήκη απαιτείται',
                 'modal-input-text-create.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-create.required' => 'Η ημερομηνία/ώρα απαιτείται',
-
                 'modal-input-files-create.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
                 'modal-input-files-create.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
-
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
             ];
 
@@ -97,9 +95,11 @@ class ImportAssignmentController extends Controller
                             //$files_data[] = $name;
                             array_push($files_data, $name);
                             */
-                            $name = $files->getClientOriginalName();
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $files->getClientOriginalName();
                             $path = $files->storeAs('arxeia/eisagwgi', $name);
-                            $url  = \Storage::url($path);
+                            $url  = \Storage::url($path); //stores the full path
                             array_push($files_data, $url);
                         }
                     }
@@ -156,7 +156,7 @@ class ImportAssignmentController extends Controller
                 'modal-input-warehouse-edit' => 'required|exists:warehouse,id',
                 'modal-input-text-edit' => 'required',
                 'modal-input-picker-edit' => 'required',
-                'modal-input-files-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-files-edit.*' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-edit' => 'required',
                 'modal-input-isopen-edit' => 'required',
             ];
@@ -199,7 +199,9 @@ class ImportAssignmentController extends Controller
                             //$files_data[] = $name;
                             array_push($files_data, $name);
                             */
-                            $name = $files->getClientOriginalName();
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $files->getClientOriginalName();
                             $path = $files->storeAs('/arxeia/eisagwgi', $name);
                             $url  = \Storage::url($path);
                             array_push($files_data, $url);

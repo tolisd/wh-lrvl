@@ -63,19 +63,19 @@ class ExportController extends Controller
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-recipient-create.required' => 'Ο υπεύθυνος παράδοσης απαιτείται',
-                'modal-input-expco-create.required' => 'Η εταιρεία παράδοσης απαιτείται',
-                'modal-input-dtdeliv-create.required' => 'Η ημ/νία & ώρα παράδοσης απαιτείται',
-                'modal-input-vehicleregno-create.required' => 'Ο αριθμός κυκλοφορίας μεταφορικού μέσου απαιτείται',
-                'modal-input-shipco-create.required' => 'Η μεταφορική εταιρεία απαιτείται',
-                'modal-input-sendplace-create.required' => 'Ο τόπος αποστολής απαιτείται',
-                'modal-input-destin-create.required' => 'Ο προορισμός απαιτείται',
+                'modal-input-recipient-create.required' => 'Ο Υπεύθυνος Παράδοσης απαιτείται',
+                'modal-input-expco-create.required' => 'Η Εταιρεία Ααράδοσης απαιτείται',
+                'modal-input-dtdeliv-create.required' => 'Η Ημ/νία & Ώρα Παράδοσης απαιτείται',
+                'modal-input-vehicleregno-create.required' => 'Ο Αρ. κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-shipco-create.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
+                'modal-input-sendplace-create.required' => 'Ο Τόπος Αποστολής απαιτείται',
+                'modal-input-destin-create.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
-                'modal-input-bulletin-create.required' => 'Το δελτίο αποστολής απαιτείται',
-                'modal-input-dtitle-create.required' => 'Ο διακριτός τίτλος παράδοσης απαιτείται',
-                'modal-input-exportassignment-create.required' => 'Το πεδίο ανάθεση εξαγωγής απαιτείται',
-                'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
+                'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
+                'modal-input-exportassignment-create.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
+                'modal-input-products-create.required' => 'Τα Προϊόντα απαιτούνται',
             ];
 
             //prepare the $validator variable for these validation rules
@@ -110,7 +110,10 @@ class ExportController extends Controller
 
                     if($request->hasFile('modal-input-bulletin-create')){
                         $file = $request->file('modal-input-bulletin-create');
-                        $name = $file->getClientOriginalName();
+
+                        $datetime_now = date_create();
+                        $datetime = date_format($datetime_now, 'YmdHis');
+                        $name = $datetime . '-' . $file->getClientOriginalName();
                         $path = $file->storeAs('arxeia/exagwgis', $name);
                         $url  = \Storage::url($path);
 
@@ -167,19 +170,19 @@ class ExportController extends Controller
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-recipient-edit.required' => 'Ο υπεύθυνος παράδοσης απαιτείται',
-                'modal-input-expco-edit.required' => 'Η εταιρεία παράδοσης απαιτείται',
-                'modal-input-dtdeliv-edit.required' => 'Η ημ/νία & ώρα παράδοσης απαιτείται',
-                'modal-input-vehicleregno-edit.required' => 'Ο αριθμός κυκλοφορίας μεταφορικού μέσου απαιτείται',
-                'modal-input-shipco-edit.required' => 'Η μεταφορική εταιρεία απαιτείται',
-                'modal-input-sendplace-edit.required' => 'Ο τόπος αποστολής απαιτείται',
-                'modal-input-destin-edit.required' => 'Ο προορισμός απαιτείται',
+                'modal-input-recipient-edit.required' => 'Ο Υπεύθυνος Παράδοσης απαιτείται',
+                'modal-input-expco-edit.required' => 'Η Εταιρεία Παράδοσης απαιτείται',
+                'modal-input-dtdeliv-edit.required' => 'Η Ημ/νία & Ώρα Παράδοσης απαιτείται',
+                'modal-input-vehicleregno-edit.required' => 'Ο Αρ. κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-shipco-edit.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
+                'modal-input-sendplace-edit.required' => 'Ο Τόπος Αποστολής απαιτείται',
+                'modal-input-destin-edit.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
-                'modal-input-bulletin-edit.required' => 'Το δελτίο αποστολής απαιτείται',
-                'modal-input-dtitle-edit.required' => 'Ο διακριτός τίτλος παράδοσης απαιτείται',
-                'modal-input-exportassignment-edit.required' => 'Το πεδίο ανάθεση εξαγωγής απαιτείται',
-                'modal-input-products-edit.required' => 'Τα προϊόντα απαιτούνται',
+                'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
+                'modal-input-exportassignment-edit.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
+                'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
             ];
 
 
@@ -216,7 +219,10 @@ class ExportController extends Controller
 
                     if($request->hasFile('modal-input-bulletin-edit')){
                         $file = $request->file('modal-input-bulletin-edit');
-                        $name = $file->getClientOriginalName();
+
+                        $datetime_now = date_create();
+                        $datetime = date_format($datetime_now, 'YmdHis');
+                        $name = $datetime . '-' . $file->getClientOriginalName();
                         $path = $file->storeAs('arxeia/exagwgis', $name);
                         $url  = \Storage::url($path);
 

@@ -33,7 +33,7 @@
                     <tr>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
-                        <th class="text-left">Deadline</th>
+                        <th class="text-left">Deadline (Ημ/νία & Ώρα)</th>
                         <th class="text-left">Επισυναπτόμενα Αρχεία</th>
                         <th class="text-left">Σχόλια</th>
 						<th class="text-left">Ανοιχτή?</th>
@@ -55,14 +55,14 @@
                         <td>
                             <ul>
                             @foreach($attached_files as $att_file)
-                                <li><a href="{{ $att_file }}">{{ $att_file }}</a></li>
+                                <li>{{ basename($att_file) }}</li>
                             @endforeach
                             </ul>
                         </td>
                         <td>{{ $importassignment->comments }}</td>
                         <td>
                             @if($importassignment->is_open == 1)
-                                Ανοικτή
+                                Ανοιχτή
                             @elseif($importassignment->is_open == 0)
                                 Κλειστή
                             @endif
@@ -291,6 +291,9 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-files-edit">Επισυναπτόμενα Αρχεία</label>
                                         <i class="fas fa-paperclip text-danger" aria-hidden="true"></i>
+
+                                        <span id="arxeia"></span>
+
                                         <input type="file" multiple name="modal-input-files-edit[]" class="form-control" id="modal-input-files-edit"
                                             value="" />
                                     </div>
@@ -508,6 +511,11 @@
         jQuery.datetimepicker.setLocale('el');
 
 
+        function base_name(path) {
+            return path.split('/').reverse()[0];
+        }
+
+
 
     //the 3 modals follow::
         $('#edit-modal').on('show.bs.modal', function(event) {
@@ -517,7 +525,7 @@
             var warehouse = button.data('warehouse');
             var import_text = button.data('text');
             var deadline = button.data('deadline');
-			//var files = button.data('files'); //i omit this line for now
+			var files = button.data('files'); //i omit this line for now
             var comments = button.data('comments');
 			var isopen = button.data('isopen');
 
@@ -530,9 +538,14 @@
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
 			modal.find('.modal-body #modal-input-text-edit').val(import_text);
 			modal.find('.modal-body #modal-input-picker-edit').val(deadline);
-            //modal.find('.modal-body #modal-input-files-edit').val(files); //I omit this line for now
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 			modal.find('.modal-body #modal-input-isopen-edit').val(isopen);
+
+            //modal.find('.modal-body #modal-input-files-edit').val(files); //I omit this line for now
+            modal.find('.modal-body #arxeia').empty();
+            $.each(files, function(k, v){
+                modal.find('.modal-body #arxeia').append('<li>' + base_name(v) + '</li>');
+            });
 
             modal.find('.modal-footer #edit-button').attr("data-iid", iid);  //SET import assignment id value in data-iid attribute
 
