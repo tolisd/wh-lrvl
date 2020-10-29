@@ -18,11 +18,11 @@ class Export extends Model
         'item_description',
         'hours_worked',
         'chargeable_hours_worked',
-        'shipping_company',  //remove this? i already have company_id...
+        //'shipping_company',  //remove this? i already have company_id...
         'shipment_bulletin',
         'vehicle_reg_no',
 
-        'product_id',
+        //'product_id',
         'company_id',
         'transport_id',
         'exportassignment_id',

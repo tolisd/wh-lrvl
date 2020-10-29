@@ -55,7 +55,7 @@ class ExportController extends Controller
                 'modal-input-destin-create' => 'required',
                 'modal-input-chargehrs-create' => 'required',
                 'modal-input-hours-create' => 'required',
-                'modal-input-bulletin-create' => 'required',
+                'modal-input-bulletin-create' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-exportassignment-create' => 'required',
                 'modal-input-products-create' => 'required',
@@ -66,13 +66,14 @@ class ExportController extends Controller
                 'modal-input-recipient-create.required' => 'Ο Υπεύθυνος Παράδοσης απαιτείται',
                 'modal-input-expco-create.required' => 'Η Εταιρεία Ααράδοσης απαιτείται',
                 'modal-input-dtdeliv-create.required' => 'Η Ημ/νία & Ώρα Παράδοσης απαιτείται',
-                'modal-input-vehicleregno-create.required' => 'Ο Αρ. κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-vehicleregno-create.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-create.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-sendplace-create.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-destin-create.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-create.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
                 'modal-input-products-create.required' => 'Τα Προϊόντα απαιτούνται',
@@ -99,13 +100,14 @@ class ExportController extends Controller
 
                     $export->employee_id             = $request->input('modal-input-recipient-create');
                     $export->company_id              = $request->input('modal-input-expco-create');
-                    $export->delivered_on            = $request->input('modal-input-dtdeliv-create');
+                    $export->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-create'));
                     $export->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
                     $export->transport_id            = $request->input('modal-input-shipco-create');
-                    $export->delivery_address        = $request->input('modal-input-destin-create');
+                    $export->destination_address     = $request->input('modal-input-destin-create');
+                    $export->shipment_address        = $request->input('modal-input-sendplace-create');
                     $export->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
                     $export->hours_worked            = $request->input('modal-input-hours-create');
-                    $export->discrete_description    = $request->input('modal-input-dtitle-create');
+                    $export->item_description        = $request->input('modal-input-dtitle-create');
                     $export->exportassignment_id     = $request->input('modal-input-exportassignment-create');
 
                     if($request->hasFile('modal-input-bulletin-create')){
@@ -120,8 +122,11 @@ class ExportController extends Controller
                         $export->shipment_bulletin = $url;
                     }
 
-
                     $export->save();
+
+                    //also, update the pivot table, ie save the relation in the pivot table!
+                    $export->products()->sync($request->input('modal-input-products-create'));
+
 
                     return \Response::json([
                         'success' => true,
@@ -162,7 +167,7 @@ class ExportController extends Controller
                 'modal-input-destin-edit' => 'required',
                 'modal-input-chargehrs-edit' => 'required',
                 'modal-input-hours-edit' => 'required',
-                'modal-input-bulletin-edit' => 'required',
+                'modal-input-bulletin-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-exportassignment-edit' => 'required',
                 'modal-input-products-edit' => 'required',
@@ -173,13 +178,14 @@ class ExportController extends Controller
                 'modal-input-recipient-edit.required' => 'Ο Υπεύθυνος Παράδοσης απαιτείται',
                 'modal-input-expco-edit.required' => 'Η Εταιρεία Παράδοσης απαιτείται',
                 'modal-input-dtdeliv-edit.required' => 'Η Ημ/νία & Ώρα Παράδοσης απαιτείται',
-                'modal-input-vehicleregno-edit.required' => 'Ο Αρ. κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-vehicleregno-edit.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-edit.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-sendplace-edit.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-destin-edit.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-bulletin-edit.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-edit.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
                 'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
@@ -208,13 +214,14 @@ class ExportController extends Controller
 
                     $export->employee_id             = $request->input('modal-input-recipient-edit');
                     $export->company_id              = $request->input('modal-input-expco-edit');
-                    $export->delivered_on            = $request->input('modal-input-dtdeliv-edit');
+                    $export->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
                     $export->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
                     $export->transport_id            = $request->input('modal-input-shipco-edit');
-                    $export->delivery_address        = $request->input('modal-input-destin-edit');
+                    $export->destination_address     = $request->input('modal-input-destin-edit');
+                    $export->shipment_address        = $request->input('modal-input-sendplace-edit');
                     $export->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
                     $export->hours_worked            = $request->input('modal-input-hours-edit');
-                    $export->discrete_description    = $request->input('modal-input-dtitle-edit');
+                    $export->item_description        = $request->input('modal-input-dtitle-edit');
                     $export->exportassignment_id     = $request->input('modal-input-exportassignment-edit');
 
                     if($request->hasFile('modal-input-bulletin-edit')){
@@ -229,9 +236,10 @@ class ExportController extends Controller
                         $export->shipment_bulletin = $url;
                     }
 
-
-
                     $export->update($request->all());
+
+                    //also, update the pivot table, ie save the relation in the pivot table!
+                    $export->products()->sync($request->input('modal-input-products-edit'));
 
                     return \Response::json([
                         'success' => true,

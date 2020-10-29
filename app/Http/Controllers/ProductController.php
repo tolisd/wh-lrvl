@@ -34,13 +34,14 @@ class ProductController extends Controller
 
             //$types = Type::with('category')->get(); //::all();
             $measunits = MeasureUnit::all();
-            $warehouses = Warehouse::all(); //has('products')->get();
+            $warehouses = Warehouse::all(); //has('products')->get(); //with('products')->get();
+
 
             return view('products_view', ['products' => $products,
                                           'categories' => $categories,
                                           'types' => $types,
                                           'measunits' => $measunits,
-                                          'warehouses' => $warehouses]); //also, send the $products & $categories variable to the 'products_view' Blade View.
+                                          'warehouses' => $warehouses,]); //also, send the $products & $categories variable to the 'products_view' Blade View.
 
          } else {
              return abort(403, 'Sorry you cannot view this page');
@@ -205,6 +206,7 @@ class ProductController extends Controller
 
                     //also save the relation in the pivot table!
                     $product->warehouses()->sync($request->input('modal-input-warehouses-edit'));
+
 
                     //success, 200
                     return \Response::json([

@@ -65,7 +65,13 @@
                         <td>{{ $export->hours_worked }}</td>
                         <td>{{ basename($export->shipment_bulletin) }}</td> <!-- attached pdf file -->
                         <td>{{ $export->item_description }}</td>
-                        <td>{{ $export->product_id }}</td>
+                        <td>
+                            <ul>
+                            @foreach($export->products as $product)
+                                <li>{{ $product->name }}</li>
+                            @endforeach
+                            </ul>
+                        </td>
                         <td>{{ $export->exportassignment_id }}</td>
 
                         <td>
@@ -83,7 +89,6 @@
                                     data-hours="{{ $export->hours_worked }}"
                                     data-shipmentbulletin="{{ $export->shipment_bulletin }}"
                                     data-itemdescription="{{ $export->item_description }}"
-									data-productid="{{ $export->product_id }}"
                                     data-exportassignmentid="{{ $export->exportassignment_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>

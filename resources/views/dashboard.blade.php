@@ -136,7 +136,7 @@
             </div>
             @endcanany
 
-            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman'])
             <!-- small box -->
             <div class="small-box bg-red">
                 <div class="inner">
@@ -158,9 +158,6 @@
                   <a href="{{ route('foreman.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
-                @can('isWarehouseWorker')
-                  <a href="{{ route('worker.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                @endcan
             </div>
             @endcanany
 

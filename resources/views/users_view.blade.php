@@ -75,7 +75,11 @@
                             <!--
                             <td><img src="{{ Storage::url('app/images/profile/' . $user->photo_url) }}" alt=""></td>
                             -->
-                            <td><img src="{{ $user->photo_url }}" alt=""></img></td>
+                            <td>
+                                <img src="{{ $user->photo_url }}" alt=""></img>
+                                <br>
+                                {{ basename($user->photo_url) }}
+                            </td>
                             <!-- <td>{{ $user->photo_url }}</td> -->
 
                             <td>

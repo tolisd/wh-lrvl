@@ -23,8 +23,8 @@ class CreateExportsTable extends Migration
             $table->string('item_description', 255);
             $table->float('hours_worked');
             $table->float('chargeable_hours_worked');
-            $table->string('shipping_company', 255);
-            $table->string('shipment_bulletin', 255);
+            //$table->string('shipping_company', 255);
+            $table->string('shipment_bulletin');
             $table->string('vehicle_reg_no', 20);
             $table->timestamps();
 

@@ -41,7 +41,7 @@
 						<th class="text-left">Ώρες Εργασίας</th>
 						<th class="text-left">Δελτίο Αποστολής</th>
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
-                        <th class="text-left">Προϊόντα</th>
+                        <!-- <th class="text-left">Προϊόντα</th> -->
                         <th class="text-left">Ανάθεση Εισαγωγής</th>
 
                         <th class="text-left">Μεταβολή</th>
@@ -62,7 +62,7 @@
 						<td>{{ $import->hours_worked }}</td>
 						<td>{{ basename($import->shipment_bulletin) }}</td>
 						<td>{{ $import->discrete_description }}</td>
-                        <td>{{ $import->product_id }}</td>
+                        <!-- <td>{{ $import->product_id }}</td> -->
                         <td>{{ $import->importasignment_id }}</td>
 
                         <td>
@@ -79,8 +79,7 @@
 									data-hours="{{ $import->hours_worked }}"
 									data-bulletin="{{ $import->shipment_bulletin }}"
 									data-description="{{ $import->discrete_description }}"
-                                    data-importassignmentid="{{ $import->importassignment_id }}"
-                                    data-products="{{ $import->product_id }}">
+                                    data-importassignmentid="{{ $import->importassignment_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -301,14 +300,18 @@
 									</div>
 									<!-- /import_assignment -->
 
+
                                     <!-- products -->
+                                    <!--
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-create">Προϊόντα</label>
                                         <div class="col-lg-9">
+                                    -->
                                             <!--
                                             <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
                                                 value="" />
                                             -->
+                                    <!--
                                             <select name="modal-input-products-create[]" id="modal-input-products-create" class="form-control" multiple="multiple">
                                             @foreach($products as $product)
                                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -316,6 +319,7 @@
                                             </select>
                                         </div>
 									</div>
+                                    -->
 									<!-- /products -->
 
 
@@ -509,6 +513,7 @@
 									<!-- /import_assignment -->
 
                                     <!-- products -->
+                                    <!--
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-edit">Προϊόντα</label>
                                         <div class="col-lg-9">
@@ -519,6 +524,7 @@
                                             </select>
                                         </div>
 									</div>
+                                    ==>
 									<!-- /products -->
 
 
@@ -624,8 +630,10 @@
     $(document).ready(function(){
 
         //initialise the select2 components.
-        $('#modal-input-products-create').select2();
-        $('#modal-input-products-edit').select2();
+        //NB: I removed both of the following 2 (products) from the modals!
+
+        //$('#modal-input-products-create').select2();
+        //$('#modal-input-products-edit').select2();
 
 
          //configure & initialise the (Import Assignments) DataTable

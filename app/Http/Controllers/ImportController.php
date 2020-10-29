@@ -55,27 +55,27 @@ class ImportController extends Controller
                 'modal-input-destin-create' => 'required',
                 'modal-input-chargehrs-create' => 'required',
                 'modal-input-hours-create' => 'required',
-                'modal-input-bulletin-create' => 'required|mimes:pdf,zip,txt',
+                'modal-input-bulletin-create' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-importassignment-create' => 'required',
-                'modal-input-products-create' => 'required',
-
+                //'modal-input-products-create' => 'required',
             ];
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-recipient-create.required' => 'ο Υπεύθυνος Παραλαβής απαιτείται',
+                'modal-input-recipient-create.required' => 'Ο Υπεύθυνος Παραλαβής απαιτείται',
                 'modal-input-impco-create.required' => 'Η Εταιρεία Εισαγωγής απαιτείται',
                 'modal-input-dtdeliv-create.required' => 'Η Ημ/νία & Ώρα Παραλαβής απαιτείται',
-                'modal-input-vehicleregno-create.required' => 'Ο Αρ.κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-vehicleregno-create.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-create.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-destin-create.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
                 'modal-input-importassignment-create.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
-                'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
+                //'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -100,7 +100,7 @@ class ImportController extends Controller
 
                     $import->employee_id             = $request->input('modal-input-recipient-create');
                     $import->company_id              = $request->input('modal-input-impco-create');
-                    $import->delivered_on            = $request->input('modal-input-dtdeliv-create');
+                    $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-create'));
                     $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
                     $import->transport_id            = $request->input('modal-input-shipco-create');
                     $import->delivery_address        = $request->input('modal-input-destin-create');
@@ -109,7 +109,7 @@ class ImportController extends Controller
                     $import->discrete_description    = $request->input('modal-input-dtitle-create');
                     //$import->shipment_address = $request->input('modal-input--create');
                     //$import->product_id = $request->input('modal-input-products-create');
-                    $import->importassignment_id = $request->input('modal-input-importassignment-create');
+                    $import->importassignment_id     = $request->input('modal-input-importassignment-create');
 
                     if($request->hasFile('modal-input-bulletin-create')){
                         $file = $request->file('modal-input-bulletin-create');
@@ -162,7 +162,7 @@ class ImportController extends Controller
                 'modal-input-destin-edit' => 'required',
                 'modal-input-chargehrs-edit' => 'required',
                 'modal-input-hours-edit' => 'required',
-                'modal-input-bulletin-edit' => 'required|mimes:pdf,zip,txt',
+                'modal-input-bulletin-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-importassignment-edit' => 'required',
                 'modal-input-products-edit' => 'required',
@@ -171,15 +171,16 @@ class ImportController extends Controller
 
             //custom error messages for the above validation rules
             $custom_messages = [
-                'modal-input-recipient-edit.required' => 'ο Υπεύθυνος Παραλαβής απαιτείται',
+                'modal-input-recipient-edit.required' => 'Ο Υπεύθυνος Παραλαβής απαιτείται',
                 'modal-input-impco-edit.required' => 'Η Εταιρεία Εισαγωγής απαιτείται',
                 'modal-input-dtdeliv-edit.required' => 'Η Ημ/νία & Ώρα Παραλαβής απαιτείται',
-                'modal-input-vehicleregno-edit.required' => 'Ο Αρ.κυκλ. Μεταφορικού Μέσου απαιτείται',
+                'modal-input-vehicleregno-edit.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-edit.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-destin-edit.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                'modal-input-bulletin-edit.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
                 'modal-input-importassignment-edit.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
                 'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
@@ -203,21 +204,21 @@ class ImportController extends Controller
                     //save-update the object
                     $import = Import::findOrFail($id);
 
-                    $import->employee_id             = $request->input('modal-input-recipient-create');
-                    $import->company_id              = $request->input('modal-input-impco-create');
-                    $import->delivered_on            = $request->input('modal-input-dtdeliv-create');
-                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
-                    $import->transport_id            = $request->input('modal-input-shipco-create');
-                    $import->delivery_address        = $request->input('modal-input-destin-create');
-                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
-                    $import->hours_worked            = $request->input('modal-input-hours-create');
-                    $import->discrete_description    = $request->input('modal-input-dtitle-create');
+                    $import->employee_id             = $request->input('modal-input-recipient-edit');
+                    $import->company_id              = $request->input('modal-input-impco-edit');
+                    $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
+                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
+                    $import->transport_id            = $request->input('modal-input-shipco-edit');
+                    $import->delivery_address        = $request->input('modal-input-destin-edit');
+                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
+                    $import->hours_worked            = $request->input('modal-input-hours-edit');
+                    $import->discrete_description    = $request->input('modal-input-dtitle-edit');
                     //$import->shipment_address = $request->input('modal-input--create');
                     //$import->product_id = $request->input('modal-input-products-create');
-                    $import->importassignment_id = $request->input('modal-input-importassignment-create');
+                    $import->importassignment_id     = $request->input('modal-input-importassignment-create');
 
-                    if($request->hasFile('modal-input-bulletin-create')){
-                        $file = $request->file('modal-input-bulletin-create');
+                    if($request->hasFile('modal-input-bulletin-edit')){
+                        $file = $request->file('modal-input-bulletin-edit');
 
                         $datetime_now = date_create();
                         $datetime = date_format($datetime_now, 'YmdHis');

@@ -44,12 +44,21 @@
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
-                        <td>{{ $exportassignment->export_deadline }}</td>
-                        <td>{{ $exportassignment->uploaded_files }}</td>
+                        <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td>
+                        @php
+                            $attached_files = json_decode($exportassignment->uploaded_files, true);
+                        @endphp
+                        <td>
+                            <ul>
+                            @foreach($attached_files as $att_file)
+                                <li>{{ basename($att_file) }}</li>
+                            @endforeach
+                            </ul>
+                        </td>
                         <td>{{ $exportassignment->comments }}</td>
 						<td>
                             @if($exportassignment->is_open == 1)
-                                Ανοικτή
+                                Ανοιχτή
                             @elseif($exportassignment->is_open == 0)
                                 Κλειστή
                             @endif

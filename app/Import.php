@@ -21,7 +21,7 @@ class Import extends Model
         'shipment_address',
         'vehicle_reg_no',
 
-        'product_id',
+        //'product_id',
         'employee_id',
         'company_id',
         'transport_id',

@@ -48,7 +48,7 @@
                     <tr class="user-row" data-iid="{{ $importassignment->id }}">  <!-- necessary additions -->
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
-                        <td>{{ $importassignment->import_deadline }}</td>
+                        <td>{{ $importassignment->import_deadline->format('l, d/m/Y @ H:i') }}</td>
                         @php
                             $attached_files = json_decode($importassignment->uploaded_files, true);
                         @endphp
@@ -511,6 +511,7 @@
         jQuery.datetimepicker.setLocale('el');
 
 
+        //helper function for getting the filename plus the extension from the full file path
         function base_name(path) {
             return path.split('/').reverse()[0];
         }

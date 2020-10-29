@@ -14,12 +14,14 @@ class AddProductIdToExports extends Migration
     public function up()
     {
         Schema::table('exports', function (Blueprint $table) {
+            /*
             $table->unsignedBigInteger('product_id');
 
             $table->foreign('product_id')
                     ->references('id')
                     ->on('products');
                     //->onDelete('cascade');
+            */
         });
     }
 
@@ -30,9 +32,11 @@ class AddProductIdToExports extends Migration
      */
     public function down()
     {
+        /*
         Schema::table('exports', function (Blueprint $table) {
             $table->dropForeign(['product_id']);
             $table->dropColumn('product_id');
         });
+        */
     }
 }

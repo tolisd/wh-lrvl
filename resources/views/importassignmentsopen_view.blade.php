@@ -44,8 +44,17 @@
                     <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
-                        <td>{{ $importassignment->import_deadline }}</td>
-                        <td>{{ $importassignment->uploaded_files }}</td>
+                        <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td>
+                        @php
+                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                        @endphp
+                        <td>
+                            <ul>
+                            @foreach($attached_files as $att_file)
+                                <li>{{ basename($att_file) }}</li>
+                            @endforeach
+                            </ul>
+                        </td>
                         <td>{{ $importassignment->comments }}</td>
 						<td>
                             @if($importassignment->is_open == 1)

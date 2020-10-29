@@ -49,7 +49,7 @@
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
-                        <td>{{ $exportassignment->export_deadline }}</td>
+                        <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td>
                         @php
                             $attached_files = json_decode($exportassignment->uploaded_files, true);
                         @endphp
@@ -514,6 +514,7 @@
 
 
 
+        //Two helper functions for getting the filename plus the extension from the full file path
         function baseName(str)
         {
             var base = new String(str).substring(str.lastIndexOf('/') + 1);
