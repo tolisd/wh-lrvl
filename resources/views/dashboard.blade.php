@@ -229,6 +229,9 @@
                             </p>
                             -->
 
+                            <strong>Αριθμός Προϊόντων στην Αποθήκη:</strong>
+                            {{ $warehouse->products->count() }}
+
 
                         </div>
                         <div class="icon">

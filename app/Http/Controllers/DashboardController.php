@@ -71,7 +71,8 @@ class DashboardController extends Controller
             $employees = Employee::all();
             $users = User::all();
             */
-
+            //$products = Product::all();
+           // $products_count =  //No..! as there will be too many products in the DB!
 
 
             //I want the name of the (1) Proistamenos of THIS (by name) Apothiki.
@@ -97,7 +98,9 @@ class DashboardController extends Controller
                                         'tools_count' => $tools_count,
                                         'warehouses' => $warehouses,
                                         'employees' => $employees,
-                                        'users' => $users ]);
+                                        'users' => $users,
+                                        //'products' => $products,
+                                        ]);
         }
         else {
             return abort(403, 'Sorry you cannot view this home webpage');

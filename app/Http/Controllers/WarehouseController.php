@@ -49,9 +49,11 @@ class WarehouseController extends Controller
             $employees_in_warehouse = Employee::where('warehouse_id', $id)->get(); //returns an eloquent collection
             $products_in_warehouse = Product::has('warehouses')->get();
 
+
             return view('warehouse_show', ['warehouse_data'         => $warehouse_data,
                                            'employees_in_warehouse' => $employees_in_warehouse,
-                                           'products_in_warehouse'  => $products_in_warehouse]);
+                                           'products_in_warehouse'  => $products_in_warehouse,
+                                           ]);
         } else {
             return abort(403, 'Sorry, you cannot view this page.');
         }

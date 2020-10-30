@@ -71,7 +71,7 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-iid="{{ $importassignment->id }}"
-									data-warehouse="{{ $importassignment->warehouse->name }}"
+									data-warehouse="{{ $importassignment->warehouse_id }}"
                                     data-text="{{ $importassignment->import_assignment_text }}"
                                     data-deadline="{{ $importassignment->deadline }}"
                                     data-files="{{ $importassignment->uploaded_files }}"

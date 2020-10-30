@@ -16,7 +16,7 @@ use App\Warehouse; //for the N-to-M relationship
 class ProductController extends Controller
 {
     //VIEW ALL Products
-    public function view_products(Request $request){
+    public function view_products(Request $request, Product $prod){
          //4 user types -> Admin, CEO, Foreman, Worker
          //$authenticatedUser = Auth::check() && Auth::user()->user_type(['super_admin', 'company_ceo', 'warehouse_foreman', 'warehouse_worker']);
 
@@ -34,14 +34,17 @@ class ProductController extends Controller
 
             //$types = Type::with('category')->get(); //::all();
             $measunits = MeasureUnit::all();
-            $warehouses = Warehouse::all(); //has('products')->get(); //with('products')->get();
+
+            //was: $warehouses = Warehouse::all();
+            $warehouses = Warehouse::all(); //with('products')->get(); //has('products')->get();
 
 
             return view('products_view', ['products' => $products,
                                           'categories' => $categories,
                                           'types' => $types,
                                           'measunits' => $measunits,
-                                          'warehouses' => $warehouses,]); //also, send the $products & $categories variable to the 'products_view' Blade View.
+                                          'warehouses' => $warehouses,
+                                          'prod' => $prod]); //also, send the $products & $categories variable to the 'products_view' Blade View.
 
          } else {
              return abort(403, 'Sorry you cannot view this page');

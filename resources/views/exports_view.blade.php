@@ -54,11 +54,11 @@
                 <tbody>
                 @foreach($exports as $export)
                     <tr class="user-row" data-eid="{{ $export->id }}">  <!-- necessary additions -->
-                        <td>{{ $export->employee_id }}</td>
-                        <td>{{ $export->company_id }}</td>
-                        <td>{{ $export->delivered_on }}</td>
+                        <td>{{ $export->employee->user->name }}</td>
+                        <td>{{ $export->company->name }}</td>
+                        <td>{{ $export->delivered_on->format('l d/m/Y @ H:i') }}</td>
                         <td>{{ $export->vehicle_reg_no }}</td>
-                        <td>{{ $export->transport_id }}</td>
+                        <td>{{ $export->transport->name }}</td>
                         <td>{{ $export->shipment_address }}</td>
                         <td>{{ $export->destination_address }}</td>
                         <td>{{ $export->chargeable_hours_worked }}</td>
@@ -72,7 +72,7 @@
                             @endforeach
                             </ul>
                         </td>
-                        <td>{{ $export->exportassignment_id }}</td>
+                        <td>{{ $export->export_assignment->export_assignment_text }}</td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -89,6 +89,8 @@
                                     data-hours="{{ $export->hours_worked }}"
                                     data-shipmentbulletin="{{ $export->shipment_bulletin }}"
                                     data-itemdescription="{{ $export->item_description }}"
+                                    data-products="{{ $export->products }}"
+                                    data-allproducts="{{ $products }}"
                                     data-exportassignmentid="{{ $export->exportassignment_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
@@ -503,7 +505,9 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-edit">Δελτίο Αποστολής [αρχείο PDF]
                                         <i class="fas fa-paperclip text-danger" aria-hidden="true"></i></label>
+
                                         <div class="col-lg-9">
+                                            <span id="arxeio-DA"></span>
                                             <input type="file" name="modal-input-bulletin-edit" class="form-control" id="modal-input-bulletin-edit"
                                                 value="" />
                                         </div>
@@ -755,6 +759,11 @@
 
         jQuery.datetimepicker.setLocale('el');
 
+        //helper function
+        function base_name(path) {
+            return path.split('/').reverse()[0];
+        }
+
 
 
     //the 3 modals follow::
@@ -776,6 +785,10 @@
             var shipmentbulletin = button.data('shipmentbulletin');
             var itemdescription = button.data('itemdescription');
             //var  = button.data('');
+            var products = button.data('products');
+            var allproducts = button.data('allproducts');
+
+            //console.log('deltio apostolis: ', shipmentbulletin);
 
 
 
@@ -796,8 +809,31 @@
             modal.find('.modal-body #modal-input-destin-edit').val(destinationaddress);
             modal.find('.modal-body #modal-input-chargehrs-edit').val(chargeablehours);
             modal.find('.modal-body #modal-input-hours-edit').val(hours);
-            modal.find('.modal-body #modal-input-bulletin-edit').val(shipmentbulletin);
+            //modal.find('.modal-body #modal-input-bulletin-edit').val(shipmentbulletin);
             modal.find('.modal-body #modal-input-dtitle-edit').val(itemdescription);
+
+            modal.find('.modal-body #arxeio-DA').empty();
+            modal.find('.modal-body #arxeio-DA').append('<li>' + base_name(shipmentbulletin) + '</li>');
+
+
+
+
+            modal.find('.modal-body #modal-input-products-edit').empty();
+
+            $.each(products, function(key, val){
+                console.log('key: ', key);
+                console.log('val: ', val);
+                modal.find('.modal-body #modal-input-products-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+             });
+
+            var rest_prd = [];
+            //list1.filter(a => list2.some(b => a.userId === b.userId));
+            rest_prd = allproducts.filter(a => !products.some(b => a.id === b.id)); //it worked!! finds the diff of the 2 arrays!
+
+            $.each(rest_prd, function(key,val){
+                modal.find('.modal-body #modal-input-products-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+            });
+
 
 
             modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET Export assignment id value in data-eid attribute

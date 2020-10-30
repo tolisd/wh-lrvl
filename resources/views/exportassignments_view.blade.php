@@ -73,7 +73,7 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-eid="{{ $exportassignment->id }}"
-									data-warehouse="{{ $exportassignment->warehouse->name }}"
+									data-warehouse="{{ $exportassignment->warehouse_id }}"
                                     data-text="{{ $exportassignment->export_assignment_text }}"
                                     data-deadline="{{ $exportassignment->deadline }}"
                                     data-files="{{ $exportassignment->uploaded_files }}"

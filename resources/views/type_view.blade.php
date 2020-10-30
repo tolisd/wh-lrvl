@@ -50,8 +50,8 @@
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-tid="{{ $type->id }}"
                                     data-name="{{ $type->name }}"
-                                    data-description="{{ $type->description}}"
-                                    data-categoryid="{{ $type->category_id}}">
+                                    data-description="{{ $type->description }}"
+                                    data-categoryid="{{ $type->category_id }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -424,6 +424,7 @@
             var tid = button.data('tid'); // Extract info from data-* attributes
             var name = button.data('name');
             var description = button.data('description');
+            var categoryid = button.data('categoryid');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -433,6 +434,7 @@
             //modal.find('.card-body #modal-input-tid-edit').val(tid);
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-description-edit').val(description);
+            modal.find('.modal-body #modal-input-category-edit').val(categoryid);
 
             modal.find('.modal-footer #edit-button').attr("data-tid", tid);  //SET type id value in data-tid attribute
 

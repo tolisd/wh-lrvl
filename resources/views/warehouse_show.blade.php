@@ -39,6 +39,14 @@
         @endforeach
         </ul>
 
+        <strong>Αριθμός Προϊόντων στην Αποθήκη:</strong> &nbsp;
+        @foreach($warehouse_data as $wh)
+            {{ $wh->products->count() }}
+        @endforeach
+
+        <br/><br/>
+
+
 
             @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
             <!-- insert here the main my charged tools table-->

@@ -52,18 +52,18 @@
                 <tbody>
                 @foreach($imports as $import)
                     <tr class="user-row" data-iid="{{ $import->id }}">  <!-- necessary additions -->
-						<td>{{ $import->employee_id }}</td>
-                        <td>{{ $import->company_id }}</td>
-						<td>{{ $import->delivered_on }}</td>
+						<td>{{ $import->employee->user->name }}</td>
+                        <td>{{ $import->company->name }}</td>
+						<td>{{ $import->delivered_on->format('l d/m/Y @ H:i') }}</td>
 						<td>{{ $import->vehicle_reg_no }}</td>
-						<td>{{ $import->transport_id }}</td>
+						<td>{{ $import->transport->name }}</td>
 						<td>{{ $import->delivery_address }}</td>
 						<td>{{ $import->chargeable_hours_worked }}</td>
 						<td>{{ $import->hours_worked }}</td>
 						<td>{{ basename($import->shipment_bulletin) }}</td>
 						<td>{{ $import->discrete_description }}</td>
                         <!-- <td>{{ $import->product_id }}</td> -->
-                        <td>{{ $import->importasignment_id }}</td>
+                        <td>{{ $import->import_assignment->import_assignment_text }}</td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -387,7 +387,7 @@
                                             -->
                                             <select name="modal-input-recipient-edit" id="modal-input-recipient-edit" class="form-control">
                                             @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                                <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
                                             @endforeach
                                             </select>
                                         </div>
@@ -413,9 +413,9 @@
 
 									<!-- date_time_delivered_on -->
 									<div class="form-group row">
-										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtdeliv-create">Ημ/νία &amp; Ώρα Παραλαβής</label>
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtdeliv-edit">Ημ/νία &amp; Ώρα Παραλαβής</label>
                                         <div class="col-lg-9">
-                                            <input type="text" name="modal-input-dtdeliv-create" class="form-control" id="modal-input-dtdeliv-create"
+                                            <input type="text" name="modal-input-dtdeliv-edit" class="form-control" id="modal-input-dtdeliv-edit"
                                                 value="" autocomplete="off" />
                                         </div>
 									</div>
@@ -483,6 +483,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-edit">Δελτίο Αποστολής [αρχείο PDF]
                                         <i class="fas fa-paperclip text-danger" aria-hidden="true"></i></label>
                                         <div class="col-lg-9">
+                                            <span id="arxeio-DA"></span>
                                             <input type="file" name="modal-input-bulletin-edit" class="form-control" id="modal-input-bulletin-edit"
                                                 value="" />
                                         </div>
@@ -728,13 +729,19 @@
         jQuery.datetimepicker.setLocale('el');
 
 
+        //helper function
+        function base_name(path) {
+            return path.split('/').reverse()[0];
+        }
+
+
 
     //the 3 modals follow::
         $('#edit-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var iid = button.data('iid'); // Extract info from data-* attributes
-            var employeeid = data('employeeid');
+            var employeeid = button.data('employeeid');
             var companyid = button.data('companyid');
             var deliveredon = button.data('deliveredon');
             var vehicleregno = button.data('vehicleregno');
@@ -753,18 +760,21 @@
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-iid-edit').val(iid);
-            modal.find('.modal-body #modal-input-impco-edit').val(companyid);
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
+            modal.find('.modal-body #modal-input-impco-edit').val(companyid);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
             modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
             modal.find('.modal-body #modal-input-shipco-edit').val(transportid);
             modal.find('.modal-body #modal-input-destin-edit').val(deliveryaddress);
             modal.find('.modal-body #modal-input-chargehrs-edit').val(chargeablehours);
             modal.find('.modal-body #modal-input-hours-edit').val(hours);
-            modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
+            //modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
             modal.find('.modal-body #modal-input-dtitle-edit').val(description);
             modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
             //modal.find('.modal-body #modal-input-products-edit').val(products);
+
+            modal.find('.modal-body #arxeio-DA').empty();
+            modal.find('.modal-body #arxeio-DA').append('<li>' + base_name(bulletin) + '</li>');
 
             modal.find('.modal-footer #edit-button').attr("data-iid", iid);  //SET import assignment id value in data-iid attribute
 

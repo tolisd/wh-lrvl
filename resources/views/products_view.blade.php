@@ -79,7 +79,9 @@
                                     data-typeid="{{ $product->type_id }}"
                                     data-quantity="{{ $product->quantity }}"
                                     data-measunitid="{{ $product->measunit_id }}"
-                                    data-comments="{{ $product->comments }}">
+                                    data-comments="{{ $product->comments }}"
+                                    data-warehouses="{{ $product->warehouses }}"
+                                    data-allwarehouses="{{ $warehouses }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -381,9 +383,11 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouses-edit">Αποθήκη/-ες</label>
                                         <select name="modal-input-warehouses-edit[]" id="modal-input-warehouses-edit" class="form-control" multiple="multiple">
+
                                         @foreach($warehouses as $warehouse)
-                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                            <option value="{{ $warehouse->id }}" selected>{{ $warehouse->name }}</option>
                                         @endforeach
+
                                         </select>
                                     </div>
                                     <!-- /warehouses -->
@@ -603,6 +607,11 @@
             var quantity = button.data('quantity');
             var measunitid = button.data('measunitid');
             var comments = button.data('comments');
+            var warehouses = button.data('warehouses');
+            var allwarehouses = button.data('allwarehouses'); //I need this variable so that i calculate the difference later on
+
+            console.log('Warehouses: ', warehouses);
+            console.log('All_Warehouses: ', allwarehouses);
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -619,9 +628,48 @@
             modal.find('.modal-body #modal-input-measureunit-edit').val(measunitid);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
+            modal.find('.modal-body #modal-input-warehouses-edit').empty();
+
+            $.each(warehouses, function(key, val){
+                console.log('key: ', key);
+                console.log('val: ', val);
+                //modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+                //modal.find('.modal-body #modal-input-warehouses-edit option[value="'+ val.id +'"]').attr('selected', true);
+                modal.find('.modal-body #modal-input-warehouses-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+             });
+
+            //the below for loop is OK at first, but I need UNIQUE names for the case when there are selected more than 2 warehouses in the above loop.
+            /*
+            for(const wh of warehouses){
+                for(const warehouse of allwarehouses){
+                    if(warehouse['id'] != wh['id']){
+                        modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ warehouse['id'] +'">' + warehouse['name'] + '</option>');
+                    }
+                }
+            }
+            */
+
+            var rest_wh = [];
+            /*
+            rest_wh = allwarehouses.filter(function(n){
+                for(let i = 0; i < warehouses.length; i++){
+                    if(n.id != warehouses[i].id){
+                      rest_wh.push(n.id);
+                    }
+                }
+            });
+            */
+
+            //list1.filter(a => list2.some(b => a.userId === b.userId));
+            rest_wh = allwarehouses.filter(a => !warehouses.some(b => a.id === b.id)); //it worked!! finds the diff of the 2 arrays!
+            //rest_wh = allwarehouses['id'].filter((x) => !warehouses['id'].include(x));
+
+            $.each(rest_wh, function(key,val){
+                modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+            });
+
+
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
-
-
 
 
             //AJAX Update/Edit User
@@ -938,8 +986,9 @@
         //the following is correct but cannot display the name!!
 
         $('#edit-modal').on('shown.bs.modal', function(evt){
-            console.log('evt: ', evt);
 
+            console.log('evt: ', evt);
+            /*
             //keep old value in type-edit, apparently it doesnt work...
             const typeedit_oldvalue = '{{ old("modal-input-type-edit") }}';
             console.log(typeedit_oldvalue);
@@ -947,6 +996,7 @@
             if(typeedit_oldvalue != ''){
                 $('#modal-input-type-edit').val(typeedit_oldvalue);
             }
+            */
 
             /*
             //var type_id = evt.target.attributes[8];
@@ -961,11 +1011,13 @@
         });
 
 
+        /*
         $('#edit-modal').on('shown.bs.modal', function(evt){
             console.log('Evt:: ',evt);
 
 
         });
+        */
 
 
 
