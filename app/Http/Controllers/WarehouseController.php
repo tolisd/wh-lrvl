@@ -12,6 +12,8 @@ use App\Employee;
 use App\User;
 use App\Product;
 
+use App\ImportAssignment;
+
 class WarehouseController extends Controller
 {
     //
@@ -240,4 +242,55 @@ class WarehouseController extends Controller
         }
 
     }
+
+
+
+    //ajax json method in imports_view.blade.php for dynamic dropdownlist
+    public function get_employees_imp($id){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
+
+            //Query Builder is 10x faster than Eloquent ORM.
+
+            $user_names_imp = DB::table('users')
+                        ->join('employees', 'users.id', '=', 'employees.user_id')
+                        //->join('imports', 'imports.employee_id', '=', 'employees.id')
+                        ->join('importassignments', 'importassignments.warehouse_id', '=', 'employees.warehouse_id')
+                        ->where('importassignments.id', $id)
+                        ->select('users.name', 'employees.id')
+                        ->get();
+
+            return json_encode($user_names_imp); //ajax data
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
+    //ajax json method in imports_view.blade.php for dynamic dropdownlist
+    public function get_employees_exp($id){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
+
+            //Query Builder is 10x faster than Eloquent ORM.
+
+            $user_names_exp = DB::table('users')
+                        ->join('employees', 'users.id', '=', 'employees.user_id')
+                        ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
+                        //->join('product_warehouse', 'warehouse_id' ,'=', 'exportassignments.warehouse_id') //
+                        ->where('exportassignments.id', $id)
+                        ->select('users.name', 'employees.id')
+                        ->get();
+
+            return json_encode($user_names_exp); //ajax data
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
+
+
 }

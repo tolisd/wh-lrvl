@@ -9,15 +9,17 @@ use Validator;
 use App\Import;
 use App\Importassignment;
 use App\Company;
-use App\Transport; //transport_companies
+use App\Transport; //transport_companies, i.e. shipping companies
 use App\Employee;
+use App\User;
 use App\Product;
+use App\Warehouse;
 use Carbon\Carbon;
 
 class ImportController extends Controller
 {
     //
-    public function view_imports(){
+    public function view_imports(Request $request){
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
@@ -26,14 +28,60 @@ class ImportController extends Controller
             $companies = Company::all();
             $transport_companies = Transport::all();
             $employees = Employee::all();
+            $users = User::all();
+            $warehouses = Warehouse::all();
             $products = Product::all(); //what if there are a lot of products in the DB? ==> chunk & DB Facade (aka Query Builder)
+
+
+            $impassids = [];
+            foreach($imports as $import){
+                array_push($impassids, $import->importassignment_id);
+            }
+            //dd($impassids);
+
+            /*
+            $warehouse_id = \Request::get('warehouse_id');
+            dd($warehouse_id);
+
+            $employee_id = \Request::get('employee_id');
+            dd($employee_id); //null
+            $importassignment_id = \Request::get('importassignment_id'); //null
+            dd($importassignment_id);
+            */
+
+            //DB Facade aka Query Builder, for faster join!
+            $employees_per_warehouse = DB::table('employees')
+                                        //->join('imports', 'employees.id', '=', 'imports.employee_id')
+                                        ->join('importassignments', 'importassignments.warehouse_id', '=', 'employees.warehouse_id')
+                                        ->join('users', 'users.id', '=', 'employees.user_id')
+                                        ->whereIn('importassignments.id', $impassids)
+                                        ->select('users.name', 'employees.id', 'employees.warehouse_id')
+                                        ->get();
+
+            //dd($employees_per_warehouse); gets the names!
+            /*
+            $employee_names = DB::table('employees')
+                            ->join('users', 'users.id', '=', 'employees.user_id')
+                            ->join('warehouse', 'employees.warehouse_id','=','warehouse.id')
+                            ->join('importassignments', 'importassignments.warehouse_id', '=', 'warehouse.id')
+                            ->select('users.name', 'employees.id', 'employees.warehouse_id')
+                            ->get();
+            */
+
+            //dd($employee_names);
+
 
             return view('imports_view', ['importassignments' => $importassignments,
                                         'companies' => $companies,
                                         'employees' => $employees,
+                                        'users' => $users,
+                                        'warehouses' => $warehouses,
+                                        'employees_per_warehouse' => $employees_per_warehouse,
+                                        //'employee_names' => $employee_names,
                                         'transport_companies' => $transport_companies,
                                         'imports' => $imports,
-                                        'products' => $products]);
+                                        'products' => $products,
+                                        ]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -165,8 +213,7 @@ class ImportController extends Controller
                 'modal-input-bulletin-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-importassignment-edit' => 'required',
-                'modal-input-products-edit' => 'required',
-
+                //'modal-input-products-edit' => 'required',
             ];
 
             //custom error messages for the above validation rules
@@ -183,7 +230,7 @@ class ImportController extends Controller
                 'modal-input-bulletin-edit.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
                 'modal-input-importassignment-edit.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
-                'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
+                //'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -202,20 +249,33 @@ class ImportController extends Controller
                 if($validator->passes()){
                     //success
                     //save-update the object
+
+                    /*
+                     protected $fillable = [
+                        'delivered_on',
+                        'delivery_address',
+                        'discrete_description',
+                        'hours_worked',
+                        'chargeable_hours_worked',
+                        'shipment_bulletin',
+                        //'shipment_address',
+                        'vehicle_reg_no',
+
+                        //'product_id',
+                        'employee_id',
+                        'company_id',
+                        'transport_id',
+                        'importassignment_id',
+                    ];
+                    */
                     $import = Import::findOrFail($id);
 
-                    $import->employee_id             = $request->input('modal-input-recipient-edit');
-                    $import->company_id              = $request->input('modal-input-impco-edit');
+
                     $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
-                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
-                    $import->transport_id            = $request->input('modal-input-shipco-edit');
                     $import->delivery_address        = $request->input('modal-input-destin-edit');
-                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
-                    $import->hours_worked            = $request->input('modal-input-hours-edit');
                     $import->discrete_description    = $request->input('modal-input-dtitle-edit');
-                    //$import->shipment_address = $request->input('modal-input--create');
-                    //$import->product_id = $request->input('modal-input-products-create');
-                    $import->importassignment_id     = $request->input('modal-input-importassignment-create');
+                    $import->hours_worked            = $request->input('modal-input-hours-edit');
+                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
 
                     if($request->hasFile('modal-input-bulletin-edit')){
                         $file = $request->file('modal-input-bulletin-edit');
@@ -228,6 +288,16 @@ class ImportController extends Controller
 
                         $import->shipment_bulletin = $url;
                     }
+
+                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
+                    //$import->shipment_address = $request->input('modal-input--create');
+                    //$import->product_id = $request->input('modal-input-products-create');
+                    $import->employee_id             = $request->input('modal-input-recipient-edit');
+                    $import->company_id              = $request->input('modal-input-impco-edit');
+                    $import->transport_id            = $request->input('modal-input-shipco-edit');
+                    $import->importassignment_id     = $request->input('modal-input-importassignment-edit');
+
+
 
                     $import->update($request->all());
 

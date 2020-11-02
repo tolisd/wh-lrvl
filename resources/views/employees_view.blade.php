@@ -82,7 +82,8 @@
                                     data-address="{{ $employee->address }}"
                                     data-telno="{{ $employee->phone_number }}"
                                     data-companyid="{{ $employee->company_id }}"
-                                    data-warehouseid=" {{ $employee->warehouse_id }}">
+                                    data-warehouseid="{{ $employee->warehouse_id }}"
+                                    data-warehousesall="{{ $warehouses }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -103,7 +104,7 @@
             <br/><br/>
 
             <!--Create New Employee button -->
-            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal">Προσθήκη Νέου Εργαζόμενου</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-employee-btn">Προσθήκη Νέου Εργαζόμενου</button>
 
             <br/><br/>
             @endcanany <!-- ['isSuperAdmin', 'isCompanyCEO', 'isAccountant'] -->
@@ -166,7 +167,7 @@
                                         <label class="col-form-label" for="modal-input-name-create">Όνομα</label>
                                         <!--
                                         <input type="text" name="modal-input-name-create" class="form-control" id="modal-input-name-create"
-                                            value="" required autofocus />
+                                            value=""  autofocus />
                                         -->
                                         <select name="modal-input-name-create" class="form-control" id="modal-input-name-create">
                                         @foreach($users as $user)
@@ -319,14 +320,16 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-name-edit">Όνομα</label>
                                         <!--
-                                        <input type="text" name="modal-input-name-edit" class="form-control" id="modal-input-name-edit"
-                                            value="" required autofocus />
+                                        <input type="text" name="modal-input-name-edit" class="form-control-plaintext" id="modal-input-name-edit"
+                                            value="" readonly />
                                         -->
+
                                         <select name="modal-input-name-edit" class="form-control" id="modal-input-name-edit">
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" disabled readonly>{{ $user->name }}</option>
                                         @endforeach
                                         </select>
+
                                     </div>
                                     <!-- /name -->
 
@@ -602,6 +605,7 @@
                 var companyid = button.data('companyid');
                 //var photo = button.data('photo');
                 //var uid = button.data('uid');
+                var warehousesall = button.data('warehousesall');
 
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                 // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -618,6 +622,22 @@
                 //modal.find('.modal-body #modal-input-uid-edit').val(uid);
 
                 modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET product id value in data-eid attribute
+
+
+
+
+                modal.find('.modal-body #modal-input-warehouse-edit').empty();
+                $.each(warehousesall, function(key, val){
+                    //console.log(key);
+                    //console.log(val);
+                    if((companyid == val['company_id']) && (warehouseid == val['id'])){
+                        modal.find('.modal-body #modal-input-warehouse-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+                    } else if((companyid == val['company_id'])){
+                        modal.find('.modal-body #modal-input-warehouse-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+                    }
+                });
+
+
 
 
                 //AJAX Update/Edit Warehouse Data
@@ -813,7 +833,7 @@
                         } else if (xhr.status == 422){
                             msg = 'Δώσατε λάθος δεδομένα!';
 
-                            var json_err = $.parseJSON(xhr.responseText); //responseJSON
+                            var json_err = $.parseJSON(xhr.responseText); //xhr.responseJSON
                             $('.alert-danger').html('');
 
                             $.each(json_err.errors, function(key, value){
@@ -834,6 +854,66 @@
             });
 
 
+
+        //AJAX for dropdown lists in add and edit modals
+
+        //ajax add modal
+        $(document).on('change', '#modal-input-company-create', function(evt){
+
+            var company_id = evt.target.value;
+
+            if(company_id){
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: '{{ url(request()->route()->getPrefix()) }}' + '/employees/company/' + company_id,
+
+                    success: function(data){
+                        $('#modal-input-warehouse-create').empty();
+                        $.each(data, function(key, value){
+                            $('#modal-input-warehouse-create').append('<option value="'+ value +'">'+ key +'</option>');
+                            //console.log('key='+key+ ', value='+value);
+                        });
+                    },
+
+                });
+            } else {
+                $('#modal-input-warehouse-create').empty();
+            }
+        });
+
+
+            //ajax edit modal
+        $(document).on('change', '#modal-input-company-edit', function(evt){
+            var company_id = evt.target.value;
+            //var data = evt.params.data;
+
+            if(company_id){
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: '{{ url(request()->route()->getPrefix()) }}' + '/employees/company/' + company_id,
+
+                    success: function(data){
+                        console.log('Data : ', data);
+                        $('#modal-input-warehouse-edit').empty();
+                        $.each(data, function(key, value){
+                            $('#modal-input-warehouse-edit').append('<option value="'+ value +'">'+ key +'</option>');
+                            //console.log('key='+key+ ', value='+value);
+                        });
+                    },
+
+                });
+            } else {
+                $('#modal-input-warehouse-edit').empty();
+            }
+        });
+
+
+
+
+
+
             //necessary additions for when the modals get hidden
 
             $('#edit-modal').on('hidden.bs.modal', function(e){
@@ -850,6 +930,11 @@
 
                 $('.alert-danger').hide();
                 $('.alert-danger').html('');
+            });
+
+            $('#add-employee-btn').on('click', function(evt){
+                $('#add-form').find('select').val('');
+                $('#add-form').find('select[name="modal-input-warehouse-create"]').empty();
             });
 
 

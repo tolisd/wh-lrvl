@@ -196,4 +196,21 @@ class CompanyController extends Controller
         }
 
     }
+
+    //for the ajax route
+    public function get_warehouses($id){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
+
+            //Query Builder is 10x faster than Eloquent ORM.
+            $warehouses = DB::table('warehouse')
+                    ->where("company_id", $id)
+                    ->pluck("id", "name");
+
+            return json_encode($warehouses);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
 }

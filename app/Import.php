@@ -18,7 +18,7 @@ class Import extends Model
         'hours_worked',
         'chargeable_hours_worked',
         'shipment_bulletin',
-        'shipment_address',
+        //'shipment_address',
         'vehicle_reg_no',
 
         //'product_id',

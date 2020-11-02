@@ -12,6 +12,7 @@ use App\Company;
 use App\Transport; //transport_companies
 use App\Employee;
 use App\Product;
+use App\Warehouse;
 use Carbon\Carbon;
 
 
@@ -27,14 +28,81 @@ class ExportController extends Controller
             $companies = Company::all();
             $transport_companies = Transport::all();
             $employees = Employee::all();
+            $warehouses = Warehouse::all();
             $products = Product::all(); //what if there a lot of products in the DB? chunk()? => use Query Builder instead..
+            $prod_wh = Product::with('warehouses', 'exports')->get(); //no need for exports or warehouses for that matter
+
+
+            $expassids = [];
+            foreach($exports as $export){
+                array_push($expassids, $export->exportassignment_id);
+            }
+
+            $employees_per_warehouse = DB::table('employees')
+                                        //->join('imports', 'employees.id', '=', 'imports.employee_id')
+                                        ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
+                                        ->join('users', 'users.id', '=', 'employees.user_id')
+                                        ->whereIn('exportassignments.id', $expassids)
+                                        ->select('users.name', 'employees.id', 'employees.warehouse_id')
+                                        ->get();
+
+
+
+
+            $wh_ids = []; //the id's of the warehouses for which there have been created export assignments!!
+            foreach($exportassignments as $exportassignment){
+                foreach($warehouses as $wh){
+                    if($wh->id == $exportassignment->warehouse_id){
+                        array_push($wh_ids, $wh->id);
+                    }
+                }
+            }
+
+            //dd($wh_ids);
+
+            //the products of the above mentioned warehouses!
+            $all_products_in_warehouse = Product::whereHas('warehouses', function($query) use($wh_ids){
+                $query->whereIn('warehouse_id', $wh_ids);
+            })->get();
+
+            /*
+            $all_products_in_warehouse = DB::table('product_warehouse')
+                                        ->whereIn('warehouse_id', $wh_ids)
+                                        ->select('product_id')
+                                        ->get();
+            */
+
+
+
+            //$all_products_in_warehouse = Product::with('warehouses')->get(); //this is correct but returns ALL products from ALL warehouses...
+
+
+
+
+
+
+
+            //dd($all_products_in_warehouse);
+
+            /*
+            $customers = Customer::whereHas('stores', function($query) use($storeId) {
+                $query->where('stores.id', $storeId);
+            })->get();
+            */
+
+
+
 
             return view('exports_view', ['exportassignments' => $exportassignments,
                                         'companies' => $companies,
                                         'employees' => $employees,
+                                        'employees_per_warehouse' => $employees_per_warehouse,
+                                        'all_products_in_warehouse' => $all_products_in_warehouse,
                                         'transport_companies' => $transport_companies,
                                         'exports' => $exports,
-                                        'products' => $products]);
+                                        'products' => $products,
+                                        'prod_wh' => $prod_wh,
+                                        'warehouses' => $warehouses]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }

@@ -49,7 +49,7 @@
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
-                        <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td>
+                        <td>{{ $exportassignment->export_deadline->format('l, d/m/Y @ H:i') }}</td>
                         @php
                             $attached_files = json_decode($exportassignment->uploaded_files, true);
                         @endphp
@@ -75,7 +75,7 @@
                                     data-eid="{{ $exportassignment->id }}"
 									data-warehouse="{{ $exportassignment->warehouse_id }}"
                                     data-text="{{ $exportassignment->export_assignment_text }}"
-                                    data-deadline="{{ $exportassignment->deadline }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->format('d-m-Y H:i') }}"
                                     data-files="{{ $exportassignment->uploaded_files }}"
 									data-comments="{{ $exportassignment->comments }}"
 									data-isopen="{{ $exportassignment->is_open }}">
@@ -588,7 +588,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export-assignments/update/" + eid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/update/" + eid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -599,7 +599,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent PUT Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export-assignments/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/view/";
                             }
                         });
                     },
@@ -671,7 +671,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export-assignments/delete/" + eid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/delete/" + eid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -682,7 +682,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent DELETE Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export-assignments/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/view/";
                             }
                         });
                     },
@@ -729,7 +729,7 @@
                 contentType: false, //do not set any content type header
                 processData: false, //send non-processed data
                 dataType: "json",
-                url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export-assignments/create/", //where to send the ajax request
+                url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/create/", //where to send the ajax request
                 success: function(){
                     Swal.fire({
                             icon: "success",
@@ -740,7 +740,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent POST Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export-assignments/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/view/";
                             }
                         });
                 },

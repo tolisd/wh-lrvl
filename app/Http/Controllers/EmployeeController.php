@@ -20,7 +20,7 @@ class EmployeeController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
             $employees = Employee::all();
-            $warehouses = Warehouse::all();
+            $warehouses = Warehouse::with('company')->get(); //eager loading, was ::all();
             $companies = Company::all();
             $users = User::all();
 

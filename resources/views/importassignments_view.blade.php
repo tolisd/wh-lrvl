@@ -73,7 +73,7 @@
                                     data-iid="{{ $importassignment->id }}"
 									data-warehouse="{{ $importassignment->warehouse_id }}"
                                     data-text="{{ $importassignment->import_assignment_text }}"
-                                    data-deadline="{{ $importassignment->deadline }}"
+                                    data-deadline="{{ $importassignment->import_deadline->format('d-m-Y H:i') }}"
                                     data-files="{{ $importassignment->uploaded_files }}"
 									data-comments="{{ $importassignment->comments }}"
 									data-isopen="{{ $importassignment->is_open }}">
@@ -538,7 +538,7 @@
             //modal.find('.card-body #modal-input-iid-edit').val(iid);
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouse);
 			modal.find('.modal-body #modal-input-text-edit').val(import_text);
-			modal.find('.modal-body #modal-input-picker-edit').val(deadline);
+			modal.find('.modal-body #date-time-picker-edit').val(deadline);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 			modal.find('.modal-body #modal-input-isopen-edit').val(isopen);
 
@@ -571,7 +571,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import-assignments/update/" + iid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import/update/" + iid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -582,7 +582,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent PUT Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import-assignments/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import/view/";
                             }
                         });
                     },
@@ -658,7 +658,7 @@
                     contentType: false, //do not set any content type header
                     processData: false, //send non-processed data
                     dataType: "json",
-                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import-assignments/delete/" + iid, //where to send the ajax request
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import/delete/" + iid, //where to send the ajax request
                     success: function(){
                         Swal.fire({
                             icon: "success",
@@ -669,7 +669,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent DELETE Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import-assignments/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import/view/";
                             }
                         });
                     },
@@ -719,7 +719,7 @@
                 contentType: false, //do not set any content type header
                 processData: false, //send non-processed data
                 dataType: "json",
-                url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import-assignments/create/", //where to send the ajax request
+                url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import/create/", //where to send the ajax request
                 success: function(){
                     Swal.fire({
                             icon: "success",
@@ -730,7 +730,7 @@
                         }).then(function(isConfirm){
                             if (isConfirm){
                                 console.log("Sent POST Request ..");
-                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import-assignments/view/";
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/import/view/";
                             }
                         });
                 },

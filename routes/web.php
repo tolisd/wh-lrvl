@@ -105,29 +105,31 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('admin.assignments.export.open.view');
 
     //import assignments
-    Route::get('/assignments/import-assignments/view', 'ImportAssignmentController@view_import_assignments')->name('admin.assignments.import.view');
-    Route::post('assignments/import-assignments/create', 'ImportAssignmentController@create_import_assignment')->name('admin.assignment.import.create');
-    Route::put('assignments/import-assignments/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('admin.assignment.import.update');
-    Route::delete('assignments/import-assignments/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('admin.assignment.import.delete');
+    Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('admin.assignments.import.view');
+    Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('admin.assignment.import.create');
+    Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('admin.assignment.import.update');
+    Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('admin.assignment.import.delete');
+
 
     //export assignments
-    Route::get('/assignments/export-assignments/view', 'ExportAssignmentController@view_export_assignments')->name('admin.assignments.export.view');
-    Route::post('assignments/export-assignments/create', 'ExportAssignmentController@create_export_assignment')->name('admin.assignment.export.create');
-    Route::put('assignments/export-assignments/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('admin.assignment.export.update');
-    Route::delete('assignments/export-assignments/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('admin.assignment.export.delete');
+    Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('admin.assignments.export.view');
+    Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('admin.assignment.export.create');
+    Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('admin.assignment.export.update');
+    Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('admin.assignment.export.delete');
 
     //imports
     Route::get('/assignments/imports/view', 'ImportController@view_imports')->name('admin.imports.view');
     Route::post('/assignments/imports/create', 'ImportController@create_import')->name('admin.imports.create');
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('admin.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('admin.imports.delete');
+    Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('admin.exports.view');
     Route::post('/assignments/exports/create', 'ExportController@create_export')->name('admin.exports.create');
     Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('admin.exports.update');
     Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('admin.exports.delete');
-
+    Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
 
 
     Route::get('/products/view', 'ProductController@view_products')->name('admin.products.view'); //view products
@@ -166,6 +168,7 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::post('/employees/create', 'EmployeeController@create_employee')->name('admin.employees.create');
     Route::put('/employees/update/{id}', 'EmployeeController@update_employee')->name('admin.employees.update');
     Route::delete('/employees/delete/{id}', 'EmployeeController@delete_employee')->name('admin.employees.delete');
+    Route::get('/employees/company/{id}', 'CompanyController@get_warehouses')->name('admin.companywarehouses'); //ajax route
 
     Route::get('/companies/view', 'CompanyController@view_companies')->name('admin.companies.view');
     Route::post('/companies/create', 'CompanyController@create_company')->name('admin.companies.create');
@@ -251,6 +254,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('manager.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('manager.assignment.import.delete');
 
+
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('manager.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('manager.assignment.export.create');
@@ -262,12 +266,14 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
     Route::post('/assignments/imports/create', 'ImportController@create_import')->name('manager.imports.create');
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('manager.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('manager.imports.delete');
+    Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('manager.exports.view');
     Route::post('/assignments/exports/create', 'ExportController@create_export')->name('manager.exports.create');
     Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('manager.exports.update');
     Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('manager.exports.delete');
+    Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
 
    Route::get('/products/view', 'ProductController@view_products')->name('manager.products.view'); //view products
    Route::get('/product/view/{id}', 'DashboardController@view_product')->name('manager.product.view'); //view single product
@@ -302,6 +308,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::post('/employees/create', 'EmployeeController@create_employee')->name('manager.employees.create');
    Route::put('/employees/update/{id}', 'EmployeeController@update_employee')->name('manager.employees.update');
    Route::delete('/employees/delete/{id}', 'EmployeeController@delete_employee')->name('manager.employees.delete');
+   Route::get('/employees/company/{id}', 'CompanyController@get_warehouses')->name('manager.companywarehouses'); //ajax route
 
    Route::get('/companies/view', 'CompanyController@view_companies')->name('manager.companies.view');
    Route::post('/companies/create', 'CompanyController@create_company')->name('manager.companies.create');
@@ -387,6 +394,7 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('accountant.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('accountant.assignment.import.delete');
 
+
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('accountant.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('accountant.assignment.export.create');
@@ -398,19 +406,21 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     Route::post('/assignments/imports/create', 'ImportController@create_import')->name('accountant.imports.create');
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('accountant.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('accountant.imports.delete');
+    Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('accountant.exports.view');
     Route::post('/assignments/exports/create', 'ExportController@create_export')->name('accountant.exports.create');
     Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('accountant.exports.update');
     Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('accountant.exports.delete');
-
+    Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
 
 
     Route::get('/employees/view', 'EmployeeController@view_employees')->name('accountant.employees.view');
     Route::post('/employees/create', 'EmployeeController@create_employee')->name('accountant.employees.create');
     Route::put('/employees/update/{id}', 'EmployeeController@update_employee')->name('accountant.employees.update');
     Route::delete('/employees/delete/{id}', 'EmployeeController@delete_employee')->name('accountant.employees.delete');
+    Route::get('/employees/company/{id}', 'CompanyController@get_warehouses')->name('accountant.companywarehouses'); //ajax route
 
     Route::get('/companies/view', 'CompanyController@view_companies')->name('accountant.companies.view');
     Route::post('/companies/create', 'CompanyController@create_company')->name('accountant.companies.create');
@@ -468,23 +478,27 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('foreman.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('foreman.assignment.import.delete');
 
+
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('foreman.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('foreman.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('foreman.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('foreman.assignment.export.delete');
 
+
     //imports
     Route::get('/assignments/imports/view', 'ImportController@view_imports')->name('foreman.imports.view');
     Route::post('/assignments/imports/create', 'ImportController@create_import')->name('foreman.imports.create');
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('foreman.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('foreman.imports.delete');
+    Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('foreman.exports.view');
     Route::post('/assignments/exports/create', 'ExportController@create_export')->name('foreman.exports.create');
     Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('foreman.exports.update');
     Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('foreman.exports.delete');
+    Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
 
     Route::get('/products/view', 'ProductController@view_products')->name('foreman.products.view'); //view products
     Route::get('/product/view/{id}', 'DashboardController@view_product')->name('foreman.product.view'); //view a single product
@@ -566,6 +580,7 @@ Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('user.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('user.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('user.assignment.import.delete');
+
 
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('user.assignments.export.view');

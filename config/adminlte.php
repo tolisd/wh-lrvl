@@ -265,6 +265,7 @@ return [
             'header' => 'ΓΕΝΙΚΕΣ ΕΠΙΛΟΓΕΣ',
             'can' => ['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman']
         ],
+        /*
         [
             'text' => 'Διαθεσιμότητα Στοκ',
             'route' => 'admin.stock.view',
@@ -277,6 +278,7 @@ return [
             'can' =>   'isCompanyCEO',
             'icon' => 'fas fa-server',
         ],
+        */
 
 
         [
@@ -1430,11 +1432,13 @@ return [
                     'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js',
                 ],
+                /*
                 [
                     'type' => 'css',
                     'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
                 ],
+                */
             ],
         ],
 
@@ -1442,11 +1446,13 @@ return [
             'name' => 'Buttons',
             'active' => true,
             'files' => [
+
                 [
                     'type' => 'css',
                     'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css',
                 ],
+
                 [
                     'type' => 'css',
                     'asset' => true,
@@ -1458,12 +1464,13 @@ return [
                     'location' => '//cdn.datatables.net/buttons/1.6.3/css/buttons.bootstrap4.min.css',
                 ],
 
-
+                /*
                 [
                     'type' => 'js',
                     'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js',
                 ],
+                */
                 [
                     'type' => 'js',
                     'asset' => true,

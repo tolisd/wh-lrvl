@@ -31,6 +31,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Ανάθεση Εισαγωγής</th>
                         <th class="text-left">Υπεύθυνος Παραλαβής</th>
                         <th class="text-left">Εταιρεία Εισαγωγής</th>
                         <th class="text-left">Ημ/νία &amp; Ώρα Παραλαβής</th>
@@ -42,7 +43,6 @@
 						<th class="text-left">Δελτίο Αποστολής</th>
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
                         <!-- <th class="text-left">Προϊόντα</th> -->
-                        <th class="text-left">Ανάθεση Εισαγωγής</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -52,6 +52,7 @@
                 <tbody>
                 @foreach($imports as $import)
                     <tr class="user-row" data-iid="{{ $import->id }}">  <!-- necessary additions -->
+                        <td>[{{ $import->import_assignment->warehouse->name }}], [{{ $import->import_assignment->import_deadline->isoFormat('llll') }}]</td>
 						<td>{{ $import->employee->user->name }}</td>
                         <td>{{ $import->company->name }}</td>
 						<td>{{ $import->delivered_on->format('l d/m/Y @ H:i') }}</td>
@@ -63,15 +64,20 @@
 						<td>{{ basename($import->shipment_bulletin) }}</td>
 						<td>{{ $import->discrete_description }}</td>
                         <!-- <td>{{ $import->product_id }}</td> -->
-                        <td>{{ $import->import_assignment->import_assignment_text }}</td>
+                        <!-- <td>{{ $import->import_assignment->import_assignment_text }}</td> -->
 
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-iid="{{ $import->id }}"
 									data-employeeid="{{ $import->employee_id }}"
+                                    data-employeesall="{{ $employees }}"
+                                    data-usersall="{{ $users }}"
+                                    data-warehousesall="{{ $warehouses }}"
+                                    data-warehouseid="{{ $import->import_assignment->warehouse_id }}"
+                                    data-employeesperwarehouse="{{ $employees_per_warehouse }}"
 									data-companyid="{{ $import->company_id }}"
-									data-deliveredon="{{ $import->delivered_on }}"
+									data-deliveredon="{{ $import->delivered_on->format('d-m-Y H:i') }}"
 									data-vehicleregno="{{ $import->vehicle_reg_no }}"
 									data-transportid="{{ $import->transport_id }}"
 									data-deliveryaddress="{{ $import->delivery_address }}"
@@ -87,7 +93,8 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-iid="{{ $import->id }}"
-                                    data-deliveredon="{{ $import->delivered_on }}">
+                                    data-warehouse="{{ $import->import_assignment->warehouse->name }}"
+                                    data-deliveredon="{{ $import->delivered_on->format('l, d-m-Y H:i') }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -163,6 +170,24 @@
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-iid-create" name="modal-input-iid-create" value="">
 
+
+                                    <!-- import_assignment -->
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-create">Ανάθεση Εισαγωγής</label>
+                                        <div class="col-lg-9">
+                                            <!--
+                                            <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
+                                                value="" />
+                                            -->
+                                            <select name="modal-input-importassignment-create" id="modal-input-importassignment-create" class="form-control">
+                                            @foreach($importassignments as $impassgnm)
+                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!-- /import_assignment -->
+
 									<!-- recipient name -->
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-recipient-create">Υπεύθυνος Παραλαβής</label>
@@ -170,9 +195,7 @@
                                         <!-- <input type="text" name="modal-input-recipient-create" class="form-control" id="modal-input-recipient-create"
                                                 value="" />  -->
                                         <select name="modal-input-recipient-create" id="modal-input-recipient-create" class="form-control">
-                                            @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
-                                            @endforeach
+
                                         </select>
                                         </div>
 									</div>
@@ -283,22 +306,7 @@
 									</div>
 									<!-- /delivery_description -->
 
-                                    <!-- import_assignment -->
-									<div class="form-group row">
-										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-create">Ανάθεση Εισαγωγής</label>
-                                        <div class="col-lg-9">
-                                            <!--
-                                            <input type="text" name="modal-input--create" class="form-control" id="modal-input--create"
-                                                value="" />
-                                            -->
-                                            <select name="modal-input-importassignment-create" id="modal-input-importassignment-create" class="form-control">
-                                            @foreach($importassignments as $impassgnm)
-                                                <option value="{{ $impassgnm->id }}">{{ $impassgnm->import_assignment_text }}</option>
-                                            @endforeach
-                                            </select>
-                                        </div>
-									</div>
-									<!-- /import_assignment -->
+
 
 
                                     <!-- products -->
@@ -377,6 +385,23 @@
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-iid-edit" name="modal-input-iid-edit" value="">
 
+                                    <!-- added hidden input for warehouse, I need it for the AJAX to get employees in edit modal -->
+                                    <input type="hidden" id="modal-input-warehouse-edit" name="modal-input-warehouse-edit" value="">
+
+
+                                    <!-- import_assignment -->
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-edit">Ανάθεση Εισαγωγής</label>
+                                        <div class="col-lg-9">
+                                            <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control">
+                                            @foreach($importassignments as $impassgnm)
+                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
+                                            @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!-- /import_assignment -->
+
 									<!-- recipient name -->
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-recipient-edit">Υπεύθυνος Παραλαβής</label>
@@ -386,8 +411,8 @@
                                                 value="" />
                                             -->
                                             <select name="modal-input-recipient-edit" id="modal-input-recipient-edit" class="form-control">
-                                            @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
+                                            @foreach($employees as $emp)
+                                                <option value="{{ $emp->id }}">{{ $emp->user->name }}</option>
                                             @endforeach
                                             </select>
                                         </div>
@@ -500,18 +525,7 @@
 									</div>
 									<!-- /delivery_description -->
 
-                                    <!-- import_assignment -->
-									<div class="form-group row">
-										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-edit">Ανάθεση Εισαγωγής</label>
-                                        <div class="col-lg-9">
-                                            <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control">
-                                            @foreach($importassignments as $impassgnm)
-                                                <option value="{{ $impassgnm->id }}">{{ $impassgnm->import_assignment_text }}</option>
-                                            @endforeach
-                                            </select>
-                                        </div>
-									</div>
-									<!-- /import_assignment -->
+
 
                                     <!-- products -->
                                     <!--
@@ -582,6 +596,12 @@
                                     <div class="form-group">
                                         <input type="hidden" id="modal-input-iid-del" name="modal-input-iid-del" value="" />
                                     </div>
+
+                                    <div class="form-group">
+										<label class="col-form-label" for="modal-input-warehouse-del">Αποθήκη</label>
+										<input type="text" name="modal-input-warehouse-del" class="form-control-plaintext" id="modal-input-warehouse-del"
+											value="" />
+									</div>
 
 									<!-- date_time_delivered_on -->
 									<div class="form-group">
@@ -658,7 +678,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
                             }
                         },
                         {
@@ -666,7 +686,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
                             }
                         },
                         {
@@ -674,7 +694,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
                             }
                         },
                         {
@@ -683,14 +703,14 @@
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
                             }
                         },
                     ],
@@ -741,7 +761,15 @@
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var iid = button.data('iid'); // Extract info from data-* attributes
+
             var employeeid = button.data('employeeid');
+            //var employeesall = button.data('employeesall');
+            //var usersall = button.data('usersall');
+            var employeesperwarehouse = button.data('employeesperwarehouse');
+            var warehousesall = button.data('warehousesall');
+            var employeenames = button.data('employeenames');
+            var warehouseid = button.data('warehouseid');
+
             var companyid = button.data('companyid');
             var deliveredon = button.data('deliveredon');
             var vehicleregno = button.data('vehicleregno');
@@ -760,7 +788,10 @@
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.card-body #modal-input-iid-edit').val(iid);
+            modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid); //hidden input in edit modal.
+
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
+
             modal.find('.modal-body #modal-input-impco-edit').val(companyid);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
             modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
@@ -777,6 +808,37 @@
             modal.find('.modal-body #arxeio-DA').append('<li>' + base_name(bulletin) + '</li>');
 
             modal.find('.modal-footer #edit-button').attr("data-iid", iid);  //SET import assignment id value in data-iid attribute
+
+
+
+            //EMPTY the recipients for now. they will be populated with ajax
+            modal.find('.modal-body #modal-input-recipient-edit').empty();
+
+            //console.log('emps_per_wh: ', employeesperwarehouse);
+            //console.log('emp_names: ', employeenames);
+            //console.log('employee_id: ', employeeid);
+            //console.log('warehouse_id: ', warehouseid);
+
+            //console.log('Event: ', event);
+            //var whid = event.target.value;
+            //console.log('warehouseid', whid);
+            //console.log(employeesall);
+            //console.log(usersall);
+
+            $.each(employeesperwarehouse, function(key, val){
+                //console.log('eval: ', val);
+
+                if((warehouseid == val.warehouse_id) && (employeeid == val.id)){
+                    //console.log('emp => val_id: '+ val.id +'val_warehouseid'+ val.warehouse_id);
+                    modal.find('.modal-body #modal-input-recipient-edit').append('<option selected value="'+ val.id +'">' + val.name + '</option>');
+                } else if (warehouseid == val.warehouse_id){
+                    //console.log('(else) emp => val_id: '+ val.id +'val_warehouse_id'+ val.warehouse_id);
+                    modal.find('.modal-body #modal-input-recipient-edit').append('<option value="'+ val.id +'">' + val.name + '</option>');
+                }
+            });
+
+
+
 
 
             //AJAX Update/Edit User
@@ -860,12 +922,14 @@
 
             var iid = button.data('iid'); // Extract info from data-* attributes
             var dtdeliv = button.data('deliveredon');
+            var warehouse = button.data('warehouse');
 
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
-            modal.find('.modal-body .card .card-body #modal-input-iid-del').val(iid); //change the value to...
+            //modal.find('.modal-body .card .card-body #modal-input-iid-del').val(iid); //change the value to...
             modal.find('.modal-body .card .card-body #modal-input-dtdeliv-del').val(dtdeliv);
+            modal.find('.modal-body .card .card-body #modal-input-warehouse-del').val(warehouse);
 
             modal.find('.modal-footer #delete-button').attr("data-iid", iid); //SET user id value in data-iid attribute
 
@@ -891,7 +955,7 @@
                         Swal.fire({
                             icon: "success",
                             type: "success",
-                            text: "Επιτυχής Διαγραφή Στοιχείων νάθεσης Εισαγωγής!",
+                            text: "Επιτυχής Διαγραφή Στοιχείων Ανάθεσης Εισαγωγής!",
                             buttons: [false, "OK"],
                             closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
                         }).then(function(isConfirm){
@@ -968,7 +1032,7 @@
                     var msg = 'Συνέβη κάποιο λάθος!';
 
                     if(xhr.status == 500){
-                        msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχει ήδη!';
+                        msg = 'Τα Στοιχεία Ανάθεσης Εισαγωγής υπάρχουν ήδη!';
                     } else if (xhr.status == 403){
                         msg = 'Δεν έχετε to δικαίωμα δημιουργίας Στοιχείων Ανάθεσης Εισαγωγής!';
                     } else if (xhr.status == 422){
@@ -992,6 +1056,74 @@
                 }
             });
 
+        });
+
+
+
+        //ajax for dropdown lists in add and edit modals
+
+        //ajax add modal
+        $(document).on('change', '#modal-input-importassignment-create', function(evt){
+            console.log(evt.target.value);
+            console.log('Event: ',evt);
+
+            var wh_id = evt.target.value;
+
+            if(wh_id){
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: '{{ url(request()->route()->getPrefix()) }}' + '/assignments/imports/warehouse/' + wh_id,
+
+                    success: function(data){
+
+                        console.log('Data: ',data);
+
+                        $('#modal-input-recipient-create').empty();
+                        $.each(data, function(key, value){
+
+                            $('#modal-input-recipient-create').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                            //console.log('key='+key+ ', value='+value);
+                        });
+                    },
+
+                });
+            } else {
+                $('#modal-input-recipient-create').empty();
+            }
+
+        });
+
+
+        //ajax edit modal
+        $(document).on('change', '#modal-input-importassignment-edit', function(evt){
+            var wh_id = evt.target.value;
+            //var data = evt.params.data;
+
+            if(wh_id){
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: '{{ url(request()->route()->getPrefix()) }}' + '/assignments/imports/warehouse/' + wh_id,
+
+                    success: function(data){
+
+                        console.log('Data : ', data);
+
+                        $('#modal-input-recipient-edit').empty();
+
+                        $.each(data, function(key, value){
+
+                            $('#modal-input-recipient-edit').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+
+                            //console.log('key='+key+ ', value='+value);
+                        });
+                    },
+
+                });
+            } else {
+                $('#modal-input-recipient-edit').empty();
+            }
         });
 
 

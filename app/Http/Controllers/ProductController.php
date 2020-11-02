@@ -31,6 +31,7 @@ class ProductController extends Controller
             //get the types, aka the subcategories
             $category_id = \Request::get('category_id');
             $types = Type::where('category_id', '=', $category_id)->get();
+            $types_all = Type::all(); //irrespectably of categories
 
             //$types = Type::with('category')->get(); //::all();
             $measunits = MeasureUnit::all();
@@ -42,6 +43,7 @@ class ProductController extends Controller
             return view('products_view', ['products' => $products,
                                           'categories' => $categories,
                                           'types' => $types,
+                                          'types_all' => $types_all,
                                           'measunits' => $measunits,
                                           'warehouses' => $warehouses,
                                           'prod' => $prod]); //also, send the $products & $categories variable to the 'products_view' Blade View.

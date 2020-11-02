@@ -77,6 +77,7 @@
                                     data-description="{{ $product->description }}"
                                     data-categoryid="{{ $product->category_id }}"
                                     data-typeid="{{ $product->type_id }}"
+                                    data-typesall="{{ $types_all }}"
                                     data-quantity="{{ $product->quantity }}"
                                     data-measunitid="{{ $product->measunit_id }}"
                                     data-comments="{{ $product->comments }}"
@@ -602,16 +603,19 @@
             var code = button.data('code');
             var name = button.data('name');
             var description = button.data('description');
+
             var categoryid = button.data('categoryid');
             var typeid = button.data('typeid');
+            var typesall = button.data('typesall');
+
             var quantity = button.data('quantity');
             var measunitid = button.data('measunitid');
             var comments = button.data('comments');
             var warehouses = button.data('warehouses');
             var allwarehouses = button.data('allwarehouses'); //I need this variable so that i calculate the difference later on
 
-            console.log('Warehouses: ', warehouses);
-            console.log('All_Warehouses: ', allwarehouses);
+            //console.log('Warehouses: ', warehouses);
+            //console.log('All_Warehouses: ', allwarehouses);
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -623,16 +627,38 @@
             modal.find('.modal-body #modal-input-name-edit').val(name);
             modal.find('.modal-body #modal-input-description-edit').val(description);
             modal.find('.modal-body #modal-input-category-edit').val(categoryid);
-            modal.find('.modal-body #modal-input-type-edit').val(typeid);
+            //modal.find('.modal-body #modal-input-type-edit').val(typeid);
             modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
             modal.find('.modal-body #modal-input-measureunit-edit').val(measunitid);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
+
+            //console.log('type->id: ', typeid);
+            //console.log('all_Types: ', typesall);
+            //console.log('categoryid', categoryid);
+
+            //types, AS subcategories, one-to-many
+            modal.find('.modal-body #modal-input-type-edit').empty();
+
+            $.each(typesall, function(key, val){
+                //console.log(key);
+                //console.log(val);
+                //console.log(typesall['category_id']); //undefined
+                if((categoryid == val['category_id']) && (typeid == val['id'])){
+                    modal.find('.modal-body #modal-input-type-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+                } else if((categoryid == val['category_id'])){
+                    modal.find('.modal-body #modal-input-type-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+                }
+            });
+
+
+
+            //warehouses, many-to-many with products
             modal.find('.modal-body #modal-input-warehouses-edit').empty();
 
             $.each(warehouses, function(key, val){
-                console.log('key: ', key);
-                console.log('val: ', val);
+                //console.log('key: ', key);
+                //console.log('val: ', val);
                 //modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
                 //modal.find('.modal-body #modal-input-warehouses-edit option[value="'+ val.id +'"]').attr('selected', true);
                 modal.find('.modal-body #modal-input-warehouses-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
@@ -802,7 +828,7 @@
                         if(response.status == 500){
                             msg = 'Το προϊόν υπάρχει ήδη!';
                         } else if (response.status == 403){
-                            msg = 'Δεν έχετε to δικαίωμα διαγραφής προιόντος!';
+                            msg = 'Δεν έχετε to δικαίωμα διαγραφής προϊόντος!';
                         }
 
                         Swal.fire({
