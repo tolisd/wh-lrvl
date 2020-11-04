@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Στοιχεία Αναθέσεων Εξαγωγής')
 
 @section('content_header')
-    <h1>Warehouse / Στοιχεία Αναθέσεων Εξαγωγής</h1>
+    <h1>Αποθήκη/Warehouse | Στοιχεία Αναθέσεων Εξαγωγής</h1>
 @stop
 
 
@@ -95,7 +95,9 @@
                                     data-itemdescription="{{ $export->item_description }}"
                                     data-products="{{ $export->products }}"
                                     data-allproducts="{{ $products }}"
-                                    data-exportassignmentid="{{ $export->exportassignment_id }}">
+                                    data-productsinwarehouse="{{ $products_in_warehouse }}"
+                                    data-exportassignmentid="{{ $export->exportassignment_id }}"
+                                    data-exportassignment="{{ $export->export_assignment }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -398,15 +400,26 @@
                                     <!-- added hidden input for warehouse (via export_assignment) -->
                                     <input type="hidden" id="modal-input-warehouse-edit" name="modal-input-warehouse-edit" value="">
 
+
+                                    <!-- added hidden input for exportassignment_id -->
+                                    <input type="hidden" id="modal-input-exportassignmentid-edit" name="modal-input-exportassignmentid-edit">
+
+
                                      <!-- export_assignment -->
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-exportassignment-edit">Ανάθεση Εξαγωγής</label>
                                         <div class="col-lg-9">
+
+                                            <input type="text" name="modal-input-exportassignment-edit" class="form-control-plaintext" id="modal-input-exportassignment-edit"
+                                                value="" readonly />
+
+                                        <!--
                                             <select name="modal-input-exportassignment-edit" id="modal-input-exportassignment-edit" class="form-control">
                                             @foreach($exportassignments as $expassgnm)
                                                 <option value="{{ $expassgnm->id }}">[{{ $expassgnm->warehouse->name }}], [{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
+                                        -->
                                         </div>
 									</div>
 									<!-- /export_assignment -->
@@ -448,7 +461,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-dtdeliv-edit">Ημ/νία &amp; Ώρα Παράδοσης</label>
                                         <div class="col-lg-9">
                                             <input type="text" name="modal-input-dtdeliv-edit" class="form-control" id="modal-input-dtdeliv-edit"
-                                                value="" autocomplete="off" required />
+                                                value="" autocomplete="off" />
                                         </div>
 									</div>
 									<!-- /date_time_delivered_on -->
@@ -792,7 +805,10 @@
 
             var companyid = button.data('companyid');
             var transportid = button.data('transportid');
-            var exportassignmentid = button.data('exportassignmentid');
+
+            var exportassignmentid = button.data('exportassignmentid'); //hidden input
+            var export_assignment = button.data('exportassignment');
+
             var vehicleregno = button.data('vehicleregno');
             var deliveredon = button.data('deliveredon');
             var shipmentaddress = button.data('shipmentaddress');
@@ -804,6 +820,7 @@
             //var  = button.data('');
             var products = button.data('products');
             var allproducts = button.data('allproducts');
+            var products_in_warehouse = button.data('productsinwarehouse');
             //var allwarehouseproducts = button.data('warehouseproductsall');
             //var prodwh = button.data('prodwh');
 
@@ -821,7 +838,7 @@
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
             modal.find('.modal-body #modal-input-expco-edit').val(companyid);
             modal.find('.modal-body #modal-input-shipco-edit').val(transportid);
-            modal.find('.modal-body #modal-input-exportassignment-edit').val(exportassignmentid);
+            modal.find('.modal-body #modal-input-exportassignmentid-edit').val(exportassignmentid); //hidden input
             modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
             modal.find('.modal-body #modal-input-sendplace-edit').val(shipmentaddress);
@@ -838,6 +855,16 @@
 
 
 
+            //Export assignment name!
+            modal.find('.modal-body #modal-input-exportassignment-edit').empty();
+            //console.log(export_assignment);
+            modal.find('.modal-body #modal-input-exportassignment-edit').val('['+export_assignment.warehouse.name +'], [' + export_assignment.export_deadline+']');
+
+
+
+
+            //Employees in Warehouse
+
             //EMPTY the recipients for now. they will be populated with ajax
             modal.find('.modal-body #modal-input-recipient-edit').empty();
             //console.log('emps_per_wh: ', employeesperwarehouse);
@@ -846,10 +873,9 @@
                 //console.log('eval: ', val);
                 //console.log('employeeid', employeeid);
                 //console.log('warehouseid', warehouseid);
-
                 if((warehouseid == val.warehouse_id) && (employeeid == val.id)){
                     //console.log('emp => val_id: '+ val.id +'val_warehouseid'+ val.warehouse_id);
-                    modal.find('.modal-body #modal-input-recipient-edit').append('<option selected value="'+ val.id +'">' + val.name + '</option>');
+                    modal.find('.modal-body #modal-input-recipient-edit').append('<option value="'+ val.id +'">' + val.name + '</option>');
                 } else if (warehouseid == val.warehouse_id){
                     //console.log('(else) emp => val_id: '+ val.id +'val_warehouse_id'+ val.warehouse_id);
                     modal.find('.modal-body #modal-input-recipient-edit').append('<option value="'+ val.id +'">' + val.name + '</option>');
@@ -857,89 +883,34 @@
             });
 
 
+            //Products in Warehouse
 
-            //console.log('products: ', products);
-            //console.log('allproducts: ', allproducts);
-            //console.log('warehouseproductsall', allwarehouseproducts);
-            //console.log('prod_wh: ', prodwh);
-
-            //empty the products div
+            //console.log('products_in_warehouse:', products_in_warehouse); //all the products, irrespectable of warehouse!
             modal.find('.modal-body #modal-input-products-edit').empty();
 
-            $.each(products, function(key, val){
-                //console.log('key: ', key);
-                //console.log('val: ', val);
-                modal.find('.modal-body #modal-input-products-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+            var prods_in_wh = [];
+            prods_in_wh = products_in_warehouse.filter(a => a.warehouse_id === warehouseid);
+            // console.log('prods_in_wh', prods_in_wh);
+
+            //the Selected ones
+            var selected_prds = [];
+            selected_prds = products_in_warehouse.filter(a => products.some(b => a.product_id === b.id));
+            // console.log('selected_prds', selected_prds);
+
+            $.each(selected_prds, function(k,v){
+                modal.find('.modal-body #modal-input-products-edit').append('<option selected value="'+ v.id +'">' + v.name + '</option>');
             });
 
-            var rest_prds = [];
-            rest_prds = allproducts.filter(a => !products.some(b => a.id === b.id)); //was:= allwarehouseproducts.filter(...
+            ///difference := the NON-Selected ones
+            // ----> (prods_in_wh - selected_prds) == difference
+            var difference = []; //the rest of the products, in the same warehouse, (but non-selected).
+            difference = prods_in_wh.filter(a => !selected_prds.some(b => a.product_id === b.product_id));
+            // console.log('difference', difference);
 
-            //var rest_wh_prds = [];
-            //rest_wh_prds = allproducts.filter(a => products.some(b => a.id !== b.id)); //returns all products irrespectably of warehouse
-
-            //let difference = products.filter(x => allproducts.includes(x.id)); //
-
-            //console.log('rest_prds', rest_prds);
-            //console.log('rest_wh_prds', rest_wh_prds);
-            //console.log('difference', difference);
-
-            $.each(rest_prds, function(key, val){
-                //console.log('rest_prds_in_wh', val);
-                modal.find('.modal-body #modal-input-products-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+            $.each(difference, function(k,v){
+                modal.find('.modal-body #modal-input-products-edit').append('<option value="'+ v.id +'">' + v.name + '</option>');
             });
 
-
-
-
-            /*
-            var rest_products = [];
-
-            rest_products = products.filter(x => x != eid); //2,3
-
-            console.log('warehouses: ', warehouses); //1,2,3 OK
-
-
-
-            $.each(products, function(key,val){
-
-                console.log('values are:', val);
-                //console.log('export_id from pivot in products is', val.pivot.export_id); // val.pivot is undefined
-                //console.log(eid);
-                if(val.pivot.export_id != eid){
-                    rest_products.push(val.name);
-                }
-
-            });
-
-            console.log('restProducts: ', rest_products); //2,3
-            */
-
-
-
-
-
-
-
-
-            //the following codeblock works, but brings ALL products irrespectably of warehouse in the export assignment
-            /*
-            modal.find('.modal-body #modal-input-products-edit').empty();
-
-            $.each(products, function(key, val){
-                //console.log('key: ', key);
-                console.log('val: ', val);
-                modal.find('.modal-body #modal-input-products-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
-             });
-
-            var rest_prd = [];
-            //list1.filter(a => list2.some(b => a.userId === b.userId));
-            rest_prd = allproducts.filter(a => !products.some(b => a.id === b.id)); //it worked!! finds the diff of the 2 arrays!
-
-            $.each(rest_prd, function(key,val){
-                modal.find('.modal-body #modal-input-products-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
-            });
-            */
 
 
 
@@ -1184,12 +1155,30 @@
                         //variable "data" is received from the appropriate controller, as defined in web.php and it returns:= return json_encode($.....);
                         console.log('Data: ', data);
 
-                        $('#modal-input-recipient-create').empty();
-                        //$('.modal-body #modal-input-products-edit').empty();
+                        $('.modal-body #modal-input-recipient-create').empty();
+                        $('.modal-body #modal-input-products-create').empty();
+
                         $.each(data, function(key, value){
-                            $('#modal-input-recipient-create').append('<option value="'+ value.id +'">'+ value.name +'</option>');
-                            //console.log('key='+key+ ', value='+value);
-                            //$('.modal-body #modal-input-products-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+
+                            //console.log('data_again', data);
+                            // console.log('key=', key);
+                            // console.log('value= ', value);
+                            // console.log('value_length', value.length);
+
+                            //value.forEach((item, index) =>  $('#modal-input-recipient-create').append('<option value="'+ item.id +'">'+ item.name +'</option>'));
+
+                            if(key == 0){
+                                $.each(value, function(k,v){
+                                    $('.modal-body #modal-input-recipient-create').append('<option value="'+ v.id +'">'+ v.name +'</option>');
+                                });
+                            }
+
+                            if(key == 1){
+                                $.each(value, function(k,v){
+                                    $('.modal-body #modal-input-products-create').append('<option value="'+ v.id +'">' + v.name+ '</option>');
+                                });
+                            }
+
                         });
 
                     },
@@ -1207,6 +1196,7 @@
 
 
         //ajax edit modal
+        /*
         $(document).on('change', '#modal-input-exportassignment-edit', function(evt){
             console.log('Event', evt);
             var wh_id = evt.target.value;
@@ -1221,11 +1211,22 @@
                     success: function(data){
                         console.log('Data : ', data);
 
-                        $('#modal-input-recipient-edit').empty();
-                        //$('.modal-body #modal-input-products-edit').empty();
+                        $('.modal-body #modal-input-recipient-edit').empty();
+                        $('.modal-body #modal-input-products-edit').empty();
                         $.each(data, function(key, value){
-                            $('#modal-input-recipient-edit').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                            // $('#modal-input-recipient-edit').append('<option value="'+ value.id +'">'+ value.name +'</option>');
                             //console.log('key='+key+ ', value='+value);
+                            if(key == 0){
+                                $.each(value, function(k,v){
+                                    $('.modal-body #modal-input-recipient-edit').append('<option value="'+ v.id +'">'+ v.name +'</option>');
+                                });
+                            }
+
+                            if(key == 1){
+                                $.each(value, function(k,v){
+                                    $('.modal-body #modal-input-products-edit').append('<option value="'+ v.id +'">' + v.name+ '</option>');
+                                });
+                            }
 
                             //$('.modal-body #modal-input-products-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
                         });
@@ -1236,6 +1237,7 @@
                 $('#modal-input-recipient-edit').empty();
             }
         });
+        */
 
 
 

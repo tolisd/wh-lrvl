@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Αναθέσεις Εξαγωγής')
 
 @section('content_header')
-    <h1>Warehouse / Όλες οι Αναθέσεις Εξαγωγής</h1>
+    <h1>Αποθήκη/Warehouse | Όλες οι Αναθέσεις Εξαγωγής</h1>
 @stop
 
 
@@ -38,6 +38,8 @@
                         <th class="text-left">Επισυναπτόμενα Αρχεία</th>
                         <th class="text-left">Σχόλια</th>
 						<th class="text-left">Ανοιχτή?</th>
+                        <th class="text-left">Άνοιγμα</th>
+						<th class="text-left">Κλείσιμο</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -63,9 +65,39 @@
                         <td>{{ $exportassignment->comments }}</td>
 						<td>
                             @if($exportassignment->is_open == 1)
-                                Ανοιχτή
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Ανοιχτή
                             @elseif($exportassignment->is_open == 0)
-                                Κλειστή
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλειστή
+                            @endif
+                        </td>
+
+
+                        <!-- Κουμπί Ανοίγματος Ανάθεσης Εξαγωγής -->
+                        <td>
+                            @if($exportassignment->is_open == 0)
+                            <button class="open-modal btn btn-success"
+                               data-toggle="modal" data-target="#open-modal"
+                               data-eid="{{ $exportassignment->id }}"
+                               data-warehousename="{{ $exportassignment->warehouse->name }}"
+                               data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                               data-text="{{ $exportassignment->export_assignment_text }}">
+                            <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Άνοιγμα
+                            </button>
+                            @endif
+                        </td>
+
+
+                        <!-- Κουμπί Κλεισίματος Ανάθεσης Εξαγωγής -->
+                        <td>
+                            @if($exportassignment->is_open == 1)
+                            <button class="close-modal btn btn-warning"
+                                data-toggle="modal" data-target="#close-modal"
+                                data-eid="{{ $exportassignment->id }}"
+                                data-warehousename="{{ $exportassignment->warehouse->name }}"
+                                data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                                data-text="{{ $exportassignment->export_assignment_text }}">
+                            <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
+                            </button>
                             @endif
                         </td>
 
@@ -86,6 +118,8 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-eid="{{ $exportassignment->id }}"
+                                    data-warehousename="{{ $exportassignment->warehouse->name }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
                                     data-text1="{{ $exportassignment->export_assignment_text }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
@@ -373,6 +407,18 @@
                                         <input type="hidden" id="modal-input-eid-del" name="modal-input-eid-del" value="" />
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-warehouse-del">Αποθήκη</label>
+                                        <input type="text" id="modal-input-warehouse-del" name="modal-input-warehouse-del"
+                                          class="form-control-plaintext" value="" readonly />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-deadline-del">Deadline Ανάθεσης Εισαγωγής (Ημ/νία &amp; Ώρα)</label>
+                                        <input type="text" id="modal-input-deadline-del" name="modal-input-deadline-del"
+                                          class="form-control-plaintext" value="" readonly />
+                                    </div>
+
                                     <!-- name -->
                                     <div class="form-group">
                                        <label class="col-form-label" for="modal-input-text-del">Ανάθεση Εξαγωγής</label>
@@ -394,6 +440,152 @@
                         </div>
 
                         </form> <!-- end delete form -->
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Άνοιγμα Ανάθεσης Εξαγωγής -->
+            <div class="modal modal-success fade" id="open-modal">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Άνοιγμα (Κλειστής) Ανάθεσης Εξαγωγής</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+
+                        <form id="open-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')  <!-- necessary fields for CSRF & Method type-->
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <div class="card text-white bg-white mb-0">
+                                <!--
+                                <div class="card-header">
+                                    <h2 class="m-0">Διαγραφή Ανάθεσης Εξαγωγής</h2>
+                                </div>
+                                -->
+                                <div class="card-body">
+                                    <p class="text-center">Είστε σίγουρος ότι θέλετε να ανοίξετε την παρακάτω Ανάθεση Εξαγωγής;</p>
+
+                                    <!-- added hidden input for ID -->
+                                    <div class="form-group">
+                                        <input type="hidden" id="modal-input-eid-open" name="modal-input-eid-open" value="" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-warehouse-open">Αποθήκη</label>
+                                        <input type="text" id="modal-input-warehouse-open" name="modal-input-warehouse-open"
+                                          class="form-control-plaintext" value="" readonly />
+                                    </div>
+
+
+                                    <div class="form-group">
+                                    <label class="col-form-label" for="modal-input-deadline-open">Deadline Ανάθεσης Εξαγωγής (Ημ/νία &amp; Ώρα)</label>
+                                        <input type="text" id="modal-input-deadline-open" name="modal-input-deadline-open"
+                                          class="form-control-plaintext" value="" readonly />
+                                    </div>
+
+                                    <!-- name -->
+                                    <div class="form-group">
+                                       <label class="col-form-label" for="modal-input-text-open">Ανάθεση Εξαγωγής</label>
+                                       <textarea rows="3" name="modal-input-text-open" class="form-control-plaintext" id="modal-input-text-open"
+                                            value="" readonly></textarea>
+                                    </div>
+                                    <!-- /name -->
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" id="open-button" name="open-exportassignment-button"
+                                data-target="#open-modal" data-toggle="modal" data-eid="">Άνοιξε Ανάθεση Εξαγωγής</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
+                        </div>
+
+                        </form> <!-- end open assignment form -->
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Κλείσιμο Ανάθεσης Εξαγωγής -->
+            <div class="modal modal-warning fade" id="close-modal">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Κλείσιμο (Ανοιχτής) Ανάθεσης Εξαγωγής</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+
+                        <form id="close-form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')  <!-- necessary fields for CSRF & Method type-->
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <div class="card text-white bg-white mb-0">
+                                <!--
+                                <div class="card-header">
+                                    <h2 class="m-0">Διαγραφή Ανάθεσης Εξαγωγής</h2>
+                                </div>
+                                -->
+                                <div class="card-body">
+                                    <p class="text-center">Είστε σίγουρος ότι θέλετε να κλείσετε την παρακάτω Ανάθεση Εξαγωγής;</p>
+
+                                    <!-- added hidden input for ID -->
+                                    <div class="form-group">
+                                        <input type="hidden" id="modal-input-eid-close" name="modal-input-eid-close" value="" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-warehouse-close">Αποθήκη</label>
+                                        <input type="text" id="modal-input-warehouse-close" name="modal-input-warehouse-close"
+                                          class="form-control-plaintext" value="" readonly />
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="modal-input-deadline-close">Deadline Ανάθεσης Εξαγωγής (Ημ/νία &amp; Ώρα)</label>
+                                        <input type="text" id="modal-input-deadline-close" name="modal-input-deadline-close"
+                                          class="form-control-plaintext" value="" readonly />
+                                    </div>
+
+                                    <!-- name -->
+                                    <div class="form-group">
+                                       <label class="col-form-label" for="modal-input-text-close">Ανάθεση Εξαγωγής</label>
+                                       <textarea rows="3" name="modal-input-text-close" class="form-control-plaintext" id="modal-input-text-close"
+                                            value="" readonly></textarea>
+                                    </div>
+                                    <!-- /name -->
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-warning" id="close-button" name="close-exportassignment-button"
+                                data-target="#close-modal" data-toggle="modal" data-eid="">Κλείσε Ανάθεση Εξαγωγής</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
+                        </div>
+
+                        </form> <!-- end open assignment form -->
 
                     </div>
                 </div>
@@ -637,6 +829,153 @@
         });
 
 
+        //open modal edit/update
+        $('#open-modal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+
+            var eid = button.data('eid'); // Extract info from data-* attributes
+            var import_text = button.data('text');
+            var deadline = button.data('deadline');
+            var warehouse = button.data('warehousename');
+
+            var modal = $(this);
+
+			modal.find('.modal-body #modal-input-text-open').val(import_text);
+			modal.find('.modal-body #modal-input-deadline-open').val(deadline);
+            modal.find('.modal-body #modal-input-warehouse-open').val(warehouse);
+
+            modal.find('.modal-footer #open-button').attr("data-eid", eid);  //SET import assignment id value in data-iid attribute
+
+
+
+
+            //event delegation
+            $(document).on("submit", "#open-form", function(evt){
+                evt.preventDefault();
+                var formData = new FormData(this);
+
+                console.log(eid);
+                console.log(formData);
+
+                $.ajax({
+                    method: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false, //do not set any content type header
+                    processData: false, //send non-processed data
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/open/" + eid, //where to send the ajax request
+                    success: function(){
+                        Swal.fire({
+                            icon: "success",
+                            type: "success",
+                            text: "Επιτυχές Άνοιγμα Ανάθεσης Εξαγωγής!",
+                            buttons: [false, "OK"],
+                            closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
+                        }).then(function(isConfirm){
+                            if (isConfirm){
+                                console.log("Sent PUT Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/view/";
+                            }
+                        });
+                    },
+                    error: function(xhr){
+                        console.log('Error:', xhr);
+
+                        var msg = 'Συνέβη κάποιο λάθος!';
+
+                        if(xhr.status == 500){
+                            msg = 'Η Ανάθεση Εξαγωγής είναι ήδη ανοιχτή!';
+                        } else if (xhr.status == 403){
+                            msg = 'Δεν έχετε to δικαίωμα ανοίγματος Ανάθεσης Εξαγωγής!';
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            type: "error",
+                            title: 'Oops...',
+                            text: msg,
+                        });
+                    }
+                });
+            });
+
+        });
+
+
+        //close modal edit/update
+        $('#close-modal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+
+            var eid = button.data('eid'); // Extract info from data-* attributes
+            var import_text = button.data('text');
+            var deadline = button.data('deadline');
+            var warehouse = button.data('warehousename');
+
+            var modal = $(this);
+
+			modal.find('.modal-body #modal-input-text-close').val(import_text);
+			modal.find('.modal-body #modal-input-deadline-close').val(deadline);
+            modal.find('.modal-body #modal-input-warehouse-close').val(warehouse);
+
+            modal.find('.modal-footer #close-button').attr("data-eid", eid);  //SET import assignment id value in data-iid attribute
+
+
+
+            //event delegation
+            $(document).on("submit", "#close-form", function(evt){
+                evt.preventDefault();
+                var formData = new FormData(this);
+
+                console.log(eid);
+                console.log(formData);
+
+                $.ajax({
+                    method: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false, //do not set any content type header
+                    processData: false, //send non-processed data
+                    dataType: "json",
+                    url: "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/close/" + eid, //where to send the ajax request
+                    success: function(){
+                        Swal.fire({
+                            icon: "success",
+                            type: "success",
+                            text: "Επιτυχές Κλείσιμο Ανάθεσης Εξαγωγής!",
+                            buttons: [false, "OK"],
+                            closeOnClickOutside: false, //Decide whether the user should be able to dismiss the modal by clicking outside of it, or not. Default=true.
+                        }).then(function(isConfirm){
+                            if (isConfirm){
+                                console.log("Sent PUT Request ..");
+                                window.location.href = "{{ url(request()->route()->getPrefix()) }}" + "/assignments/export/view/";
+                            }
+                        });
+                    },
+                    error: function(xhr){
+                        console.log('Error:', xhr);
+
+                        var msg = 'Συνέβη κάποιο λάθος!';
+
+                        if(xhr.status == 500){
+                            msg = 'Η Ανάθεση Εξαγωγής είναι ήδη κλειστή!';
+                        } else if (xhr.status == 403){
+                            msg = 'Δεν έχετε to δικαίωμα κλεισίματος Ανάθεσης Εξαγωγής!';
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            type: "error",
+                            title: 'Oops...',
+                            text: msg,
+                        });
+                    }
+                });
+            });
+
+        });
+
+
 
 
     //do not put the following inside $(document).ready()!
@@ -645,12 +984,16 @@
 
             var eid = button.data('eid'); // Extract info from data-* attributes
             var export_text = button.data('text1');
+            var deadline = button.data('deadline');
+            var warehouse = button.data('warehousename');
 
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             modal.find('.modal-body .card .card-body #modal-input-eid-del').val(eid); //change the value to...
             modal.find('.modal-body .card .card-body #modal-input-text-del').val(export_text);
+            modal.find('.modal-body .card #modal-input-deadline-del').val(deadline);
+            modal.find('.modal-body .card #modal-input-warehouse-del').val(warehouse);
 
             modal.find('.modal-footer #delete-button').attr("data-eid", eid); //SET user id value in data-eid attribute
 

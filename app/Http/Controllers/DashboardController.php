@@ -90,6 +90,34 @@ class DashboardController extends Controller
             $proistamenos = Employee::where('warehouse_id', $warehouse_id)->find('id', $user_id)->first(); //get the row of the employee for this warehouse
             */
 
+
+
+            $u_id = Auth::user()->id;
+            // $w_id = \Request::get('warehouse_id');
+
+            //the following is 3 queries, 1 more query than the previous solution, but it looks much shorter and cleaner!
+            // $user             = User::findOrFail($u_id);
+            // $employee         = Employee::where('user_id', $user->id)->first();   //via its FK
+            // $my_warehouses    = Tool::where('employee_id', $employee->id)->get(); //via its FK
+
+            // $user_roles = ['super_admin','company_ceo','warehouse_foreman']; //only these types can view warehouse infoboxes
+
+            $my_warehouses = DB::table('users')
+                            ->join('employees', 'employees.user_id', '=', 'users.id')
+                            ->join('warehouse', 'warehouse.id', '=', 'employees.warehouse_id')
+                            ->where('users.user_type', 'warehouse_foreman')
+                            ->where('users.id', $u_id)
+                            //->select('warehouse.name', 'warehouse.id')
+                            ->get();  //CORRECT!! only thelogged in foreman can see HHIS OWN warehouses!
+
+            // dd($my_warehouses);
+
+            // $no_of_products_in_this_warehouse = DB::table('product_warehouse')
+            //                                     ->join('products', 'products.id', '=', 'product_warehouse.product_id')
+            //                                     ->where('product_warehouse.warehouse_id', $w_id)
+            //                                     ->count();
+
+
             return view('dashboard', [ 'usersCount' => $usersCount,
                                         'prodCount'  => $productsCount,
                                         //'assignCount' => $assignmentsCount,
@@ -97,6 +125,7 @@ class DashboardController extends Controller
                                         'export_assignments_count' => $export_assignments_count,
                                         'tools_count' => $tools_count,
                                         'warehouses' => $warehouses,
+                                        'my_warehouses' => $my_warehouses,
                                         'employees' => $employees,
                                         'users' => $users,
                                         //'products' => $products,

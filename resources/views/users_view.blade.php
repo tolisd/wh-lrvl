@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Dashboard')
+@section('title', 'Αποθήκη | Χρήστες')
 
 @section('content_header')
-    <h1>Αποθήκη / Δες Χρήστες</h1>
+    <h1>Αποθήκη/Warehouse | Όλοι οι Χρήστες</h1>
 @stop
 
 
@@ -190,11 +190,13 @@
 
 
                                     <!-- password -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-passwd-edit">Συνθηματικό (Password)</label>
                                         <input type="password" name="modal-input-passwd-edit" class="form-control" id="modal-input-passwd-edit"
                                             value="" />
                                     </div>
+                                    -->
                                     <!-- /password -->
 
 

@@ -256,6 +256,7 @@ class WarehouseController extends Controller
                         ->join('employees', 'users.id', '=', 'employees.user_id')
                         //->join('imports', 'imports.employee_id', '=', 'employees.id')
                         ->join('importassignments', 'importassignments.warehouse_id', '=', 'employees.warehouse_id')
+                        ->where('users.user_type', 'warehouse_worker')
                         ->where('importassignments.id', $id)
                         ->select('users.name', 'employees.id')
                         ->get();
@@ -275,20 +276,43 @@ class WarehouseController extends Controller
 
             //Query Builder is 10x faster than Eloquent ORM.
 
+            // this works, but i need to extend it to not only user names but product names as well.
+            // $user_names_exp = DB::table('users')
+            //             ->join('employees', 'users.id', '=', 'employees.user_id')
+            //             ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
+            //             //->join('product_warehouse', 'product_warehouse.warehouse_id' ,'=', 'exportassignments.warehouse_id') //
+            //             ->where('exportassignments.id', $id)
+            //             ->select('users.name', 'employees.id')
+            //             ->get();
+
+
             $user_names_exp = DB::table('users')
                         ->join('employees', 'users.id', '=', 'employees.user_id')
                         ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
-                        //->join('product_warehouse', 'warehouse_id' ,'=', 'exportassignments.warehouse_id') //
+                        //->join('product_warehouse', 'product_warehouse.warehouse_id' ,'=', 'exportassignments.warehouse_id') //
+                        ->where('users.user_type', 'warehouse_worker')
                         ->where('exportassignments.id', $id)
                         ->select('users.name', 'employees.id')
                         ->get();
 
-            return json_encode($user_names_exp); //ajax data
+            $products_in_warehouse = DB::table('product_warehouse')
+                                    ->join('products', 'products.id', '=', 'product_warehouse.product_id')
+                                    ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'product_warehouse.warehouse_id')
+                                    ->where('exportassignments.id', $id)
+                                    ->select('product_warehouse.product_id', 'products.name')
+                                    ->get();
+
+
+
+            return json_encode([$user_names_exp, $products_in_warehouse]); //ajax data
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
     }
+
+
+
 
 
 

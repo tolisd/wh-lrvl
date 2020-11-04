@@ -15,7 +15,7 @@ class CreateImportassignmentsTable extends Migration
     {
         Schema::create('importassignments', function (Blueprint $table) {
             $table->id();
-            //$table->int('export_assignment_code')->unique();
+            $table->int('import_assignment_code')->unique();
             $table->mediumText('import_assignment_text');
             $table->dateTime('import_deadline');
             $table->mediumText('comments');

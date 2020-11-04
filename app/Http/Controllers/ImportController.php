@@ -54,6 +54,7 @@ class ImportController extends Controller
                                         //->join('imports', 'employees.id', '=', 'imports.employee_id')
                                         ->join('importassignments', 'importassignments.warehouse_id', '=', 'employees.warehouse_id')
                                         ->join('users', 'users.id', '=', 'employees.user_id')
+                                        ->where('users.user_type', 'warehouse_worker')
                                         ->whereIn('importassignments.id', $impassids)
                                         ->select('users.name', 'employees.id', 'employees.warehouse_id')
                                         ->get();
@@ -250,24 +251,6 @@ class ImportController extends Controller
                     //success
                     //save-update the object
 
-                    /*
-                     protected $fillable = [
-                        'delivered_on',
-                        'delivery_address',
-                        'discrete_description',
-                        'hours_worked',
-                        'chargeable_hours_worked',
-                        'shipment_bulletin',
-                        //'shipment_address',
-                        'vehicle_reg_no',
-
-                        //'product_id',
-                        'employee_id',
-                        'company_id',
-                        'transport_id',
-                        'importassignment_id',
-                    ];
-                    */
                     $import = Import::findOrFail($id);
 
 

@@ -52,18 +52,18 @@ class UserController extends Controller
             $validation_rules = [
                 'modal-input-name-edit' => 'required',
                 'modal-input-email-edit' => 'required',
-                'modal-input-passwd-edit' => 'required',
+                //'modal-input-passwd-edit' => 'required',
                 'modal-input-usertype-edit' => 'required',
-                'modal-input-photo-edit' => 'nullable|mimes:jpg,jpeg,png',
+                'modal-input-photo-edit' => 'nullable|mimetypes:image/jpeg,image/png',
             ];
 
             //the custom error messages for the above validation rules
             $custom_messages = [
                 'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
                 'modal-input-email-edit.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
-                'modal-input-passwd-edit.required' => 'Το συνθηματικό απαιτείται',
+                //'modal-input-passwd-edit.required' => 'Το συνθηματικό απαιτείται',
                 'modal-input-usertype-edit.required' => 'Ο ρόλος χρήστη απαιτείται',
-                'modal-input-photo-edit.mimes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
+                'modal-input-photo-edit.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -84,7 +84,7 @@ class UserController extends Controller
 
                     $user->name      = $request->input('modal-input-name-edit');
                     $user->email     = $request->input('modal-input-email-edit');
-                    $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
+                    //$user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
                     $user->user_type = $request->input('modal-input-usertype-edit');
                     // ...image upload
                     /*
@@ -270,17 +270,18 @@ class UserController extends Controller
             $validation_rules = [
                 'modal-input-name-create' => 'required',
                 'modal-input-email-create' => 'required',
-                'modal-input-passwd-create' => 'required',
+                'modal-input-passwd-create' => 'required|min:8',
                 'modal-input-usertype-create' => 'required',
-                'modal-input-photo-create' => 'nullable|mimes:jpg,jpeg,png',
+                'modal-input-photo-create' => 'nullable|mimetypes:image/jpeg,image/png',
             ];
 
             $custom_messages = [
                 'modal-input-name-create.required' => 'Το όνομα απαιτείται',
                 'modal-input-email-create.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
                 'modal-input-passwd-create.required' => 'Το συνθηματικό απαιτείται',
+                'modal-input-passwd-create.min' => 'Το συνθηματικό πρέπει να έχει τουλάχιστον 8 χαρακτήρες',
                 'modal-input-usertype-create.required' => 'Ο ρόλος χρήστη απαιτείται',
-                'modal-input-photo-create.mimes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
+                'modal-input-photo-create.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);

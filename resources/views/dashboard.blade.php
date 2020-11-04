@@ -2,7 +2,7 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Αποθήκη | Κεντρικός Πίνακας Ελέγχου')
 
 @section('content_header')
     <h1><strong>Warehouse/Αποθήκη</strong> | Πίνακας Ελέγχου</h1>
@@ -12,7 +12,7 @@
 
 @section('content')
 
-    <p>Καλώς ήλθατε, αυτή είναι η εφαρμογή Warehouse/Αποθήκη της Ypostirixis Group.</p>
+    <p>Καλώς ήλθατε, αυτή είναι η εφαρμογή Warehouse/Αποθήκη της <strong>Ypostirixis Group</strong>.</p>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
@@ -164,12 +164,116 @@
         </div>
 
         <div class="col-lg-3 col-xs-6">
-             <!--warehouses, dynamic infoboxes & views -->
-             @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+             <!--warehouses, dynamic infoboxes & views, twice -->
+
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
+            <!-- small box -->
+
+            <div class="col">
+
+            @foreach($warehouses as $warehouse)
+
+                <div class="small-box" style="background-color: lightblue;">
+                    <div class="inner">
+                        <h5><strong>{{ $warehouse->name }}</strong></h5>
+
+                            <strong>Προϊστάμενος:</strong>
+                            <ul>
+                            @foreach($employees as $emp)
+                                @php
+                                    $proistamenoi = [];
+                                    foreach($users as $user){
+                                        if(   ($user->user_type   == 'warehouse_foreman')
+                                        && ($emp->warehouse_id == $warehouse->id)
+                                        && ($emp->user_id      == $user->id)
+                                        ){
+                                            $user_name = $user->name;
+                                            array_push($proistamenoi, $user_name);
+                                        }
+                                    }
+                                @endphp
+
+                                @foreach($proistamenoi as $fname)
+                                    <li>{{ $fname }}</li>
+                                @endforeach
+                            @endforeach
+                            </ul>
+
+
+                            <strong>Αποθηκάριοι:</strong>
+                            <ul>
+                            @foreach($employees as $emp)
+                                @php
+                                    $apothikarioi = [];
+                                    foreach($users as $user){
+                                        if(    ($user->user_type   == 'warehouse_worker')
+                                            && ($emp->user_id      == $user->id)
+                                            && ($emp->warehouse_id == $warehouse->id)
+                                        ){
+                                            $apothikarios = $user->name;
+                                            array_push($apothikarioi, $apothikarios);
+                                        }
+                                    }
+                                @endphp
+
+                                @foreach($apothikarioi as $wname)
+                                    <li>{{ $wname }}</li>
+                                @endforeach
+                            @endforeach
+                            </ul>
+
+                        <!--
+                        <p>Αποθηκάριοι:
+                            <ul>
+                            @foreach($employees->where('warehouse_id', $warehouse->id) as $emp)
+                                <li>{{ $emp->user->name }}</li>
+                            @endforeach
+                            </ul>
+                        </p>
+                        -->
+
+                        {{-- warehouse product count in here.. --}}
+                        <h3>{{ $warehouse->products->count() }}</h3>
+                        Προϊόντα
+
+
+                    </div>
+
+                    <div class="icon">
+                        <i class="fas fa-warehouse fa-sm" aria-hidden="true"></i>
+                    </div>
+
+
+
+                    @can('isSuperAdmin')
+                    <a href="{{ route('admin.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                    @can('isCompanyCEO')
+                    <a href="{{ route('manager.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                    @can('isAccountant')
+                    <a href="{{ route('accountant.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                </div>
+
+            @endforeach
+            </div>
+
+            @endcanany
+
+
+
+            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
                 <!-- small box -->
 
                 <div class="col">
-                @foreach($warehouses as $warehouse)
+
+                @foreach($my_warehouses as $warehouse)
+
+
                     <div class="small-box" style="background-color: lightblue;">
                         <div class="inner">
                             <h5><strong>{{ $warehouse->name }}</strong></h5>
@@ -181,8 +285,8 @@
                                         $proistamenoi = [];
                                         foreach($users as $user){
                                             if(   ($user->user_type   == 'warehouse_foreman')
-                                               && ($emp->user_id      == $user->id)
                                                && ($emp->warehouse_id == $warehouse->id)
+                                               && ($emp->user_id      == $user->id)
                                                ){
                                                 $user_name = $user->name;
                                                 array_push($proistamenoi, $user_name);
@@ -229,35 +333,23 @@
                             </p>
                             -->
 
-                            <h3>{{ $warehouse->products->count() }}</h3>
-                            Προϊόντα
-
+                            {{-- warehouse product count in here.. --}}
 
 
                         </div>
+
                         <div class="icon">
-                        <i class="fas fa-warehouse fa-sm" aria-hidden="true"></i>
+                            <i class="fas fa-warehouse fa-sm" aria-hidden="true"></i>
                         </div>
 
-
-                        @can('isSuperAdmin')
-                        <a href="{{ route('admin.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                        @endcan
-
-                        @can('isCompanyCEO')
-                        <a href="{{ route('manager.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                        @endcan
 
                         @can('isWarehouseForeman')
                         <a href="{{ route('foreman.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                         @endcan
 
-                        @can('isAccountant')
-                        <a href="{{ route('accountant.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                        @endcan
-
 
                     </div>
+
                 @endforeach
                 </div>
             @endcanany

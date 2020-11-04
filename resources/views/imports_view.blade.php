@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Στοιχεία Αναθέσεων Εισαγωγής')
 
 @section('content_header')
-    <h1>Warehouse / Στοιχεία Αναθέσεων Εισαγωγής</h1>
+    <h1>Αποθήκη/Warehouse | Στοιχεία Αναθέσεων Εισαγωγής</h1>
 @stop
 
 
@@ -651,7 +651,7 @@
     $(document).ready(function(){
 
         //initialise the select2 components.
-        //NB: I removed both of the following 2 (products) from the modals!
+        //NB: I removed both of the following 2 (-products-) from the modals!
 
         //$('#modal-input-products-create').select2();
         //$('#modal-input-products-edit').select2();

@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Εργαζόμενοι')
 
 @section('content_header')
-    <h1>Warehouse / Όλοι οι Εργαζόμενοι</h1>
+    <h1>Αποθήκη/Warehouse | Όλοι οι Εργαζόμενοι</h1>
 @stop
 
 
@@ -326,7 +326,7 @@
 
                                         <select name="modal-input-name-edit" class="form-control" id="modal-input-name-edit">
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}" disabled readonly>{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
                                         </select>
 

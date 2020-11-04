@@ -42,13 +42,12 @@ class ExportController extends Controller
                                         //->join('imports', 'employees.id', '=', 'imports.employee_id')
                                         ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
                                         ->join('users', 'users.id', '=', 'employees.user_id')
+                                        ->where('users.user_type', 'warehouse_worker')
                                         ->whereIn('exportassignments.id', $expassids)
                                         ->select('users.name', 'employees.id', 'employees.warehouse_id')
                                         ->get();
 
-
-
-
+            /*
             $wh_ids = []; //the id's of the warehouses for which there have been created export assignments!!
             foreach($exportassignments as $exportassignment){
                 foreach($warehouses as $wh){
@@ -57,47 +56,28 @@ class ExportController extends Controller
                     }
                 }
             }
-
             //dd($wh_ids);
 
             //the products of the above mentioned warehouses!
             $all_products_in_warehouse = Product::whereHas('warehouses', function($query) use($wh_ids){
                 $query->whereIn('warehouse_id', $wh_ids);
             })->get();
-
-            /*
-            $all_products_in_warehouse = DB::table('product_warehouse')
-                                        ->whereIn('warehouse_id', $wh_ids)
-                                        ->select('product_id')
-                                        ->get();
             */
 
+            $products_in_warehouse = DB::table('product_warehouse')
+                                     ->join('products', 'products.id', '=', 'product_warehouse.product_id')
+                                     ->select('product_warehouse.product_id', 'product_warehouse.warehouse_id',  'products.name')
+                                     ->get();
 
 
             //$all_products_in_warehouse = Product::with('warehouses')->get(); //this is correct but returns ALL products from ALL warehouses...
-
-
-
-
-
-
-
             //dd($all_products_in_warehouse);
-
-            /*
-            $customers = Customer::whereHas('stores', function($query) use($storeId) {
-                $query->where('stores.id', $storeId);
-            })->get();
-            */
-
-
-
 
             return view('exports_view', ['exportassignments' => $exportassignments,
                                         'companies' => $companies,
                                         'employees' => $employees,
                                         'employees_per_warehouse' => $employees_per_warehouse,
-                                        'all_products_in_warehouse' => $all_products_in_warehouse,
+                                        'products_in_warehouse' => $products_in_warehouse,
                                         'transport_companies' => $transport_companies,
                                         'exports' => $exports,
                                         'products' => $products,
@@ -193,6 +173,7 @@ class ExportController extends Controller
                     $export->save();
 
                     //also, update the pivot table, ie save the relation in the pivot table!
+                    // usually it is array of id's passed into the relationship
                     $export->products()->sync($request->input('modal-input-products-create'));
 
 

@@ -30,13 +30,28 @@ class ExportAssignmentController extends Controller
 
     public function view_open_export_assignments(){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
 
             $exportassignments = ExportAssignment::where('is_open', '=', 1)->get();
             $warehouses = Warehouse::all();
 
             return view('exportassignmentsopen_view', ['exportassignments' => $exportassignments,
                                                     'warehouses' => $warehouses]);
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
+    public function view_closed_export_assignments(){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
+
+            $exportassignments = ExportAssignment::where('is_open', '=', 0)->get();
+            $warehouses = Warehouse::all();
+
+            return view('exportassignmentsclosed_view', ['exportassignments' => $exportassignments,
+                                                        'warehouses' => $warehouses]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -108,6 +123,9 @@ class ExportAssignmentController extends Controller
                     $exportassignment->uploaded_files         = json_encode($files_data);
                     $exportassignment->comments               = $request->input('modal-input-comments-create');
                     $exportassignment->is_open                = 1;
+
+                    //Create a code for this assignment, 10 digits long, and get it from the input text as hashed text!
+                    $importassignment->import_assignment_code = strtoupper(substr(\Hash::make($request->input('modal-input-text-create')), -10));
 
                     $exportassignment->save();
 
@@ -246,4 +264,55 @@ class ExportAssignmentController extends Controller
         }
 
     }
+
+
+
+    public function open_export_assignment(Request $request, $id){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
+
+            $exportassignment = ExportAssignment::findOrFail($id);
+
+            $exportassignment->is_open = 1; //open the assignment
+
+            $exportassignment->update($request->all());
+            //$export->update($request->only(['modal-input--']));
+
+            if ($request->ajax()){
+                return \Response::json([
+                    'success' => true,
+                ], 200);
+            }
+
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
+
+    public function close_export_assignment(Request $request, $id){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
+
+            $exportassignment = ExportAssignment::findOrFail($id);
+
+            $exportassignment->is_open = 0; //close the assignment
+
+            $exportassignment->update($request->all());
+            //$export->update($request->only(['modal-input--']));
+
+            if ($request->ajax()){
+                return \Response::json([
+                    'success' => true,
+                ], 200);
+            }
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+    }
+
+
 }

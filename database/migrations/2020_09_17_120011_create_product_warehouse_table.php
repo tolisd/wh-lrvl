@@ -18,6 +18,8 @@ class CreateProductWarehouseTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('warehouse_id');
 
+            $table->float('quantity');
+
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('warehouse_id')->references('id')->on('warehouse');
 

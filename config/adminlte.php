@@ -449,6 +449,10 @@ return [
             'header' => 'ΔΙΑΧΕΙΡΙΣΗ ΑΝΑΘΕΣΕΩΝ',
             'can' => ['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isNormalUser'],
         ],
+
+
+
+
         [
             'text' => 'Αναθέσεις Εισαγωγής',
             'route' => 'admin.assignments.import.view',
@@ -515,26 +519,31 @@ return [
 
 
 
+
+
+
+
+
         [
-            'text' => 'Πληροφορίες Εισαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εισαγωγών',
             'route' => 'admin.imports.view',
             'can' => 'isSuperAdmin',
             'icon' => 'fas fa-fw fa-circle',
         ],
         [
-            'text' => 'Πληροφορίες Εισαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εισαγωγών',
             'route' => 'manager.imports.view',
             'can' => 'isCompanyCEO',
             'icon' => 'fas fa-fw fa-circle',
         ],
         [
-            'text' => 'Πληροφορίες Εισαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εισαγωγών',
             'route' => 'accountant.imports.view',
             'can' => 'isAccountant',
             'icon' => 'fas fa-fw fa-circle',
         ],
         [
-            'text' => 'Πληροφορίες Εισαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εισαγωγών',
             'route' => 'foreman.imports.view',
             'can' => 'isWarehouseForeman',
             'icon' => 'fas fa-fw fa-circle',
@@ -542,28 +551,180 @@ return [
 
 
         [
-            'text' => 'Πληροφορίες Εξαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εξαγωγών',
             'route' => 'admin.exports.view',
             'can' => 'isSuperAdmin',
             'icon' => 'far fa-fw fa-circle',
         ],
         [
-            'text' => 'Πληροφορίες Εξαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εξαγωγών',
             'route' => 'manager.exports.view',
             'can' => 'isCompanyCEO',
             'icon' => 'far fa-fw fa-circle',
         ],
         [
-            'text' => 'Πληροφορίες Εξαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εξαγωγών',
             'route' => 'accountant.exports.view',
             'can' => 'isAccountant',
             'icon' => 'far fa-fw fa-circle',
         ],
         [
-            'text' => 'Πληροφορίες Εξαγωγών',
+            'text' => 'Στοιχεία Αναθ.Εξαγωγών',
             'route' => 'foreman.exports.view',
             'can' => 'isWarehouseForeman',
             'icon' => 'far fa-fw fa-circle',
+        ],
+
+
+
+
+
+
+        [
+            'text' => 'Ανοιχτές/Κλειστές',
+            'url' => '',
+            'can' => 'isSuperAdmin',
+            'icon' => 'fas fa-briefcase',
+
+            'submenu' => [
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εισαγωγής',
+                                    'route' => 'admin.assignments.import.open.view',
+                                    'can' => 'isSuperAdmin',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εξαγωγής',
+                                    'route' => 'admin.assignments.export.open.view',
+                                    'can' => 'isSuperAdmin',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Κλειστές Αναθ.Εισαγωγής',
+                                    'route' => 'admin.assignments.import.close.view',
+                                    'can' => 'isSuperAdmin',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                                [
+                                    'text' => 'Κλειστές Αναθ.Εξαγωγής',
+                                    'route' => 'admin.assignments.export.close.view',
+                                    'can' => 'isSuperAdmin',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                         ],
+        ],
+
+        [
+            'text' => 'Ανοιχτές/Κλειστές',
+            'url' => '',
+            'can' => 'isCompanyCEO',
+            'icon' => 'fas fa-briefcase',
+
+            'submenu' => [
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εισαγωγής',
+                                    'route' => 'manager.assignments.import.open.view',
+                                    'can' => 'isCompanyCEO',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εξαγωγής',
+                                    'route' => 'manager.assignments.export.open.view',
+                                    'can' => 'isCompanyCEO',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Κλειστές Αναθ.Εισαγωγής',
+                                    'route' => 'manager.assignments.import.close.view',
+                                    'can' => 'isCompanyCEO',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                                [
+                                    'text' => 'Κλειστές Αναθ.Εξαγωγής',
+                                    'route' => 'manager.assignments.export.close.view',
+                                    'can' => 'isCompanyCEO',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+
+                         ],
+        ],
+
+        [
+            'text' => 'Ανοιχτές/Κλειστές',
+            'url' => '',
+            'can' => 'isAccountant',
+            'icon' => 'fas fa-briefcase',
+
+            'submenu' => [
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εισαγωγής',
+                                    'route' => 'accountant.assignments.import.open.view',
+                                    'can' => 'isAccountant',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εξαγωγής',
+                                    'route' => 'accountant.assignments.export.open.view',
+                                    'can' => 'isAccountant',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Κλειστές Αναθ.Εισαγωγής',
+                                    'route' => 'accountant.assignments.import.close.view',
+                                    'can' => 'isAccountant',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                                [
+                                    'text' => 'Κλειστές Αναθ.Εξαγωγής',
+                                    'route' => 'accountant.assignments.export.close.view',
+                                    'can' => 'isAccountant',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                         ],
+        ],
+
+        [
+            'text' => 'Ανοιχτές Αναθέσεις',
+            'url' => '',
+            'can' => 'isWarehouseForeman',
+            'icon' => 'fas fa-briefcase',
+
+            'submenu' => [
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εισαγωγής',
+                                    'route' => 'foreman.assignments.import.open.view',
+                                    'can' => 'isWarehouseForeman',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εξαγωγής',
+                                    'route' => 'foreman.assignments.export.open.view',
+                                    'can' => 'isWarehouseForeman',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                         ],
+        ],
+
+        [
+            'text' => 'Ανοιχτές Αναθέσεις',
+            'url' => '',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-briefcase',
+
+            'submenu' => [
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εισαγωγής',
+                                    'route' => 'worker.assignments.import.open.view',
+                                    'can' => 'isWarehouseWorker',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εξαγωγής',
+                                    'route' => 'worker.assignments.export.open.view',
+                                    'can' => 'isWarehouseWorker',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                         ],
         ],
 
 

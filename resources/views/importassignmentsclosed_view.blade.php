@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη | Ανοιχτές Αναθέσεις Εισαγωγής')
+@section('title', 'Αποθήκη | Κλειστές Αναθέσεις Εισαγωγής')
 
 @section('content_header')
-    <h1>Αποθήκη/Warehouse | Ανοιχτές Αναθέσεις Εισαγωγής</h1>
+    <h1>Αποθήκη/Warehouse | Κλειστές Αναθέσεις Εισαγωγής</h1>
 @stop
 
 
@@ -21,9 +21,9 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-            <p>Ανοιχτές Αναθέσεις Εισαγωγής</p>
+            <p>Κλειστές Αναθέσεις Εισαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -60,7 +60,7 @@
                             @if($importassignment->is_open == 1)
                                 <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
                             @elseif($importassignment->is_open == 0)
-                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Κλειστή
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp;Κλειστή
                             @endif
                         </td>
 
@@ -87,10 +87,6 @@
 
             @can('isAccountant')
                 <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
-            @endcan
-
-            @can('isWarehouseForeman')
-                <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
@@ -140,7 +136,7 @@
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
+                            "title"  : "Κλειστές Αναθέσεις Εισαγωγής",
                             exportOptions: {
                                 columns: [ 0, 1, 2, 3, 4, 5]
                             }
@@ -148,7 +144,7 @@
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
+                            "title"  : "Κλειστές Αναθέσεις Εισαγωγής",
                             exportOptions: {
                                 columns: [ 0, 1, 2, 3, 4, 5]
                             }
@@ -156,7 +152,7 @@
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
+                            "title"  : "Κλειστές Αναθέσεις Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
                                 columns: [ 0, 1, 2, 3, 4, 5]

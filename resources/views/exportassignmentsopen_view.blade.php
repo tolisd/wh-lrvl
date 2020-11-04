@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Ανοιχτές Αναθέσεις Εξαγωγής')
 
 @section('content_header')
-    <h1>Warehouse / Ανοιχτές Αναθέσεις Εξαγωγής</h1>
+    <h1>Αποθήκη/Warehouse | Ανοιχτές Αναθέσεις Εξαγωγής</h1>
 @stop
 
 
@@ -23,7 +23,7 @@
 
             <p>Ανοιχτές Αναθέσεις Εξαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -58,9 +58,9 @@
                         <td>{{ $exportassignment->comments }}</td>
 						<td>
                             @if($exportassignment->is_open == 1)
-                                Ανοιχτή
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
                             @elseif($exportassignment->is_open == 0)
-                                Κλειστή
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp;Κλειστή
                             @endif
                         </td>
 

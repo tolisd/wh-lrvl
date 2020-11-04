@@ -103,12 +103,16 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     //Open Import/Export Assignments Views
     Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('admin.assignments.import.open.view');
     Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('admin.assignments.export.open.view');
+    Route::get('assignments/import/close/view', 'ImportAssignmentController@view_closed_import_assignments')->name('admin.assignments.import.close.view');
+    Route::get('assignments/export/close/view', 'ExportAssignmentController@view_closed_export_assignments')->name('admin.assignments.export.close.view');
 
     //import assignments
     Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('admin.assignments.import.view');
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('admin.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('admin.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('admin.assignment.import.delete');
+    Route::put('assignments/import/open/{id}', 'ImportAssignmentController@open_import_assignment')->name('admin.assignment.import.open');
+    Route::put('assignments/import/close/{id}', 'ImportAssignmentController@close_import_assignment')->name('admin.assignment.import.close');
 
 
     //export assignments
@@ -116,6 +120,8 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('admin.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('admin.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('admin.assignment.export.delete');
+    Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('admin.assignment.export.open');
+    Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('admin.assignment.export.close');
 
     //imports
     Route::get('/assignments/imports/view', 'ImportController@view_imports')->name('admin.imports.view');
@@ -247,19 +253,24 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
     //Open Import/Export Assignments Views
     Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('manager.assignments.import.open.view');
     Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('manager.assignments.export.open.view');
+    Route::get('assignments/import/close/view', 'ImportAssignmentController@view_closed_import_assignments')->name('manager.assignments.import.close.view');
+    Route::get('assignments/export/close/view', 'ExportAssignmentController@view_closed_export_assignments')->name('manager.assignments.export.close.view');
 
     //import assignments
     Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('manager.assignments.import.view');
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('manager.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('manager.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('manager.assignment.import.delete');
-
+    Route::put('assignments/import/open/{id}', 'ImportAssignmentController@open_import_assignment')->name('manager.assignment.import.open');
+    Route::put('assignments/import/close/{id}', 'ImportAssignmentController@close_import_assignment')->name('manager.assignment.import.close');
 
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('manager.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('manager.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('manager.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('manager.assignment.export.delete');
+    Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('manager.assignment.export.open');
+    Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('manager.assignment.export.close');
 
     //imports
     Route::get('/assignments/imports/view', 'ImportController@view_imports')->name('manager.imports.view');
@@ -387,19 +398,24 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     //Open Import/Export Assignments Views
     Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('accountant.assignments.import.open.view');
     Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('accountant.assignments.export.open.view');
+    Route::get('assignments/import/close/view', 'ImportAssignmentController@view_closed_import_assignments')->name('accountant.assignments.import.close.view');
+    Route::get('assignments/export/close/view', 'ExportAssignmentController@view_closed_export_assignments')->name('accountant.assignments.export.close.view');
 
     //import assignments
     Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('accountant.assignments.import.view');
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('accountant.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('accountant.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('accountant.assignment.import.delete');
-
+    Route::put('assignments/import/open/{id}', 'ImportAssignmentController@open_import_assignment')->name('accountant.assignment.import.open');
+    Route::put('assignments/import/close/{id}', 'ImportAssignmentController@close_import_assignment')->name('accountant.assignment.import.close');
 
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('accountant.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('accountant.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('accountant.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('accountant.assignment.export.delete');
+    Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('accountant.assignment.export.open');
+    Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('accountant.assignment.export.close');
 
     //imports
     Route::get('/assignments/imports/view', 'ImportController@view_imports')->name('accountant.imports.view');
@@ -477,13 +493,16 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('foreman.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('foreman.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('foreman.assignment.import.delete');
-
+    Route::put('assignments/import/open/{id}', 'ImportAssignmentController@open_import_assignment')->name('foreman.assignment.import.open');
+    Route::put('assignments/import/close/{id}', 'ImportAssignmentController@close_import_assignment')->name('foreman.assignment.import.close');
 
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('foreman.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('foreman.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('foreman.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('foreman.assignment.export.delete');
+    Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('foreman.assignment.export.open');
+    Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('foreman.assignment.export.close');
 
 
     //imports
@@ -538,6 +557,10 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
     //Route::get('/tools/view', 'ToolController@view_tools')->name('worker.tools.view'); //BUT, he CANNOT see/access Charge/Uncharge Buttons!
     Route::get('/tools/my-charged/view', 'ToolController@view_my_charged_tools')->name('worker.tools.mycharged.view');
 
+    //Open Import/Export Assignments Views
+    Route::get('assignments/import-assignments/open/view', 'ImportAssignmentController@view_open_import_assignments')->name('worker.assignments.import.open.view');
+    Route::get('assignments/export-assignments/open/view', 'ExportAssignmentController@view_open_export_assignments')->name('worker.assignments.export.open.view');
+
     Route::get('/products/view', 'ProductController@view_products')->name('worker.products.view'); //view products
     Route::get('/product/view/{id}', 'DashboardController@view_product')->name('worker.product.view'); //view a single product
     Route::post('/products/create', 'ProductController@create_product')->name('worker.product.create'); //create new product
@@ -580,13 +603,16 @@ Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('user.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('user.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('user.assignment.import.delete');
-
+    Route::put('assignments/import/open/{id}', 'ImportAssignmentController@open_import_assignment')->name('user.assignment.import.open');
+    Route::put('assignments/import/close/{id}', 'ImportAssignmentController@close_import_assignment')->name('user.assignment.import.close');
 
     //export assignments
     Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('user.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('user.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('user.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('user.assignment.export.delete');
+    Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('user.assignment.export.open');
+    Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('user.assignment.export.close');
 
 });
 

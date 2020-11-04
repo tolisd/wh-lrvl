@@ -2,7 +2,7 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Dashboard')
+@section('title', 'Αποθήκη | Όλα τα Προϊόντα')
 
 @section('content_header')
     <h1><strong>Αποθήκη/Warehouse</strong> | Όλα τα Προϊόντα</h1>
@@ -35,7 +35,7 @@
                         <th class="text-left">Περιγραφή</th>
                         <th class="text-left">Κατηγορία</th>
                         <th class="text-left">Είδος</th>  <!-- product type -->
-                        <th class="text-left">Ποσότητα</th>
+                        <!--  <th class="text-left">Ποσότητα</th> -->
                         <th class="text-left">Μον.Μέτρ.</th>
                         <th class="text-left">Σχόλια</th>
                         <th class="text-left">Αποθήκη/-ες</th>
@@ -58,7 +58,7 @@
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
                         <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
-                        <td>{{ $product->quantity }}</td>
+                        <!-- <td>{{ $product->quantity }}</td> -->
                         <td>{{ $product->measureunit->name }}</td> <!-- measureunit() in App\Product.php -->
                         <td>{{ $product->comments }}</td>
                         <td>
@@ -78,7 +78,7 @@
                                     data-categoryid="{{ $product->category_id }}"
                                     data-typeid="{{ $product->type_id }}"
                                     data-typesall="{{ $types_all }}"
-                                    data-quantity="{{ $product->quantity }}"
+
                                     data-measunitid="{{ $product->measunit_id }}"
                                     data-comments="{{ $product->comments }}"
                                     data-warehouses="{{ $product->warehouses }}"
@@ -215,11 +215,13 @@
 
 
                                     <!-- quantity -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-create">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-create" class="form-control" id="modal-input-quantity-create"
                                             value="" />
                                     </div>
+                                    -->
                                     <!-- /quantity -->
 
                                     <!-- measure_unit -->
@@ -354,11 +356,13 @@
                                     <!-- /prod_type -->
 
                                     <!-- quantity -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
                                             value="" />
                                     </div>
+                                    -->
                                     <!-- /quantity -->
 
                                     <!-- measure_unit -->
@@ -608,7 +612,7 @@
             var typeid = button.data('typeid');
             var typesall = button.data('typesall');
 
-            var quantity = button.data('quantity');
+            // var quantity = button.data('quantity');
             var measunitid = button.data('measunitid');
             var comments = button.data('comments');
             var warehouses = button.data('warehouses');
@@ -628,7 +632,7 @@
             modal.find('.modal-body #modal-input-description-edit').val(description);
             modal.find('.modal-body #modal-input-category-edit').val(categoryid);
             //modal.find('.modal-body #modal-input-type-edit').val(typeid);
-            modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
+            // modal.find('.modal-body #modal-input-quantity-edit').val(quantity);
             modal.find('.modal-body #modal-input-measureunit-edit').val(measunitid);
             modal.find('.modal-body #modal-input-comments-edit').val(comments);
 
@@ -1013,7 +1017,7 @@
 
         $('#edit-modal').on('shown.bs.modal', function(evt){
 
-            console.log('evt: ', evt);
+            //console.log('evt: ', evt);
             /*
             //keep old value in type-edit, apparently it doesnt work...
             const typeedit_oldvalue = '{{ old("modal-input-type-edit") }}';

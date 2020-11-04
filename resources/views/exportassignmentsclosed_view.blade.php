@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη | Ανοιχτές Αναθέσεις Εισαγωγής')
+@section('title', 'Αποθήκη | Κλειστές Αναθέσεις Εξαγωγής')
 
 @section('content_header')
-    <h1>Αποθήκη/Warehouse | Ανοιχτές Αναθέσεις Εισαγωγής</h1>
+    <h1>Αποθήκη/Warehouse | Κλειστές Αναθέσεις Εξαγωγής</h1>
 @stop
 
 
@@ -21,9 +21,9 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-            <p>Ανοιχτές Αναθέσεις Εισαγωγής</p>
+            <p>Κλειστές Αναθέσεις Εξαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -31,7 +31,7 @@
                 <thead>
                     <tr>
                         <th class="text-left">Αποθήκη</th>
-                        <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
+                        <th class="text-left">Κείμενο Ανάθεσης Εξαγωγής</th>
                         <th class="text-left">Deadline</th>
                         <th class="text-left">Επισυναπτόμενα Αρχεία</th>
                         <th class="text-left">Σχόλια</th>
@@ -40,13 +40,14 @@
                 </thead>
 
                 <tbody>
-                @foreach($importassignments as $importassignment)
-                    <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
-                        <td>{{ $importassignment->warehouse->name }}</td>
-                        <td>{{ $importassignment->import_assignment_text }}</td>
-                        <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td>
+                @foreach($exportassignments as $exportassignment)
+                    <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->warehouse->name }}</td>
+                        <td>{{ $exportassignment->export_assignment_text }}</td>
+                        <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td>
+
                         @php
-                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                            $attached_files = json_decode($exportassignment->uploaded_files, true);
                         @endphp
                         <td>
                             <ul>
@@ -55,12 +56,12 @@
                             @endforeach
                             </ul>
                         </td>
-                        <td>{{ $importassignment->comments }}</td>
+                        <td>{{ $exportassignment->comments }}</td>
 						<td>
-                            @if($importassignment->is_open == 1)
+                            @if($exportassignment->is_open == 1)
                                 <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
-                            @elseif($importassignment->is_open == 0)
-                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Κλειστή
+                            @elseif($exportassignment->is_open == 0)
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp;Κλειστή
                             @endif
                         </td>
 
@@ -72,9 +73,8 @@
 
 
 
-
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant -->
 
 
 			@can('isSuperAdmin')
@@ -87,10 +87,6 @@
 
             @can('isAccountant')
                 <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
-            @endcan
-
-            @can('isWarehouseForeman')
-                <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
@@ -113,7 +109,7 @@
 
     $(document).ready(function(){
 
-         //configure & initialise the (Import Assignments) DataTable
+         //configure & initialise the (Export Assignments) DataTable
          $('.table').DataTable({
             autoWidth: true,
             ordering: true,
@@ -140,7 +136,7 @@
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
+                            "title"  : "Κλειστές Αναθέσεις Εξαγωγής",
                             exportOptions: {
                                 columns: [ 0, 1, 2, 3, 4, 5]
                             }
@@ -148,7 +144,7 @@
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
+                            "title"  : "Κλειστές Αναθέσεις Εξαγωγής",
                             exportOptions: {
                                 columns: [ 0, 1, 2, 3, 4, 5]
                             }
@@ -156,7 +152,7 @@
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
+                            "title"  : "Κλειστές Αναθέσεις Εξαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
                                 columns: [ 0, 1, 2, 3, 4, 5]

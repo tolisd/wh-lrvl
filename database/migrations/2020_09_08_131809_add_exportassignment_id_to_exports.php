@@ -15,7 +15,7 @@ class AddExportassignmentIdToExports extends Migration
     {
         Schema::table('exports', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('exportassignment_id')->unique();
+            $table->unsignedBigInteger('exportassignment_id'); //->unique();
 
             $table->foreign('exportassignment_id')
                     ->references('id')

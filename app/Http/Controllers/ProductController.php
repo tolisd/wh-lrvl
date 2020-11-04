@@ -67,7 +67,7 @@ class ProductController extends Controller
                 'modal-input-type-create' => 'required|exists:types,id',
                 'modal-input-category-create' => 'required|exists:category,id',
                 'modal-input-description-create' => 'required',
-                'modal-input-quantity-create' => 'required',
+                // 'modal-input-quantity-create' => 'required',
                 'modal-input-measureunit-create' => 'required|exists:measunits,id',
                 'modal-input-comments-create' => 'required',
                 'modal-input-warehouses-create' => 'required',
@@ -79,7 +79,7 @@ class ProductController extends Controller
                 'modal-input-type-create.required' => 'Το είδος απαιτείται',
                 'modal-input-category-create.required' => 'Η κατηγορία απαιτείται',
                 'modal-input-description-create.required' => 'Η περιγραφή απαιτείται',
-                'modal-input-quantity-create.required' => 'Η ποσότητα απαιτείται',
+                // 'modal-input-quantity-create.required' => 'Η ποσότητα απαιτείται',
                 'modal-input-measureunit-create.required' => 'Η μονάδα μέτρησης απαιτείται',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-warehouses-create.required' => 'Η/Οι αποθήκη/-ες απαιτούνται',
@@ -109,7 +109,7 @@ class ProductController extends Controller
                     $product->type_id         = $request->input('modal-input-type-create');             //references 'id' in types table
                     $product->category_id     = $request->input('modal-input-category-create');         //references 'id' in category table
                     $product->description     = $request->input('modal-input-description-create');
-                    $product->quantity        = $request->input('modal-input-quantity-create');
+                    // $product->quantity        = 1;
                     $product->measunit_id     = $request->input('modal-input-measureunit-create');
                     $product->comments        = $request->input('modal-input-comments-create');
                     //$product->assignment_id   = $request->input('modal-input-assignment-create');        //references 'id' in assignments table
@@ -162,7 +162,7 @@ class ProductController extends Controller
                 'modal-input-type-edit' => ['required', 'exists:types,id'],
                 'modal-input-category-edit' => ['required', 'exists:category,id'],
                 'modal-input-description-edit' => ['required'],
-                'modal-input-quantity-edit' => ['required'],
+                // 'modal-input-quantity-edit' => ['required'],
                 'modal-input-measureunit-edit' => ['required', 'exists:measunits,id'],
                 'modal-input-comments-edit' => ['required'],
                 'modal-input-warehouses-edit' => ['required'],
@@ -174,7 +174,7 @@ class ProductController extends Controller
                 'modal-input-type-edit.required' => 'Το είδος απαιτείται',
                 'modal-input-category-edit.required' => 'Η κατηγορία απαιτείται',
                 'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται',
-                'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
+                // 'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
                 'modal-input-measureunit-edit.required' => 'Η μονάδα μέτρησης απαιτείται',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-warehouses-edit' => 'Η/Οι αποθήκη/-ες απαιτούνται',
@@ -202,7 +202,7 @@ class ProductController extends Controller
                     $product->type_id         = $request->input('modal-input-type-edit');             //references 'id' in types table
                     $product->category_id     = $request->input('modal-input-category-edit');         //references 'id' in category table
                     $product->description     = $request->input('modal-input-description-edit');
-                    $product->quantity        = $request->input('modal-input-quantity-edit');
+                    // $product->quantity        = 1;
                     $product->measunit_id     = $request->input('modal-input-measureunit-edit');
                     $product->comments        = $request->input('modal-input-comments-edit');
                     //$product->assignment_id   = $request->input('modal-input-assgncode-edit');        //references 'id' in assignments table
