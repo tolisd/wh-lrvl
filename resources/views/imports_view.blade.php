@@ -61,7 +61,7 @@
 						<td>{{ $import->delivery_address }}</td>
 						<td>{{ $import->chargeable_hours_worked }}</td>
 						<td>{{ $import->hours_worked }}</td>
-						<td>{{ basename($import->shipment_bulletin) }}</td>
+						<td>{{ substr(basename($import->shipment_bulletin), 15) }}</td>
 						<td>{{ $import->discrete_description }}</td>
                         <!-- <td>{{ $import->product_id }}</td> -->
                         <!-- <td>{{ $import->import_assignment->import_assignment_text }}</td> -->
@@ -85,7 +85,8 @@
 									data-hours="{{ $import->hours_worked }}"
 									data-bulletin="{{ $import->shipment_bulletin }}"
 									data-description="{{ $import->discrete_description }}"
-                                    data-importassignmentid="{{ $import->importassignment_id }}">
+                                    data-importassignmentid="{{ $import->importassignment_id }}"
+                                    data-importassignment="{{ $import->import_assignment }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -388,16 +389,24 @@
                                     <!-- added hidden input for warehouse, I need it for the AJAX to get employees in edit modal -->
                                     <input type="hidden" id="modal-input-warehouse-edit" name="modal-input-warehouse-edit" value="">
 
+                                    <!-- added hidden input -->
+                                    <input type="hidden" id="modal-input-importassignmentid-edit" name="modal-input-importassignmentid-edit" value="">
+
 
                                     <!-- import_assignment -->
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-importassignment-edit">Ανάθεση Εισαγωγής</label>
                                         <div class="col-lg-9">
+                                        <!--
+                                            <input type="text" name="modal-input-exportassignment-edit" class="form-control-plaintext"
+                                                id="modal-input-importassignment-edit" value="" readonly />
+                                        -->
                                             <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control">
                                             @foreach($importassignments as $impassgnm)
                                                 <option value="{{ $impassgnm->id }}">[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
+
                                         </div>
 									</div>
 									<!-- /import_assignment -->
@@ -751,7 +760,7 @@
 
         //helper function
         function base_name(path) {
-            return path.split('/').reverse()[0];
+            return path.split('/').reverse()[0].substr(15);
         }
 
 
@@ -780,6 +789,7 @@
             var bulletin = button.data('bulletin');
             var description = button.data('description');
             var importassignmentid = button.data('importassignmentid');
+            var import_assignment = button.data('importassignment');
             //var products = button.data('productid');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -791,6 +801,7 @@
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid); //hidden input in edit modal.
 
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
+            modal.find('.modal-body #modal-input-importassignmentid-edit').val(iimportassignmentid); //hidden input
 
             modal.find('.modal-body #modal-input-impco-edit').val(companyid);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
@@ -801,7 +812,7 @@
             modal.find('.modal-body #modal-input-hours-edit').val(hours);
             //modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
             modal.find('.modal-body #modal-input-dtitle-edit').val(description);
-            modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
+            // modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
             //modal.find('.modal-body #modal-input-products-edit').val(products);
 
             modal.find('.modal-body #arxeio-DA').empty();
@@ -810,9 +821,15 @@
             modal.find('.modal-footer #edit-button').attr("data-iid", iid);  //SET import assignment id value in data-iid attribute
 
 
-
             //EMPTY the recipients for now. they will be populated with ajax
             modal.find('.modal-body #modal-input-recipient-edit').empty();
+
+            //Export assignment name!
+            modal.find('.modal-body #modal-input-importassignment-edit').empty();
+            //console.log(export_assignment);
+            modal.find('.modal-body #modal-input-importassignment-edit').val('['+import_assignment.warehouse.name +'], [' + import_assignment.import_deadline+']');
+
+
 
             //console.log('emps_per_wh: ', employeesperwarehouse);
             //console.log('emp_names: ', employeenames);

@@ -13,17 +13,27 @@ class Employee extends Model
 
 
     protected $fillable = [
-        'address', 'phone_number', 'user_id', 'company_id', 'warehouse_id',
+        'address',
+        'phone_number',
+        'user_id',
+        'company_id',
+        //'warehouse_id',
     ];
 
     //or, just use this line instead of filling in values for $fillable above
     //protected $guarded = [];
 
+    //N-to-M with Warehouses
+    public function warehouses(){
+        return $this->belongsToMany('App\Warehouse', 'employee_warehouse', 'employee_id', 'warehouse_id')
+                    ->withTimestamps();
+    }
+
 
     /*1 Warehouse has_many Employees, and Each 1 Employee belongs to 1 Warehouse */
-    public function warehouse(){
-        return $this->belongsTo('App\Warehouse', 'warehouse_id');
-    } //
+    // public function warehouse(){
+    //     return $this->belongsTo('App\Warehouse', 'warehouse_id');
+    // } //
 
 
     public function company(){

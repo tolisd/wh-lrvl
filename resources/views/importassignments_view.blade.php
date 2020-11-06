@@ -58,7 +58,7 @@
                         <td>
                             <ul>
                             @foreach($attached_files as $att_file)
-                                <li>{{ basename($att_file) }}</li>
+                                <li>{{ substr(basename($att_file), 15) }}</li>
                             @endforeach
                             </ul>
                         </td>
@@ -709,7 +709,7 @@
 
         //helper function for getting the filename plus the extension from the full file path
         function base_name(path) {
-            return path.split('/').reverse()[0];
+            return path.split('/').reverse()[0].substr(15);
         }
 
 

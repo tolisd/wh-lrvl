@@ -43,11 +43,11 @@ class EmployeeController extends Controller
 
             //validation rules
             $rules = [
-                'modal-input-name-create' => 'required|exists:users,id', //unique??
-                'modal-input-company-create' => 'required|exists:company,id',
+                'modal-input-name-create' => 'required|exists:users,id', //unique?, The field under validation must exist on a given database table.
+                'modal-input-company-create' => 'required|exists:company,id', //The field under validation must exist on a given database table.
                 'modal-input-address-create' => 'required',
                 'modal-input-telno-create' => 'required',
-                'modal-input-warehouse-create' => 'required|exists:warehouse,id',
+                'modal-input-warehouse-create' => 'required'  //|exists:warehouse,id', //The field under validation must exist on a given database table.
             ];
 
             //custom validation error messages
@@ -56,7 +56,7 @@ class EmployeeController extends Controller
                 'modal-input-telno-create.required' => 'Ο τηλεφωνικός αριθμός απαιτείται',
                 'modal-input-name-create.required' => 'Το όνομα εργαζομένου απαιτείται',
                 'modal-input-company-create.required' => 'Η εταιρεία απαιτείται',
-                'modal-input-warehouse-create.required' => 'Η αποθήκη απαιτείται',
+                'modal-input-warehouse-create.required' => 'Η/Οι αποθήκη/-ες απαιτούνται',
             ];
 
             //prepare the $validator variable
@@ -83,9 +83,12 @@ class EmployeeController extends Controller
                     $employee->address          = $request->input('modal-input-address-create');
                     $employee->phone_number     = $request->input('modal-input-telno-create');
                     //$employee->email          = $request->input('modal-input-email-create');
-                    $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
+                    // $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
 
                     $employee->save();
+
+                    $employee->warehouses()->sync($request->input('modal-input-warehouse-create'));
+
 
                     //establish the association between the 2 entities. very important!
                     $user = User::findOrFail($employee->user_id);
@@ -142,11 +145,11 @@ class EmployeeController extends Controller
 
             //validation rules
             $rules = [
-                'modal-input-name-edit' => 'required|exists:users,id',
-                'modal-input-company-edit' => 'required|exists:company,id',
+                'modal-input-name-edit' => 'required|exists:users,id', //The field under validation must exist on a given database table.
+                'modal-input-company-edit' => 'required|exists:company,id', //The field under validation must exist on a given database table.
                 'modal-input-address-edit' => 'required',
                 'modal-input-telno-edit' => 'required',
-                'modal-input-warehouse-edit' => 'required|exists:warehouse,id',
+                'modal-input-warehouse-edit' => 'required', //|exists:warehouse,id', //The field under validation must exist on a given database table.
             ];
 
             //custom validation error messages
@@ -155,7 +158,7 @@ class EmployeeController extends Controller
                 'modal-input-telno-edit.required' => 'Ο τηλεφωνικός αριθμός απαιτείται',
                 'modal-input-name-edit.required' => 'Το όνομα εργαζομένου απαιτείται',
                 'modal-input-company-edit.required' => 'Η εταιρεία απαιτείται',
-                'modal-input-warehouse-edit.required' => 'Η αποθήκη απαιτείται',
+                'modal-input-warehouse-edit.required' => 'Η/Οι αποθήκη/-ες απαιτούνται',
             ];
 
             //prepare the $validator variable
@@ -184,13 +187,15 @@ class EmployeeController extends Controller
                     $employee->address          = $request->input('modal-input-address-edit');
                     $employee->phone_number     = $request->input('modal-input-telno-edit');
                     //$employee->email            = $request->input('modal-input-email-edit');
-                    $employee->warehouse_id     = $request->input('modal-input-warehouse-edit');
+                    // $employee->warehouse_id     = $request->input('modal-input-warehouse-edit');
                     /*
                     $path = $request->file("modal-input-photo-edit")->store("images/");  //stored in storage/images/
                     $url = Storage::url($path);
                     $employee->photo_url = $url;
                     */
                     $employee->update($request->all()); //or $request->only(['', '', ...]) ??
+
+                    $employee->warehouses()->sync($request->input('modal-input-warehouse-edit'));
 
 
                     //establish the association between the 2 entities. very important!
@@ -227,7 +232,7 @@ class EmployeeController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
             $employee = Employee::findOrFail($id);
-            //should check if employee/user is logged out first!
+            //should check if employee/user is logged out (or not logged in) first!
             //or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
             $employee->delete();
 

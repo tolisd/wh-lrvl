@@ -12,7 +12,13 @@ class Warehouse extends Model
     //protected $primaryKey = 'warehouse_id';
 
     protected $fillable = [
-        'name', 'address', 'city', 'phone_number', 'email', 'company_id', //'foreman_id', 'worker_id',
+        'name',
+        'address',
+        'city',
+        'phone_number',
+        'email',
+        'company_id',
+        //'foreman_id', 'worker_id',
     ];
 
     /*
@@ -32,10 +38,16 @@ class Warehouse extends Model
     }
     */
 
-
+    //N-to-M with Employees
     public function employees(){
-        return $this->hasMany('App\Employee');
+        return $this->belongsToMany('App\Employee', 'employee_warehouse', 'warehouse_id', 'employee_id')
+                    ->withTimestamps();
     }
+
+
+    // public function employees(){
+    //     return $this->hasMany('App\Employee');
+    // }
 
 
     public function company(){
@@ -45,6 +57,7 @@ class Warehouse extends Model
     //products is many-to-many with warehouses
     public function products(){
         return $this->belongsToMany('App\Product', 'product_warehouse', 'warehouse_id', 'product_id')
+                    ->withPivot('quantity')
                     ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.
     }
     //The third argument is the foreign key name of the model on which you are defining the relationship,

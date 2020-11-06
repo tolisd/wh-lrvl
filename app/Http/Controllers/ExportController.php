@@ -40,11 +40,12 @@ class ExportController extends Controller
 
             $employees_per_warehouse = DB::table('employees')
                                         //->join('imports', 'employees.id', '=', 'imports.employee_id')
-                                        ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
+                                        ->join('employee_warehouse', 'employees.id','=','employee_warehouse.employee_id')
+                                        ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employee_warehouse.warehouse_id')
                                         ->join('users', 'users.id', '=', 'employees.user_id')
                                         ->where('users.user_type', 'warehouse_worker')
                                         ->whereIn('exportassignments.id', $expassids)
-                                        ->select('users.name', 'employees.id', 'employees.warehouse_id')
+                                        ->select('users.name', 'employees.id', 'employee_warehouse.warehouse_id')
                                         ->get();
 
             /*

@@ -52,11 +52,12 @@ class ImportController extends Controller
             //DB Facade aka Query Builder, for faster join!
             $employees_per_warehouse = DB::table('employees')
                                         //->join('imports', 'employees.id', '=', 'imports.employee_id')
-                                        ->join('importassignments', 'importassignments.warehouse_id', '=', 'employees.warehouse_id')
+                                        ->join('employee_warehouse','employee_warehouse.employee_id','=','employees.id')
+                                        ->join('importassignments', 'importassignments.warehouse_id', '=', 'employee_warehouse.warehouse_id')
                                         ->join('users', 'users.id', '=', 'employees.user_id')
                                         ->where('users.user_type', 'warehouse_worker')
                                         ->whereIn('importassignments.id', $impassids)
-                                        ->select('users.name', 'employees.id', 'employees.warehouse_id')
+                                        ->select('users.name', 'employees.id', 'employee_warehouse.warehouse_id')
                                         ->get();
 
             //dd($employees_per_warehouse); gets the names!

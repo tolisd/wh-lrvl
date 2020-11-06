@@ -19,6 +19,7 @@ class Product extends Model
     //warehouses is many-to-many with products
     public function warehouses(){
         return $this->belongsToMany('App\Warehouse', 'product_warehouse', 'product_id', 'warehouse_id')
+                    ->withPivot('quantity')
                     ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.
     }
     //The third argument is the foreign key name of the model on which you are defining the relationship,

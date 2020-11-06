@@ -36,7 +36,7 @@
                         <th class="text-left">E-mail</th>
                         <!-- <th class="text-left">Φωτο</th> -->
                         <th class="text-left">Εταιρεία</th>
-                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Αποθήκη/-ες</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -71,7 +71,15 @@
                         <td>{{ $employee->phone_number }}</td>
                         <td>{{ $employee->user->email }}</td>
                         <td>{{ $employee->company->name }}</td>
-                        <td>{{ $employee->warehouse->name }}</td>
+
+                        <td>
+                            <ul> <!-- Many to Many relationship -->
+                            @foreach($employee->warehouses as $warehouse)
+                                <li>{{ $warehouse->name }}</li>
+                            @endforeach
+                            </ul>
+                        </td>
+
                         <!-- <td>{{ $employee->user->email }}</td> -->
                         <!-- <td>{{ $employee->user->photo_url }}</td> -->
                         <td>
@@ -79,10 +87,11 @@
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-eid="{{ $employee->id }}"
                                     data-userid="{{ $employee->user_id }}"
+                                    data-username="{{ $employee->user }}"
                                     data-address="{{ $employee->address }}"
                                     data-telno="{{ $employee->phone_number }}"
                                     data-companyid="{{ $employee->company_id }}"
-                                    data-warehouseid="{{ $employee->warehouse_id }}"
+                                    data-warehouses="{{ $employee->warehouses }}"
                                     data-warehousesall="{{ $warehouses }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
@@ -253,8 +262,8 @@
 
                                     <!-- warehouse -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-warehouse-create">Αποθήκη</label>
-                                        <select name="modal-input-warehouse-create" class="form-control" id="modal-input-warehouse-create">
+                                        <label class="col-form-label" for="modal-input-warehouse-create">Αποθήκη/-ες</label>
+                                        <select name="modal-input-warehouse-create[]" class="form-control" id="modal-input-warehouse-create" multiple="multiple">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -325,11 +334,10 @@
                                         -->
 
                                         <select name="modal-input-name-edit" class="form-control" id="modal-input-name-edit">
-                                        @foreach($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @foreach($employees as $emp)
+                                            <option value="{{ $emp->user->id }}">{{ $emp->user->name }}</option>
                                         @endforeach
                                         </select>
-
                                     </div>
                                     <!-- /name -->
 
@@ -408,8 +416,8 @@
 
                                     <!-- warehouse -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη</label>
-                                        <select name="modal-input-warehouse-edit" class="form-control" id="modal-input-warehouse-edit">
+                                        <label class="col-form-label" for="modal-input-warehouse-edit">Αποθήκη/-ες</label>
+                                        <select name="modal-input-warehouse-edit[]" class="form-control" id="modal-input-warehouse-edit" multiple="mulitple">
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
@@ -519,6 +527,11 @@
 
         $(document).ready(function(){
 
+            //initialise the select2 components.
+            $('#modal-input-warehouse-create').select2();
+            $('#modal-input-warehouse-edit').select2();
+
+
             //configure & initialise the (Warehouses) DataTable
             $('.table').DataTable({
                 autoeidth: true,
@@ -598,45 +611,84 @@
 
                 var eid = button.data('eid'); // Extract info from data-* attributes
                 var userid = button.data('userid');
+                var username = button.data('username'); //422 unprocessable entity, when I use this value (username.name) iot have a FIXED name..!
+
                 var address = button.data('address');
                 var telno = button.data('telno');
                 //var email = button.data('email');
-                var warehouseid = button.data('warehouseid');
+                // var warehouseid = button.data('warehouseid');
                 var companyid = button.data('companyid');
                 //var photo = button.data('photo');
                 //var uid = button.data('uid');
                 var warehousesall = button.data('warehousesall');
+                var warehouses = button.data('warehouses');
 
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                 // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
                 var modal = $(this);
                 //modal.find('.modal-title').text('New message to ' + recipient);
                 //modal.find('.card-body #modal-input-eid-edit').val(eid);
-                modal.find('.modal-body #modal-input-name-edit').val(userid);
+                modal.find('.modal-body #modal-input-name-edit').val(userid); //it will be replaced by the actual name of the employee
                 modal.find('.modal-body #modal-input-address-edit').val(address);
                 modal.find('.modal-body #modal-input-telno-edit').val(telno);
                 //modal.find('.modal-body #modal-input-email-edit').val(email);
                 modal.find('.modal-body #modal-input-company-edit').val(companyid);
-                modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid);
+                // modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid);
                  //modal.find('.modal-body #modal-input-photo-edit').val(photo);
                 //modal.find('.modal-body #modal-input-uid-edit').val(uid);
+
 
                 modal.find('.modal-footer #edit-button').attr("data-eid", eid);  //SET product id value in data-eid attribute
 
 
 
+                // modal.find('.modal-body #modal-input-name-edit').empty();
+                // console.log('Users Name: ',username);
+                // modal.find('.modal-body #modal-input-name-edit').val(user.id);
+
+
+                // this code will be replaced, as warehouse_id doesnt exist anymore (neither does warehouse_id)
+
+                //1-to-many relationship, no longer the case
+                // $.each(warehousesall, function(key, val){
+                //     //console.log(key);
+                //     //console.log(val);
+                //     if((companyid == val['company_id']) && (warehouseid == val['id'])){
+                //         modal.find('.modal-body #modal-input-warehouse-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+                //     } else if((companyid == val['company_id'])){
+                //         modal.find('.modal-body #modal-input-warehouse-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+                //     }
+                // });
 
                 modal.find('.modal-body #modal-input-warehouse-edit').empty();
-                $.each(warehousesall, function(key, val){
-                    //console.log(key);
-                    //console.log(val);
-                    if((companyid == val['company_id']) && (warehouseid == val['id'])){
-                        modal.find('.modal-body #modal-input-warehouse-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
-                    } else if((companyid == val['company_id'])){
-                        modal.find('.modal-body #modal-input-warehouse-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
-                    }
+
+                console.log('warehousesall',warehousesall);
+                console.log('warehouses',warehouses);
+
+
+                var warehouses_in_company = [];
+                warehouses_in_company = warehousesall.filter(a => a.company_id === companyid);
+                // //console.log('warehousesall', warehousesall)
+                console.log('warehouses_in_company',warehouses_in_company);
+                // console.log('warehouses',warehouses);
+
+                var wh_in_comp = [];
+                wh_in_comp = warehouses.filter(a => a.company_id === companyid);
+                console.log('wh_in_comp', wh_in_comp);
+
+                $.each(wh_in_comp, function(key, val){
+                    modal.find('.modal-body #modal-input-warehouse-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
                 });
 
+
+                var diff = [];
+                // diff = warehouses.filter(a => !warehouses_in_company.some(b=> a.company_id === b.id));
+                diff = warehouses_in_company.filter(a => !wh_in_comp.some(b => a.id === b.id)); //Correct!
+                console.log('diff',diff);
+
+                $.each(diff, function(key,val){
+                    modal.find('.modal-body #modal-input-warehouse-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+                });
 
 
 

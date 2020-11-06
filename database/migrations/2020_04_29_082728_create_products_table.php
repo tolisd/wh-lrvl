@@ -18,9 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('code', 255)->unique();
             $table->string('name', 255);
             $table->mediumText('description');
-
             // $table->float('quantity'); //removed from this table, as it will better go into table product_warehouse, as extra pivot table field.
-
             //$table->string('meas_unit', 20);
             //$table->enum('measure_unit', ['τμχ', 'm', 'm2', 'm3', 'kg'])->default('τμχ');
             $table->mediumText('comments');

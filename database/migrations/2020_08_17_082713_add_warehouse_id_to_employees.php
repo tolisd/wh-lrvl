@@ -15,11 +15,11 @@ class AddWarehouseIdToEmployees extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('warehouse_id');
+            // $table->unsignedBigInteger('warehouse_id');
 
-            $table->foreign('warehouse_id')
-                    ->references('id')
-                    ->on('warehouse');
+            // $table->foreign('warehouse_id')
+            //         ->references('id')
+            //         ->on('warehouse');
         });
     }
 
@@ -32,8 +32,8 @@ class AddWarehouseIdToEmployees extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             //
-            $table->dropForeign(['warehouse_id']);
-            $table->dropColumn('warehouse_id');
+            // $table->dropForeign(['warehouse_id']);
+            // $table->dropColumn('warehouse_id');
         });
     }
 }

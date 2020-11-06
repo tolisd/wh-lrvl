@@ -84,7 +84,7 @@ class UserController extends Controller
 
                     $user->name      = $request->input('modal-input-name-edit');
                     $user->email     = $request->input('modal-input-email-edit');
-                    //$user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
+                    // $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
                     $user->user_type = $request->input('modal-input-usertype-edit');
                     // ...image upload
                     /*
@@ -190,6 +190,7 @@ class UserController extends Controller
             //$u_id = $arr['data-uid'];
 
             $user = User::findOrFail($id); //was findOrFail($u_id);
+            //first, make sure user is NOT logged in (or is logged out). Important!
             $user->delete();
 
             //$json_user = json_encode($user);
@@ -272,7 +273,7 @@ class UserController extends Controller
                 'modal-input-email-create' => 'required',
                 'modal-input-passwd-create' => 'required|min:8',
                 'modal-input-usertype-create' => 'required',
-                'modal-input-photo-create' => 'nullable|mimetypes:image/jpeg,image/png',
+                'modal-input-photo-create' => 'nullable|mimetypes:image/jpeg,image/png', //image_jpeg include both jpg & jpeg files.
             ];
 
             $custom_messages = [

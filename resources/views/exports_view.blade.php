@@ -65,7 +65,7 @@
                         <td>{{ $export->destination_address }}</td>
                         <td>{{ $export->chargeable_hours_worked }}</td>
                         <td>{{ $export->hours_worked }}</td>
-                        <td>{{ basename($export->shipment_bulletin) }}</td> <!-- attached pdf file -->
+                        <td>{{ substr(basename($export->shipment_bulletin), 15) }}</td> <!-- attached pdf file -->
                         <td>{{ $export->item_description }}</td>
                         <td>
                             <ul>
@@ -400,7 +400,6 @@
                                     <!-- added hidden input for warehouse (via export_assignment) -->
                                     <input type="hidden" id="modal-input-warehouse-edit" name="modal-input-warehouse-edit" value="">
 
-
                                     <!-- added hidden input for exportassignment_id -->
                                     <input type="hidden" id="modal-input-exportassignmentid-edit" name="modal-input-exportassignmentid-edit">
 
@@ -409,17 +408,16 @@
 									<div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-exportassignment-edit">Ανάθεση Εξαγωγής</label>
                                         <div class="col-lg-9">
-
-                                            <input type="text" name="modal-input-exportassignment-edit" class="form-control-plaintext" id="modal-input-exportassignment-edit"
-                                                value="" readonly />
-
                                         <!--
+                                            <input type="text" name="modal-input-exportassignment-edit" class="form-control-plaintext"
+                                                id="modal-input-exportassignment-edit" value="" readonly />
+                                        -->
                                             <select name="modal-input-exportassignment-edit" id="modal-input-exportassignment-edit" class="form-control">
                                             @foreach($exportassignments as $expassgnm)
                                                 <option value="{{ $expassgnm->id }}">[{{ $expassgnm->warehouse->name }}], [{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
-                                        -->
+
                                         </div>
 									</div>
 									<!-- /export_assignment -->
@@ -787,7 +785,7 @@
 
         //helper function
         function base_name(path) {
-            return path.split('/').reverse()[0];
+            return path.split('/').reverse()[0].substr(15);
         }
 
 
@@ -838,7 +836,9 @@
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
             modal.find('.modal-body #modal-input-expco-edit').val(companyid);
             modal.find('.modal-body #modal-input-shipco-edit').val(transportid);
+
             modal.find('.modal-body #modal-input-exportassignmentid-edit').val(exportassignmentid); //hidden input
+
             modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
             modal.find('.modal-body #modal-input-sendplace-edit').val(shipmentaddress);

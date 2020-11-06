@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductWarehouseTable extends Migration
+class CreateEmployeeWarehouseTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateProductWarehouseTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_warehouse', function (Blueprint $table) {
+        Schema::create('employee_warehouse', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
+
+            $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('warehouse_id');
 
-            $table->float('quantity'); //inserted here, after it was removed from the 'products' table
-
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('employee_id')->references('id')->on('employees');
             $table->foreign('warehouse_id')->references('id')->on('warehouse');
 
             $table->timestamps();
@@ -35,15 +34,14 @@ class CreateProductWarehouseTable extends Migration
     public function down()
     {
         //added this for dropping the 2 FKs
-        Schema::table('product_warehouse', function (Blueprint $table){
-            $table->dropForeign(['product_id']);
-            $table->dropColumn('product_id');
-
+        Schema::table('employee_warehouse', function (Blueprint $table){
             $table->dropForeign(['warehouse_id']);
             $table->dropColumn('warehouse_id');
+
+            $table->dropForeign(['employee_id']);
+            $table->dropColumn('employee_id');
         });
 
-
-        Schema::dropIfExists('product_warehouse');
+        Schema::dropIfExists('employee_warehouse');
     }
 }

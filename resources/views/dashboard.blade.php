@@ -97,6 +97,7 @@
                     <ion-icon name="stats-chart-outline"></ion-icon>
                   </i>-->
                 </div>
+
                 @can('isSuperAdmin')
                   <a href="{{ route('admin.users.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
@@ -118,6 +119,7 @@
                 <div class="icon">
                   <i class="fas fa-cubes fa-sm" aria-hidden="true"></i>
                 </div>
+
                 @can('isSuperAdmin')
                   <a href="{{ route('admin.products.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
@@ -138,7 +140,7 @@
 
             @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman'])
             <!-- small box -->
-            <div class="small-box bg-red">
+            <div class="small-box bg-teal">
                 <div class="inner">
                       <h3>{{ $tools_count }}</h3>
                       <p>Εργαλεία</p>
@@ -146,6 +148,7 @@
                 <div class="icon">
                   <i class="fas fa-tools fa-sm" aria-hidden="true"></i>
                 </div>
+
                 @can('isSuperAdmin')
                   <a href="{{ route('admin.tools.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
@@ -173,68 +176,32 @@
 
             @foreach($warehouses as $warehouse)
 
-                <div class="small-box" style="background-color: lightblue;">
+                <div class="small-box" style="background-color: skyblue;">
                     <div class="inner">
                         <h5><strong>{{ $warehouse->name }}</strong></h5>
 
-                            <strong>Προϊστάμενος:</strong>
+                            <strong>Προϊστάμενος/-οι:</strong>
                             <ul>
-                            @foreach($employees as $emp)
-                                @php
-                                    $proistamenoi = [];
-                                    foreach($users as $user){
-                                        if(   ($user->user_type   == 'warehouse_foreman')
-                                        && ($emp->warehouse_id == $warehouse->id)
-                                        && ($emp->user_id      == $user->id)
-                                        ){
-                                            $user_name = $user->name;
-                                            array_push($proistamenoi, $user_name);
-                                        }
-                                    }
-                                @endphp
-
-                                @foreach($proistamenoi as $fname)
-                                    <li>{{ $fname }}</li>
-                                @endforeach
+                            @foreach($warehouse->employees as $emp)
+                                @if($emp->user->user_type == 'warehouse_foreman')
+                                    <li>{{ $emp->user->name }}</li>
+                                @endif
                             @endforeach
                             </ul>
-
 
                             <strong>Αποθηκάριοι:</strong>
                             <ul>
-                            @foreach($employees as $emp)
-                                @php
-                                    $apothikarioi = [];
-                                    foreach($users as $user){
-                                        if(    ($user->user_type   == 'warehouse_worker')
-                                            && ($emp->user_id      == $user->id)
-                                            && ($emp->warehouse_id == $warehouse->id)
-                                        ){
-                                            $apothikarios = $user->name;
-                                            array_push($apothikarioi, $apothikarios);
-                                        }
-                                    }
-                                @endphp
-
-                                @foreach($apothikarioi as $wname)
-                                    <li>{{ $wname }}</li>
-                                @endforeach
+                            @foreach($warehouse->employees as $emp)
+                                @if($emp->user->user_type == 'warehouse_worker')
+                                    <li>{{ $emp->user->name }}</li>
+                                @endif
                             @endforeach
                             </ul>
 
-                        <!--
-                        <p>Αποθηκάριοι:
-                            <ul>
-                            @foreach($employees->where('warehouse_id', $warehouse->id) as $emp)
-                                <li>{{ $emp->user->name }}</li>
-                            @endforeach
-                            </ul>
-                        </p>
-                        -->
 
                         {{-- warehouse product count in here.. --}}
                         <h3>{{ $warehouse->products->count() }}</h3>
-                        Προϊόντα
+                        <p>Προϊόντα στην Αποθήκη</p>
 
 
                     </div>
@@ -266,92 +233,70 @@
 
 
 
-            @canany(['isSuperAdmin','isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+
+
+
+            @canany(['isWarehouseForeman'])
                 <!-- small box -->
 
                 <div class="col">
 
-                @foreach($my_warehouses as $warehouse)
+                @foreach($warehouses as $warehouse)
+
+                    @foreach($warehouse->employees as $employee)
+
+                        @if(\Auth::user()->id == $employee->user_id)
+
+                            <div class="small-box" style="background-color: skyblue;">
+                                <div class="inner">
+                                    <h5><strong>{{ $warehouse->name }}</strong></h5>
+
+                                        <strong>Προϊστάμενος/-οι:</strong>
+                                        <ul>
+                                        @foreach($warehouse->employees as $emp)
+                                            @if($emp->user->user_type == 'warehouse_foreman')
+                                                <li>{{ $emp->user->name }}</li>
+                                            @endif
+                                        @endforeach
+                                        </ul>
 
 
-                    <div class="small-box" style="background-color: lightblue;">
-                        <div class="inner">
-                            <h5><strong>{{ $warehouse->name }}</strong></h5>
-
-                                <strong>Προϊστάμενος:</strong>
-                                <ul>
-                                @foreach($employees as $emp)
-                                    @php
-                                        $proistamenoi = [];
-                                        foreach($users as $user){
-                                            if(   ($user->user_type   == 'warehouse_foreman')
-                                               && ($emp->warehouse_id == $warehouse->id)
-                                               && ($emp->user_id      == $user->id)
-                                               ){
-                                                $user_name = $user->name;
-                                                array_push($proistamenoi, $user_name);
-                                            }
-                                        }
-                                    @endphp
-
-                                    @foreach($proistamenoi as $fname)
-                                        <li>{{ $fname }}</li>
-                                    @endforeach
-                                @endforeach
-                                </ul>
+                                        <strong>Αποθηκάριοι:</strong>
+                                        <ul>
+                                        @foreach($warehouse->employees as $emp)
+                                            @if($emp->user->user_type == 'warehouse_worker')
+                                                <li>{{ $emp->user->name }}</li>
+                                            @endif
+                                        @endforeach
+                                        </ul>
 
 
-                                <strong>Αποθηκάριοι:</strong>
-                                <ul>
-                                @foreach($employees as $emp)
-                                    @php
-                                        $apothikarioi = [];
-                                        foreach($users as $user){
-                                            if(    ($user->user_type   == 'warehouse_worker')
-                                                && ($emp->user_id      == $user->id)
-                                                && ($emp->warehouse_id == $warehouse->id)
-                                              ){
-                                                $apothikarios = $user->name;
-                                                array_push($apothikarioi, $apothikarios);
-                                            }
-                                        }
-                                    @endphp
-
-                                    @foreach($apothikarioi as $wname)
-                                        <li>{{ $wname }}</li>
-                                    @endforeach
-                                @endforeach
-                                </ul>
-
-                            <!--
-                            <p>Αποθηκάριοι:
-                                <ul>
-                                @foreach($employees->where('warehouse_id', $warehouse->id) as $emp)
-                                    <li>{{ $emp->user->name }}</li>
-                                @endforeach
-                                </ul>
-                            </p>
-                            -->
-
-                            {{-- warehouse product count in here.. --}}
+                                    {{-- warehouse product count in here.. --}}
+                                    <!-- This works because we only have 1 warehouse forEach Employee(Foreman), aka 1(warehouse)-to-N(employees) relationship -->
+                                    <h3><strong>{{ $warehouse->products->count() }}</strong></h3>
+                                    <p>Προϊόντα στην Αποθήκη</p>
 
 
-                        </div>
+                                </div>
 
-                        <div class="icon">
-                            <i class="fas fa-warehouse fa-sm" aria-hidden="true"></i>
-                        </div>
-
-
-                        @can('isWarehouseForeman')
-                        <a href="{{ route('foreman.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                        @endcan
+                                <div class="icon">
+                                    <i class="fas fa-warehouse fa-sm" aria-hidden="true"></i>
+                                </div>
 
 
-                    </div>
+                                @can('isWarehouseForeman')
+                                <a href="{{ route('foreman.warehouse.show', ['id' => $warehouse->id]) }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                                @endcan
+
+                            </div>
+
+                        @endif
+
+                    @endforeach
 
                 @endforeach
                 </div>
+
             @endcanany
 
         </div>
@@ -364,5 +309,9 @@
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
+    <script>
+
+    //console.log('Hi!');
+
+    </script>
 @stop

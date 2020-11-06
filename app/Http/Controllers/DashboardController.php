@@ -64,8 +64,8 @@ class DashboardController extends Controller
 
             //warehouses & products ([N-to-M] 1 warehouse has many products. A product can belong to more than one warehouses )
             //$warehouses = Warehouse::with('product')->get();
-            $warehouses = Warehouse::all();
-            $employees = Employee::all();
+            $warehouses = Warehouse::with('employees')->get(); //was ::all();
+            $employees = Employee::all(); //with('warehouses')->get();
             $users = User::all();
             /*
             $employees = Employee::all();
@@ -92,6 +92,25 @@ class DashboardController extends Controller
 
 
 
+            // $foreman_employees = DB::table('employees')
+            //                     ->join('employee_warehouse', 'employee_warehouse.employee_id','=','employees.id')
+            //                     ->join('users','users.id','=','employees.user_id')
+            //                     ->where('users.user_type', 'warehouse_foreman')
+            //                     ->get();
+
+            // $employees_warehouse = Employee::with('warehouses')->get();
+
+            $worker_employees = DB::table('employees')
+                                ->join('employee_warehouse', 'employee_warehouse.employee_id','=','employees.id')
+                                ->join('users','users.id','=','employees.user_id')
+
+                                ->join('warehouse','warehouse.id','=','employee_warehouse.warehouse_id')
+
+                                ->where('users.user_type', 'warehouse_worker')
+                                ->get();
+
+
+
             $u_id = Auth::user()->id;
             // $w_id = \Request::get('warehouse_id');
 
@@ -104,18 +123,57 @@ class DashboardController extends Controller
 
             $my_warehouses = DB::table('users')
                             ->join('employees', 'employees.user_id', '=', 'users.id')
-                            ->join('warehouse', 'warehouse.id', '=', 'employees.warehouse_id')
-                            ->where('users.user_type', 'warehouse_foreman')
+                            //->join('warehouse', 'warehouse.id', '=', 'employees.warehouse_id')
+                            ->join('employee_warehouse', 'employees.id', '=', 'employee_warehouse.employee_id')
+                            ->join('warehouse', 'employee_warehouse.warehouse_id', '=', 'warehouse.id')
+                            //->where('users.user_type', 'warehouse_foreman')
                             ->where('users.id', $u_id)
-                            //->select('warehouse.name', 'warehouse.id')
-                            ->get();  //CORRECT!! only thelogged in foreman can see HHIS OWN warehouses!
+                            //->select('employee_warehouse.warehouse_id',)
+                            ->get();  //CORRECT!! only thelogged in foreman can see HIS OWN warehouses!
+
+            //dd($my_warehouses); //correct! It brings up only his own warehouses..!
+
+
 
             // dd($my_warehouses);
 
             // $no_of_products_in_this_warehouse = DB::table('product_warehouse')
             //                                     ->join('products', 'products.id', '=', 'product_warehouse.product_id')
-            //                                     ->where('product_warehouse.warehouse_id', $w_id)
+            //                                     //->join('warehouse', 'warehouse.id', '=', 'product_warehouse.warehouse_id')
+            //                                     ->join('employees', 'employees.user_id', '=', 'users.id')
+            //                                     ->join('users', 'users.id', '=', 'employees.user_id')
+            //                                     ->join('employee_warehouse', 'employee_warehouse.warehouse_id','=','product_warehouse.warehouse_id')
+            //                                     ->where('users.user_type', 'warehouse_foreman')
+            //                                     ->where('users.id', $u_id)
             //                                     ->count();
+
+
+            $products_in_warehouses = DB::table('employee_warehouse')
+                                    ->join('employees','employees.id','=','employee_warehouse.employee_id')
+                                    ->join('users','users.id','=','employees.user_id')
+                                    ->join('product_warehouse', 'product_warehouse.warehouse_id','=','employee_warehouse.warehouse_id')
+                                    ->where('users.user_type', 'warehouse_foreman')
+                                    ->where('users.id', $u_id)
+                                    ->count();
+
+            //dd([$my_warehouses, $products_in_warehouses]); //array of products in warehouses
+
+
+
+            // $no_of_products_in_this_warehouse = DB::table('product_warehouse')
+            //                                     ->join('products', 'products.id', '=', 'product_warehouse.product_id')
+            //                                     ->join('warehouse', 'warehouse.id', '=', 'product_warehouse.warehouse_id')
+            //                                     ->join('employees', 'employees.warehouse_id', '=', 'warehouse.id')
+            //                                     ->join('users', 'users.id', '=', 'employees.user_id')
+            //                                     //->where('product_warehouse.warehouse_id', $w_id)
+            //                                     //->whereIn('product_warehouse.warehouse_id', $my_warehouses->id)
+            //                                     ->where('users.user_type', 'warehouse_foreman')
+            //                                     ->where('users.id', $u_id)
+            //                                     ->count();
+
+            // dd($no_of_products_in_this_warehouse);
+
+
 
 
             return view('dashboard', [ 'usersCount' => $usersCount,
@@ -126,7 +184,11 @@ class DashboardController extends Controller
                                         'tools_count' => $tools_count,
                                         'warehouses' => $warehouses,
                                         'my_warehouses' => $my_warehouses,
+                                        'products_in_warehouses' => $products_in_warehouses,
                                         'employees' => $employees,
+                                        //'employees_warehouse' => $employees_warehouse,
+                                        // 'foreman_employees' => $foreman_employees,
+                                        'worker_employees' => $worker_employees,
                                         'users' => $users,
                                         //'products' => $products,
                                         ]);

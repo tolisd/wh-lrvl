@@ -52,7 +52,7 @@
                         <td>
                             <ul>
                             @foreach($attached_files as $att_file)
-                                <li>{{ basename($att_file) }}</li>
+                                <li>{{ substr(basename($att_file), 15) }}</li>
                             @endforeach
                             </ul>
                         </td>

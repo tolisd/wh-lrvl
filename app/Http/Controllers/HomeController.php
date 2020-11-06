@@ -51,7 +51,7 @@ class HomeController extends Controller
         }
         */
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker', 'isNormalUser'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker', 'isTechnician' ,'isNormalUser'])){
             return view('dashboard');
         }
         else {

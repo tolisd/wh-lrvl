@@ -48,11 +48,15 @@ class WarehouseController extends Controller
 
             //3 Eloquent queries:
             $warehouse_data = Warehouse::with('products')->where('id', $id)->get(); //eager loading done correctly
-            $employees_in_warehouse = Employee::where('warehouse_id', $id)->get(); //returns an eloquent collection
+            $warehouses = Warehouse::where('id', $id)->get();
+            //$employees_in_warehouse = Employee::where('warehouse_id', $id)->get(); //returns an eloquent collection
+            $employees_in_warehouse = Employee::with('warehouses')->get();
+
             $products_in_warehouse = Product::has('warehouses')->get();
 
 
             return view('warehouse_show', ['warehouse_data'         => $warehouse_data,
+                                           'warehouses'             => $warehouses,
                                            'employees_in_warehouse' => $employees_in_warehouse,
                                            'products_in_warehouse'  => $products_in_warehouse,
                                            ]);
@@ -253,13 +257,14 @@ class WarehouseController extends Controller
             //Query Builder is 10x faster than Eloquent ORM.
 
             $user_names_imp = DB::table('users')
-                        ->join('employees', 'users.id', '=', 'employees.user_id')
-                        //->join('imports', 'imports.employee_id', '=', 'employees.id')
-                        ->join('importassignments', 'importassignments.warehouse_id', '=', 'employees.warehouse_id')
-                        ->where('users.user_type', 'warehouse_worker')
-                        ->where('importassignments.id', $id)
-                        ->select('users.name', 'employees.id')
-                        ->get();
+                                ->join('employees', 'users.id', '=', 'employees.user_id')
+                                //->join('imports', 'imports.employee_id', '=', 'employees.id')
+                                ->join('employee_warehouse','employee_warehouse.employee_id','=','employees.id')
+                                ->join('importassignments', 'importassignments.warehouse_id', '=', 'employee_warehouse.warehouse_id')
+                                ->where('users.user_type', 'warehouse_worker')
+                                ->where('importassignments.id', $id)
+                                ->select('users.name', 'employees.id')
+                                ->get();
 
             return json_encode($user_names_imp); //ajax data
 
@@ -288,7 +293,8 @@ class WarehouseController extends Controller
 
             $user_names_exp = DB::table('users')
                         ->join('employees', 'users.id', '=', 'employees.user_id')
-                        ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employees.warehouse_id')
+                        ->join('employee_warehouse','employee_warehouse.employee_id','=','employees.id')
+                        ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employee_warehouse.warehouse_id')
                         //->join('product_warehouse', 'product_warehouse.warehouse_id' ,'=', 'exportassignments.warehouse_id') //
                         ->where('users.user_type', 'warehouse_worker')
                         ->where('exportassignments.id', $id)

@@ -2,7 +2,7 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Προϊόντα Αποθήκης')
 
 @section('content_header')
     <h1>Warehouse/Αποθήκη | Προϊόντα Αποθήκης</h1>
@@ -20,29 +20,37 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-        <p><h5>Προϊόντα Αποθήκης (@foreach($warehouse_data as $wh) <strong>{{ $wh->name }}</strong> @endforeach)</h5></p>
+            <p>
+                <h5>Προϊόντα Αποθήκης (@foreach($warehouse_data as $wh) <strong>{{ $wh->name }}</strong> @endforeach)</h5>
+            </p>
 
-        <p><strong>Προϊστάμενος:</strong> &nbsp;
-        @foreach($employees_in_warehouse as $employee)
-            @if($employee->user->user_type == 'warehouse_foreman')
-                {{ $employee->user->name }}
-            @endif
-        @endforeach
-        </p>
+            {{-- Iterate (loop) even if it is only 1 warehouse, it gets its $id in WarehouseController --}}
+            @foreach($warehouses as $warehouse)
 
-        <strong>Αποθηκάριοι:</strong>
-        <ul>
-        @foreach($employees_in_warehouse as $employee)
-            @if($employee->user->user_type == 'warehouse_worker')
-                <li>{{ $employee->user->name }}</li>
-            @endif
-        @endforeach
-        </ul>
+                <strong>Προϊστάμενος/-οι:</strong>
+                <ul>
+                @foreach($warehouse->employees as $employee)
+                    @if($employee->user->user_type == 'warehouse_foreman')
+                        <li>{{ $employee->user->name }}</li>
+                    @endif
+                @endforeach
+                </ul>
 
-        <strong>Αριθμός Προϊόντων στην Αποθήκη:</strong> &nbsp;
-        @foreach($warehouse_data as $wh)
-            {{ $wh->products->count() }}
-        @endforeach
+                <strong>Αποθηκάριοι:</strong>
+                <ul>
+                @foreach($warehouse->employees as $employee)
+                    @if($employee->user->user_type == 'warehouse_worker')
+                        <li>{{ $employee->user->name }}</li>
+                    @endif
+                @endforeach
+                </ul>
+
+                <strong>Αριθμός Προϊόντων στην Αποθήκη:</strong> &nbsp;
+                @foreach($warehouse_data as $wh)
+                    {{ $wh->products->count() }}
+                @endforeach
+
+            @endforeach
 
         <br/><br/>
 

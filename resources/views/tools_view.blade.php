@@ -57,9 +57,9 @@
                             <td>{{ $tool->quantity }}</td> <!--σε τεμάχια ALWAYS! 'τμχ.' -->
 
                             @if($tool->is_charged == 0) <!-- boolean -->
-                                <td>Όχι</td>
+                                <td><i class="far fa-fw fa-circle" aria-hidden="true"></i>Όχι</td>
                             @elseif($tool->is_charged == 1)
-                                <td>Ναι</td>
+                                <td><i class="fas fa-fw fa-circle" aria-hidden="true"></i>Ναι</td>
                             @endif
 
                             <td>
@@ -67,7 +67,7 @@
                             </td> <!-- I need the employee's name here... -->
 
                             <td>
-                               {{ basename($tool->file_url) ?? '' }}
+                               {{ substr(basename($tool->file_url), 15) ?? '' }}
                             </td>
 
                             <td>
