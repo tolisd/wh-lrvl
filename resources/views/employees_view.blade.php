@@ -669,12 +669,12 @@
                 var warehouses_in_company = [];
                 warehouses_in_company = warehousesall.filter(a => a.company_id === companyid);
                 // //console.log('warehousesall', warehousesall)
-                console.log('warehouses_in_company',warehouses_in_company);
+                // console.log('warehouses_in_company',warehouses_in_company);
                 // console.log('warehouses',warehouses);
 
                 var wh_in_comp = [];
                 wh_in_comp = warehouses.filter(a => a.company_id === companyid);
-                console.log('wh_in_comp', wh_in_comp);
+                // console.log('wh_in_comp', wh_in_comp);
 
                 $.each(wh_in_comp, function(key, val){
                     modal.find('.modal-body #modal-input-warehouse-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
@@ -684,7 +684,7 @@
                 var diff = [];
                 // diff = warehouses.filter(a => !warehouses_in_company.some(b=> a.company_id === b.id));
                 diff = warehouses_in_company.filter(a => !wh_in_comp.some(b => a.id === b.id)); //Correct!
-                console.log('diff',diff);
+                // console.log('diff',diff);
 
                 $.each(diff, function(key,val){
                     modal.find('.modal-body #modal-input-warehouse-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');

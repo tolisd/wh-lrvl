@@ -50,6 +50,7 @@ class CompanyController extends Controller
                 'modal-input-city-create.required' => 'Η πόλη απαιτείται',
                 'modal-input-telno-create.required' => 'Ο τηλεφωνικός αριθμός απαιτείται',
                 'modal-input-email-create.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-email-create.email' => 'Το ηλ.ταχυδρομείο δεν είναι έγκυρο',
             ];
 
             //prepare the $validator variable
@@ -65,24 +66,45 @@ class CompanyController extends Controller
 
                 } else if($validator->passes()){
 
-                    $company = new Company();
+                    DB::beginTransaction();
 
-                    $company->name          = $request->input('modal-input-name-create');
-                    $company->AFM           = $request->input('modal-input-afm-create');
-                    $company->DOY           = $request->input('modal-input-doy-create');
-                    $company->postal_code   = $request->input('modal-input-pcode-create');
-                    $company->address       = $request->input('modal-input-address-create');
-                    $company->city          = $request->input('modal-input-city-create');
-                    $company->phone_number  = $request->input('modal-input-telno-create');
-                    $company->email         = $request->input('modal-input-email-create');
-                    $company->comments      = $request->input('modal-input-comments-create');
+                    try{
+                        $company = new Company();
 
-                    $company->save();
+                        $company->name          = $request->input('modal-input-name-create');
+                        $company->AFM           = $request->input('modal-input-afm-create');
+                        $company->DOY           = $request->input('modal-input-doy-create');
+                        $company->postal_code   = $request->input('modal-input-pcode-create');
+                        $company->address       = $request->input('modal-input-address-create');
+                        $company->city          = $request->input('modal-input-city-create');
+                        $company->phone_number  = $request->input('modal-input-telno-create');
+                        $company->email         = $request->input('modal-input-email-create');
+                        $company->comments      = $request->input('modal-input-comments-create');
 
-                    return \Response::json([
-                        'success' => true,
-                        'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $company->save();
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e) {
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
+                    }
+
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
 
             }
@@ -126,6 +148,7 @@ class CompanyController extends Controller
                 'modal-input-city-edit.required' => 'Η πόλη απαιτείται',
                 'modal-input-telno-edit.required' => 'Ο τηλεφωνικός αριθμός απαιτείται',
                 'modal-input-email-edit.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-email-edit.email' => 'Το ηλ.ταχυδρομείο δεν είναι έγκυρο',
             ];
 
              //prepare the $validator variable
@@ -142,25 +165,46 @@ class CompanyController extends Controller
 
                     } else if($validator->passes()){
 
-                        $company = Company::findOrFail($id);  //get this row with [$company->id == $id]
+                        DB::beginTransaction();
 
-                        $company->name          = $request->input('modal-input-name-edit');
-                        $company->AFM           = $request->input('modal-input-afm-edit');
-                        $company->DOY           = $request->input('modal-input-doy-edit');
-                        $company->postal_code   = $request->input('modal-input-pcode-edit');
-                        $company->city          = $request->input('modal-input-city-edit');
-                        $company->phone_number  = $request->input('modal-input-telno-edit');
-                        $company->email         = $request->input('modal-input-email-edit');
-                        $company->address       = $request->input('modal-input-address-edit');
-                        $company->comments      = $request->input('modal-input-comments-edit');
+                        try{
+                            $company = Company::findOrFail($id);  //get this row with [$company->id == $id]
 
-                        $company->update($request->all());
+                            $company->name          = $request->input('modal-input-name-edit');
+                            $company->AFM           = $request->input('modal-input-afm-edit');
+                            $company->DOY           = $request->input('modal-input-doy-edit');
+                            $company->postal_code   = $request->input('modal-input-pcode-edit');
+                            $company->city          = $request->input('modal-input-city-edit');
+                            $company->phone_number  = $request->input('modal-input-telno-edit');
+                            $company->email         = $request->input('modal-input-email-edit');
+                            $company->address       = $request->input('modal-input-address-edit');
+                            $company->comments      = $request->input('modal-input-comments-edit');
 
-                        //---success
-                        return \Response::json([
-                            'success' => true,
-                            'errors' => $validator->getMessageBag()->toArray(),
-                        ], 200);
+                            $company->update($request->all());
+
+                           DB::commit();
+
+                            return \Response::json([
+                                'success' => true,
+                                //'errors' => $validator->getMessageBag()->toArray(),
+                            ], 200);
+
+                        } catch(\Exception $e) {
+                            DB::rollBack();
+
+                            return \Response::json([
+                                'success' => false,
+                                'message' => $e->getMessage(),
+                                //'errors' => $validator->getMessageBag()->toArray(),
+                            ], 500);
+                        }
+
+
+                        // //---success
+                        // return \Response::json([
+                        //     'success' => true,
+                        //     'errors' => $validator->getMessageBag()->toArray(),
+                        // ], 200);
                     }
                 }
 
@@ -182,11 +226,12 @@ class CompanyController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $company = Company::findOrFail($id);
-            //delete a company if it has no employees and no warehouses...
-            $company->delete();
 
             if ($request->ajax()){
+                $company = Company::findOrFail($id);
+                //delete a company if it has no employees and no warehouses...
+                $company->delete();
+
                 return \Response::json();
             }
 
@@ -204,8 +249,8 @@ class CompanyController extends Controller
 
             //Query Builder is 10x faster than Eloquent ORM.
             $warehouses = DB::table('warehouse')
-                    ->where("company_id", $id)
-                    ->pluck("id", "name");
+                        ->where("company_id", $id)
+                        ->pluck("id", "name");
 
             return json_encode($warehouses);
 

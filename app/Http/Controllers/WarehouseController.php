@@ -105,36 +105,58 @@ class WarehouseController extends Controller
 
                 } else if($validator->passes()){
 
-                    $warehouse = new Warehouse();
+                    DB::beginTransaction();
 
-                    $warehouse->name            = $request->input('modal-input-name-create');
-                    $warehouse->address         = $request->input('modal-input-address-create');
-                    $warehouse->city            = $request->input('modal-input-city-create');
-                    $warehouse->phone_number    = $request->input('modal-input-telno-create');
-                    $warehouse->email           = $request->input('modal-input-email-create');
-                    //$warehouse->foreman_id      = $request->input('modal-input-foreman-create');
-                    /*
-                    $workers = [];
-                    foreach($request->input('modal-input-workers-create') as $worker){
-                        $warehouse->worker_id = $worker;
+                    try{
+                        $warehouse = new Warehouse();
+
+                        $warehouse->name            = $request->input('modal-input-name-create');
+                        $warehouse->address         = $request->input('modal-input-address-create');
+                        $warehouse->city            = $request->input('modal-input-city-create');
+                        $warehouse->phone_number    = $request->input('modal-input-telno-create');
+                        $warehouse->email           = $request->input('modal-input-email-create');
+                        //$warehouse->foreman_id      = $request->input('modal-input-foreman-create');
+                        /*
+                        $workers = [];
+                        foreach($request->input('modal-input-workers-create') as $worker){
+                            $warehouse->worker_id = $worker;
+                        }
+                        */
+                        //$warehouse->worker_id       = $request->input('modal-input-workers-create'); //it is an array!
+                        $warehouse->company_id      = $request->input('modal-input-company-create');
+
+                        $warehouse->save();
+                        //array of worker_id(s), does it matter that it is outside the save() loop?
+                        /*
+                        foreach($request->input('modal-input-workers-create') as $worker)
+                        {
+                            $warehouse->assign($worker);
+                        }
+                        */
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e){
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
                     }
-                    */
-                    //$warehouse->worker_id       = $request->input('modal-input-workers-create'); //it is an array!
-                    $warehouse->company_id      = $request->input('modal-input-company-create');
 
-                    $warehouse->save();
-                    //array of worker_id(s), does it matter that it is outside the save() loop?
-                    /*
-                    foreach($request->input('modal-input-workers-create') as $worker)
-                    {
-                        $warehouse->assign($worker);
-                    }
-                    */
 
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -173,6 +195,7 @@ class WarehouseController extends Controller
                 'modal-input-city-edit.required' => 'Η πόλη απαιτείται',
                 'modal-input-telno-edit.required' => 'Ο τηλεφωνικός αριθμός απαιτείται',
                 'modal-input-email-edit.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-email-edit.email' => 'Το ηλ.ταχυδρομείο δεν είναι έγκυρο',
                 'modal-input-company-edit.required' => 'Η δήλωση εταιρείας απαιτείται',
             ];
 
@@ -191,25 +214,47 @@ class WarehouseController extends Controller
 
                 } else if($validator->passes()){
 
-                    $warehouse = Warehouse::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $warehouse->name            = $request->input('modal-input-name-edit');
-                    $warehouse->address         = $request->input('modal-input-address-edit');
-                    $warehouse->city            = $request->input('modal-input-city-edit');
-                    $warehouse->phone_number    = $request->input('modal-input-telno-edit');
-                    $warehouse->email           = $request->input('modal-input-email-edit');
-                    //$warehouse->foreman         = $request->input('modal-input-foreman-edit');
-                    //$warehouse->workers         = json_encode($request->input('modal-input-workers-edit'));
-                    $warehouse->company_id     = $request->input('modal-input-company-edit');
+                    try{
+                        $warehouse = Warehouse::findOrFail($id);
 
-                    $warehouse->update($request->all());
+                        $warehouse->name            = $request->input('modal-input-name-edit');
+                        $warehouse->address         = $request->input('modal-input-address-edit');
+                        $warehouse->city            = $request->input('modal-input-city-edit');
+                        $warehouse->phone_number    = $request->input('modal-input-telno-edit');
+                        $warehouse->email           = $request->input('modal-input-email-edit');
+                        //$warehouse->foreman         = $request->input('modal-input-foreman-edit');
+                        //$warehouse->workers         = json_encode($request->input('modal-input-workers-edit'));
+                        $warehouse->company_id     = $request->input('modal-input-company-edit');
 
+                        $warehouse->update($request->all());
 
-                    //---success, 200 OK.
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        DB::commit();
+
+                        //---success, 200 OK.
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                        //some exception happened...
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+                    }
+
+                    // //---success, 200 OK.
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -230,12 +275,12 @@ class WarehouseController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
 
-            $warehouse = Warehouse::findOrFail($id);
-            //if the warehouse is empty of employess and/or products, then go ahead and delete it!
-            $warehouse->delete();
-
 
             if ($request->ajax()){
+                $warehouse = Warehouse::findOrFail($id);
+                //if the warehouse is empty of employess and/or products, then go ahead and delete it!
+                $warehouse->delete();
+
                 return \Response::json();
             }
 

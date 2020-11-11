@@ -19,6 +19,7 @@ class CreateProductWarehouseTable extends Migration
             $table->unsignedBigInteger('warehouse_id');
 
             $table->float('quantity'); //inserted here, after it was removed from the 'products' table
+                                       //should be nullable(?) for the case when i dont have a product in that warehouse..
 
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('warehouse_id')->references('id')->on('warehouse');

@@ -13,7 +13,15 @@ class Product extends Model
     //protected $primaryKey = 'product_id';
 
     protected $fillable = [
-        'code', 'name', 'description', 'quantity', 'comments', 'category_id', 'type_id', 'warehouse_id',
+        'code',
+        'name',
+        'description',
+        //'quantity',
+        'comments',
+        'category_id',
+        'type_id',
+        'measunit_id',
+        //'warehouse_id',
     ];
 
     //warehouses is many-to-many with products

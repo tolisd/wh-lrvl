@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Εργαλεία')
 
 @section('content_header')
-    <h1>Αποθήκη / Όλα τα Εργαλεία</h1>
+    <h1>Αποθήκη/Warehouse | Όλα τα Εργαλεία</h1>
 @stop
 
 
@@ -57,9 +57,9 @@
                             <td>{{ $tool->quantity }}</td> <!--σε τεμάχια ALWAYS! 'τμχ.' -->
 
                             @if($tool->is_charged == 0) <!-- boolean -->
-                                <td><i class="far fa-fw fa-circle" aria-hidden="true"></i>Όχι</td>
+                                <td><i class="far fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Όχι</td>
                             @elseif($tool->is_charged == 1)
-                                <td><i class="fas fa-fw fa-circle" aria-hidden="true"></i>Ναι</td>
+                                <td><i class="fas fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Ναι</td>
                             @endif
 
                             <td>

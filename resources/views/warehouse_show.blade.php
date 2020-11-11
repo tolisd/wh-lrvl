@@ -64,6 +64,8 @@
                     <tr>
                         <th class="text-left">Κωδικός</th>
                         <th class="text-left">Όνομα Προϊόντος</th>
+                        <th class="text-left">Ποσότητα</th>
+                        <th class="text-left">Μον.Μετρ.</th>
                         <th class="text-left">Περιγραφή</th>
                     </tr>
                 </thead>
@@ -74,6 +76,8 @@
                     <tr>
                         <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->pivot->quantity }}</td>
+                        <td>{{ $product->measureunit->name }}</td>
                         <td>{{ $product->description }}</td>
                     </tr>
                     @endforeach

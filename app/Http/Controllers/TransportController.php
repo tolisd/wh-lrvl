@@ -53,6 +53,7 @@ class TransportController extends Controller
                 'modal-input-city-create.required' => 'Η πόλη απαιτείται',
                 'modal-input-telno-create.required' => 'Ο τηλεφωνικός αριθμός απαιτείται',
                 'modal-input-email-create.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-email-create.email' => 'Το ηλ.ταχυδρομείο δεν είναι έγκυρο',
             ];
 
             //$validator = $this->validate($request, [
@@ -89,28 +90,53 @@ class TransportController extends Controller
 
                 } else if($validator->passes()){
 
-                    //---Success, there ARE NO errors in the Form..proceed....
-                    //proceed with saving object to database
-                    $tcompany = new Transport();
+                    DB::beginTransaction();
 
-                    $tcompany->name          = $request->input('modal-input-name-create');
-                    $tcompany->AFM           = $request->input('modal-input-afm-create');
-                    $tcompany->DOY           = $request->input('modal-input-doy-create');
-                    $tcompany->postal_code   = $request->input('modal-input-pcode-create');
-                    $tcompany->city          = $request->input('modal-input-city-create');
-                    $tcompany->phone_number  = $request->input('modal-input-telno-create');
-                    $tcompany->email         = $request->input('modal-input-email-create');
-                    $tcompany->address       = $request->input('modal-input-address-create');
-                    $tcompany->comments      = $request->input('modal-input-comments-create');
+                    try{
+                        //---Success, there ARE NO errors in the Form..proceed....
+                        //proceed with saving object to database
+                        $tcompany = new Transport();
 
-                    $tcompany->save();
+                        $tcompany->name          = $request->input('modal-input-name-create');
+                        $tcompany->AFM           = $request->input('modal-input-afm-create');
+                        $tcompany->DOY           = $request->input('modal-input-doy-create');
+                        $tcompany->postal_code   = $request->input('modal-input-pcode-create');
+                        $tcompany->city          = $request->input('modal-input-city-create');
+                        $tcompany->phone_number  = $request->input('modal-input-telno-create');
+                        $tcompany->email         = $request->input('modal-input-email-create');
+                        $tcompany->address       = $request->input('modal-input-address-create');
+                        $tcompany->comments      = $request->input('modal-input-comments-create');
 
-                    //return a json response (success)
-                    return \Response::json([
-                        'success' => true,
-                        //'message' => 'Data added successfully!',
-                        'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $tcompany->save();
+
+                        DB::commit();
+
+                        //return a json response (success)
+                        return \Response::json([
+                            'success' => true,
+                            'message' => 'Data added successfully!',
+                        ], 200);
+
+                    } catch(\Exception $e){
+
+                        DB::rollBack();
+
+                        //return a json response (some exception happened)
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                        ], 500);
+
+                    }
+
+
+
+                    // //return a json response (success)
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     'message' => 'Data added successfully!',
+                    //     'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
 
             } //End: if($request->ajax())
@@ -180,25 +206,50 @@ class TransportController extends Controller
 
                 } else if($validator->passes()){
 
-                    $tcompany = Transport::findOrFail($id);  //get this row with [$company->id == $id]
+                    DB::beginTransaction();
 
-                    $tcompany->name          = $request->input('modal-input-name-edit');
-                    $tcompany->AFM           = $request->input('modal-input-afm-edit');
-                    $tcompany->DOY           = $request->input('modal-input-doy-edit');
-                    $tcompany->postal_code   = $request->input('modal-input-pcode-edit');
-                    $tcompany->city          = $request->input('modal-input-city-edit');
-                    $tcompany->phone_number  = $request->input('modal-input-telno-edit');
-                    $tcompany->email         = $request->input('modal-input-email-edit');
-                    $tcompany->address       = $request->input('modal-input-address-edit');
-                    $tcompany->comments      = $request->input('modal-input-comments-edit');
+                    try{
 
-                    $tcompany->update($request->all());
+                        $tcompany = Transport::findOrFail($id);  //get this row with [$company->id == $id]
 
-                    //---success
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $tcompany->name          = $request->input('modal-input-name-edit');
+                        $tcompany->AFM           = $request->input('modal-input-afm-edit');
+                        $tcompany->DOY           = $request->input('modal-input-doy-edit');
+                        $tcompany->postal_code   = $request->input('modal-input-pcode-edit');
+                        $tcompany->city          = $request->input('modal-input-city-edit');
+                        $tcompany->phone_number  = $request->input('modal-input-telno-edit');
+                        $tcompany->email         = $request->input('modal-input-email-edit');
+                        $tcompany->address       = $request->input('modal-input-address-edit');
+                        $tcompany->comments      = $request->input('modal-input-comments-edit');
+
+                        $tcompany->update($request->all());
+
+                        DB::commit();
+
+                        //---success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
+
+
+                    // //---success
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
 
@@ -221,11 +272,11 @@ class TransportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $company = Transport::findOrFail($id);
-            //delete a company if it has no employees and no warehouses...
-            $company->delete();
-
             if ($request->ajax()){
+                $company = Transport::findOrFail($id);
+                //delete a company if it has no employees and no warehouses...
+                $company->delete();
+
                 return \Response::json();
             }
 

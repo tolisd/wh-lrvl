@@ -74,30 +74,53 @@ class EmployeeController extends Controller
 
                 if($validator->passes()){
                     //success
-                    //save the object in database
-                    $employee = new Employee();
 
-                    $employee->user_id          = $request->input('modal-input-name-create');
-                    $employee->company_id       = $request->input('modal-input-company-create');
-                    //$employee->employee_type  = $request->input('modal-input-role-create');
-                    $employee->address          = $request->input('modal-input-address-create');
-                    $employee->phone_number     = $request->input('modal-input-telno-create');
-                    //$employee->email          = $request->input('modal-input-email-create');
-                    // $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
+                    DB::beginTransaction();
 
-                    $employee->save();
+                    try{
+                        //save the object in database
+                        $employee = new Employee();
 
-                    $employee->warehouses()->sync($request->input('modal-input-warehouse-create'));
+                        $employee->user_id          = $request->input('modal-input-name-create');
+                        $employee->company_id       = $request->input('modal-input-company-create');
+                        //$employee->employee_type  = $request->input('modal-input-role-create');
+                        $employee->address          = $request->input('modal-input-address-create');
+                        $employee->phone_number     = $request->input('modal-input-telno-create');
+                        //$employee->email          = $request->input('modal-input-email-create');
+                        // $employee->warehouse_id     = $request->input('modal-input-warehouse-create');
+
+                        $employee->save();
+
+                        $employee->warehouses()->sync($request->input('modal-input-warehouse-create'));
+
+                        //establish the association between the 2 entities. very important!
+
+                        // $user = User::findOrFail($employee->user_id);
+                        // $user->employee()->save($employee);  //store the object
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
 
 
-                    //establish the association between the 2 entities. very important!
-                    $user = User::findOrFail($employee->user_id);
-                    $user->employee()->save($employee);  //store the object
-
-                    return \Response::json([
-                        'success' => true,
-                        'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -177,36 +200,56 @@ class EmployeeController extends Controller
 
                 if($validator->passes()){
                     //success
-                    //update & save the object in database
 
-                    $employee = Employee::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $employee->user_id         = $request->input('modal-input-name-edit');
-                    $employee->company_id      = $request->input('modal-input-company-edit');
-                    //$employee->employee_type  = $request->input('modal-input-role-edit');
-                    $employee->address          = $request->input('modal-input-address-edit');
-                    $employee->phone_number     = $request->input('modal-input-telno-edit');
-                    //$employee->email            = $request->input('modal-input-email-edit');
-                    // $employee->warehouse_id     = $request->input('modal-input-warehouse-edit');
-                    /*
-                    $path = $request->file("modal-input-photo-edit")->store("images/");  //stored in storage/images/
-                    $url = Storage::url($path);
-                    $employee->photo_url = $url;
-                    */
-                    $employee->update($request->all()); //or $request->only(['', '', ...]) ??
+                    try{
+                        //update & save the object in database
 
-                    $employee->warehouses()->sync($request->input('modal-input-warehouse-edit'));
+                        $employee = Employee::findOrFail($id);
+
+                        $employee->user_id         = $request->input('modal-input-name-edit');
+                        $employee->company_id      = $request->input('modal-input-company-edit');
+                        //$employee->employee_type  = $request->input('modal-input-role-edit');
+                        $employee->address          = $request->input('modal-input-address-edit');
+                        $employee->phone_number     = $request->input('modal-input-telno-edit');
+                        //$employee->email            = $request->input('modal-input-email-edit');
+                        // $employee->warehouse_id     = $request->input('modal-input-warehouse-edit');
+                        /*
+                        $path = $request->file("modal-input-photo-edit")->store("images/");  //stored in storage/images/
+                        $url = Storage::url($path);
+                        $employee->photo_url = $url;
+                        */
+                        $employee->update($request->all()); //or $request->only(['', '', ...]) ??
+
+                        $employee->warehouses()->sync($request->input('modal-input-warehouse-edit'));
+
+                        //establish the association between the 2 entities. very important!
+
+                        //$user = User::findOrFail($employee->user_id);
+                        //$user->employee()->save($employee);  //store the object   DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
 
 
-                    //establish the association between the 2 entities. very important!
-
-                    //$user = User::findOrFail($employee->user_id);
-                    //$user->employee()->save($employee);  //store the object
-
-                    return \Response::json([
-                        'success' => true,
-                        'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -231,17 +274,17 @@ class EmployeeController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
 
-            $employee = Employee::findOrFail($id);
-            //should check if employee/user is logged out (or not logged in) first!
-            //or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
-            $employee->delete();
-
-
             if ($request->ajax()){
+
+                $employee = Employee::findOrFail($id);
+                //should check if employee/user is logged out (or not logged in) first!
+                //or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
+                $employee->delete();
+
                 return \Response::json();
             }
 
-             return back();
+            //  return back();
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }

@@ -15,6 +15,12 @@
         margin-bottom: 10px;
         padding-bottom: 5px;
     }
+
+    #add-whqt-button-create{
+        padding: 5px;
+        margin: 5px;
+    }
+
 </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -38,7 +44,7 @@
                         <!--  <th class="text-left">Ποσότητα</th> -->
                         <th class="text-left">Μον.Μέτρ.</th>
                         <th class="text-left">Σχόλια</th>
-                        <th class="text-left">Αποθήκη/-ες</th>
+                        <th class="text-left">Αποθήκη/-ες &amp; Ποσότητα</th>
                         <!--
                         <th class="text-left">Κωδικός Ανάθεσης</th>
                         --> <!-- assignment_code, nullable()? -->
@@ -64,10 +70,11 @@
                         <td>
                             <ul>
                             @foreach($product->warehouses as $warehouse)
-                                <li>{{ $warehouse->name }}</li>
+                                <li>{{ $warehouse->name }}, ποσότητα:{{ $warehouse->pivot->quantity }}</li>
                             @endforeach
                             </ul>
                         </td>
+
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
@@ -78,14 +85,15 @@
                                     data-categoryid="{{ $product->category_id }}"
                                     data-typeid="{{ $product->type_id }}"
                                     data-typesall="{{ $types_all }}"
-
                                     data-measunitid="{{ $product->measunit_id }}"
                                     data-comments="{{ $product->comments }}"
                                     data-warehouses="{{ $product->warehouses }}"
-                                    data-allwarehouses="{{ $warehouses }}">
+                                    data-allwarehouses="{{ $warehouses }}"
+                                    data-allquantities="{{ $quantities }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
+
                         <td>
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
@@ -95,6 +103,7 @@
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
+
                     </tr>
                 @endforeach
                 </tbody>
@@ -244,6 +253,7 @@
                                     <!-- /comments -->
 
                                     <!-- warehouses, to which warehouses this product belongs to -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouses-create">Αποθήκη/-ες</label>
                                         <select name="modal-input-warehouses-create[]" id="modal-input-warehouses-create" class="form-control" multiple="multiple">
@@ -252,7 +262,75 @@
                                         @endforeach
                                         </select>
                                     </div>
+                                    -->
                                     <!-- /warehouses -->
+
+
+
+                                    <!-- warehouse and corresponding quantity for this product -->
+
+                                    <!--
+                                    <div class="form-group">
+                                        <label class="col-form-label text-right" for="modal-input-warehouse-create">Αποθήκη &amp; Ποσότητα</label>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        @foreach($warehouses as $warehouse)
+                                        <div class="form-row">
+
+                                            <div class="col">
+                                                <input type="text" name="modal-input-wh-create" class="form-control-plaintext" id="modal-input-wh-create"
+                                                    value="{{ $warehouse->name }}" readonly/>
+                                            </div>
+
+                                            <div class="col">
+                                                <input type="text" name="modal-input-qty-create" class="form-control" id="modal-input-qty-create"
+                                                    value="" placeholder="Ποσότητα"/>
+                                            </div>
+
+
+                                        </div>
+                                        @endforeach
+
+                                        <div class="form-group col-lg-12">
+                                            <button type="button" class="btn btn-info col-lg-12" id="add-whqt-button-create">[+] Προσθήκη Αποθήκης &amp; Ποσότητας</button>
+                                        </div>
+                                    </div>
+                                    -->
+
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                            <div class="col">
+
+                                                <div id="whqty-create">
+
+                                                    <div class="form-group col-lg-12">
+                                                        <label class="col-form-label text-right" for="modal-input-warehouse-create">Αποθήκη</label>
+                                                        <select name="modal-input-warehouse-create[]" id="modal-input-warehouse-create" class="form-control selc">
+                                                        @foreach($warehouses as $warehouse)
+                                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                                        @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group col-lg-12">
+                                                        <label class="col-form-label text-right" for="modal-input-quantity-create">Ποσότητα</label>
+                                                        <input type="text" name="modal-input-quantity-create[]" class="form-control qty" id="modal-input-quantity-create"
+                                                            value="" />
+                                                    </div>
+
+                                                    <div class="form-group col-lg-12">
+                                                        <button type="button" class="btn btn-info col-lg-12" id="add-whqt-button-create">
+                                                            <strong>[+]</strong>&nbsp;Πρόσθεσε Αποθήκη</button>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /warehouse and quantity -->
 
                                 </div>
                             </div>
@@ -385,6 +463,7 @@
                                     <!-- /comments -->
 
                                     <!-- warehouses, to which warehouses this product belongs to -->
+                                    <!--
                                     <div class="form-group">
                                         <label class="col-form-label" for="modal-input-warehouses-edit">Αποθήκη/-ες</label>
                                         <select name="modal-input-warehouses-edit[]" id="modal-input-warehouses-edit" class="form-control" multiple="multiple">
@@ -394,8 +473,61 @@
                                         @endforeach
 
                                         </select>
-                                    </div>
+
+                                    </div>-->
                                     <!-- /warehouses -->
+
+                                    <!-- warehouse and corresponding quantity for this product -->
+
+                                    <div class="form-group">
+
+                                        <div class="form-row">
+
+                                            <div class="col">
+
+                                                <div class="whqt-edit-wrapper">
+                                                <div id="whqty-edit">
+                                                <!--
+                                                    <div class="form-group col-lg-12">
+                                                        <label class="col-form-label text-right" for="modal-input-warehouse-edit">Αποθήκη</label>
+                                                        <select name="modal-input-warehouse-edit[]" id="modal-input-warehouse-edit" class="form-control">
+
+
+
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group col-lg-12">
+                                                        <label class="col-form-label text-right" for="modal-input-quantity-edit">Ποσότητα</label>
+                                                        <input type="text" name="modal-input-quantity-edit[]" class="form-control" id="modal-input-quantity-edit"
+                                                            value="" />
+                                                    </div>
+
+                                                    <div class="form-group col-lg-12">
+                                                        <button type="button" class="btn btn-danger col-lg-12" id="del-whqt-button-edit">
+                                                            <strong>[&ndash;]</strong>&nbsp;Διέγραψε Αποθήκη</button>
+                                                    </div>
+                                                -->
+
+                                                </div>
+                                                </div>
+
+
+                                                <!--
+                                                <div class="form-group col-lg-12">
+                                                    <button type="button" class="btn btn-info col-lg-12" id="add-whqt-button-edit">[+] Πρόσθεσε Αποθήκη &amp; Ποσότητας</button>
+                                                </div>
+                                                -->
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- /warehouse and quantity -->
+
 
                                     <!--
                                     <div class="form-group">
@@ -418,7 +550,7 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="edit-button" name="edit-product-button"
+                            <button type="submit" class="btn btn-info" id="edit-button" name="edit-product-button"
                                 data-target="#edit-modal" data-pid="">Διόρθωσε Προϊόν</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Ακύρωση</button>
                         </div>
@@ -433,7 +565,7 @@
 
 
             <!-- the Delete existing Product, Modal popup window -->
-            <div class="modal modal-danger fade" id="delete-modal">
+            <div class="modal modal-danger fade" id="delete-modal" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
@@ -520,13 +652,13 @@
     $(document).ready(function(){
 
         //initialise the select2 components.
-        $('#modal-input-warehouses-create').select2();
-        $('#modal-input-warehouses-edit').select2();
+        // $('#modal-input-warehouse-create').select2();
+        // $('#modal-input-warehouse-edit').select2();
 
 
 
-         //configure & initialise the (Products) DataTable
-         $('.table').DataTable({
+        //configure & initialise the (Products) DataTable
+        $('.table').DataTable({
             autoWidth: true,
             ordering: true,
             searching: true,
@@ -595,6 +727,105 @@
         });
 
 
+
+        var count = {{ $wh_count }}; //the number of all the warehouses
+        var x = 1;
+
+        var html1 = '<div class="whqty"><div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-warehouse-create">Αποθήκη</label>'+
+            '<select name="modal-input-warehouse-create[]" id="modal-input-warehouse-create" class="form-control selc"> @foreach($warehouses as $warehouse)'+
+            '<option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option> @endforeach </select><div>';
+
+        var html2 = '<div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-quantity-create">Ποσότητα</label>'+
+            '<input type="text" name="modal-input-quantity-create[]" class="form-control qty" id="modal-input-quantity-create" value="" /></div></div>'+
+            '<button type="button" class="btn btn-danger col-lg-12 minus-btn"><strong>[&ndash;]</strong>&nbsp;Αφαίρεσε Αποθήκη</button>';
+
+
+        $('#add-whqt-button-create').on('click', function(e){
+            e.preventDefault();
+            //console.log(count);
+
+            if(x < count){
+                ++x;
+                $('#whqty-create').append(html1 + html2);
+                $('#add-form').find('select.selc').val('');
+                // $(this).remove();
+                return false;
+            }
+            // var len = $('#whqty').length;
+            else {
+                Swal.fire({
+                    icon: "error",
+                    type: "error",
+                    title: 'Προσοχή!',
+                    text: 'Δεν μπορείτε να προσθέσετε περισσότερες Αποθήκες!',
+                });
+                //x = 1;
+            }
+
+            //console.log($(this).siblings());
+            // console.log($('#whqty').contents());
+            // //check for duplicate warehouses!
+            // $.each('.whqty', function(key,value){
+            //     console.log(value);
+            // });
+        });
+
+
+
+        $(document).on('click', '.minus-btn', function(e){
+            e.preventDefault();
+            // console.log(x);
+            // console.log($(this));
+            $(this).siblings().remove();
+            $(this).remove();
+
+            x--; //reset x. it works!
+            // z--;
+        });
+
+
+
+        //Check for Duplicates!
+        $(document).on('change', 'select.selc', function(){
+        //$("select.selc").change(function(){
+            // check input ($(this).val()) for validity here
+            console.log($(this).val());
+
+            var valueOfChangedInput = $(this).val();
+            var timeRepeated = 0;
+
+            $("select.selc").each(function(){
+                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                if ($(this).val() == valueOfChangedInput) {
+                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                }
+                // if(timeRepeated > 1){
+                //     //$('#add-form').find('select.selc').val('');
+                // }
+            });
+
+            if(timeRepeated > 1) {
+                //alert("Δηλώσατε ίδιες Αποθήκες!");
+                $('#add-form').find('select.selc,input.qty').val('');
+
+                Swal.fire({
+                    icon: "error",
+                    type: "error",
+                    title: 'Προσοχή!',
+                    text: 'Οι Αποθήκες πρέπει να είναι διαφορετικές μεταξύ τους!',
+                });
+            }
+            // else {
+            //     alert("No Duplicates!");
+            // }
+        });
+
+
+
+
+
+
+
     });
 
 
@@ -617,9 +848,11 @@
             var comments = button.data('comments');
             var warehouses = button.data('warehouses');
             var allwarehouses = button.data('allwarehouses'); //I need this variable so that i calculate the difference later on
+            var allquantities = button.data('allquantities');
 
-            //console.log('Warehouses: ', warehouses);
-            //console.log('All_Warehouses: ', allwarehouses);
+            // console.log('Warehouses: ', warehouses); //returns the warehouses which were previously added in create-form
+            // console.log('All_Warehouses: ', allwarehouses);
+            // console.log('warehousesCount', warehouses.length); //correct, returns the number of warehouses which were previously added in create-form
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -657,16 +890,219 @@
 
 
 
-            //warehouses, many-to-many with products
-            modal.find('.modal-body #modal-input-warehouses-edit').empty();
+            //foreach of the warehouses i want to display on screen the whole block, [warehouse + quantity]!
+            //first, remove the old divs, because with each Update click there will be added again!
+            console.log($('.whqty-edit').length); //0
+            // console.log($('#whqt-edit-wrapper').children().size());
+            // if($('#whqty-edit').length > warehouses.length){
+            //     $('#whqty-edit').remove();
+            // }
 
-            $.each(warehouses, function(key, val){
-                //console.log('key: ', key);
-                //console.log('val: ', val);
-                //modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
-                //modal.find('.modal-body #modal-input-warehouses-edit option[value="'+ val.id +'"]').attr('selected', true);
-                modal.find('.modal-body #modal-input-warehouses-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
-             });
+            console.log('Warehouses: ', warehouses);
+
+            $.each(warehouses, function (key, val){
+
+                console.log('warehouses_value', val);
+
+                var html1_edit = '<div class="whqty-edit"><div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-warehouse-edit">Αποθήκη</label>'+
+                    '<select name="modal-input-warehouse-edit[]" id="modal-input-warehouse-edit" class="form-control selc">'+
+                    '<option value="'+val.id+'">'+val.name+'</option></select><div>';
+
+                var html2_edit = '<div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-quantity-edit">Ποσότητα</label>'+
+                    '<input type="text" name="modal-input-quantity-edit[]" class="form-control qty" id="modal-input-quantity-edit" value="" /></div></div>'+
+                    '<button type="button" class="btn btn-danger col-lg-12 minus-btn-edit"><strong>[&ndash;]</strong>&nbsp;Αφαίρεσε Αποθήκη</button>';
+
+
+                //console.log($('#whqty-edit').length);
+                // if($('#whqty-edit').length > warehouses.length){
+                //     $('#whqty-edit').remove();
+                // }
+
+                $('#whqty-edit').append(html1_edit + html2_edit);
+
+                console.log($('#whqt-edit-wrapper > div.whqty-edit').length);
+
+            });
+
+
+            // console.log('after: ', $('.whqty-edit').length); //correct value
+
+            $('#add-whqt-button-edit').remove(); //remove it, or else the buttons are adding up...
+
+            var html3_edit = '<div class="form-group col-lg-12">'+
+                             '<button type="button" class="btn btn-info col-lg-12" id="add-whqt-button-edit">'+
+                             '<strong>[+]</strong>&nbsp;Πρόσθεσε Νέα Αποθήκη</button></div>';
+
+            $('#whqty-edit').append(html3_edit); //Add the create new div Bkutton
+
+
+
+            //Add the new div
+            // [AllWarehouses - (Allocated)Warehouses = Difference], use this difference for the select boxes in add-whqt-button-edit
+
+            var whcount = {{ $wh_count }}; //the number of all the warehouses
+            var rest_wh_count = whcount - $('.whqty-edit').length;
+            var z = 1;
+
+            var html1_edit = '<div class="whqty-edit"><div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-warehouse-edit">Νέα Αποθήκη</label>'+
+                    '<select name="modal-input-warehouse-edit[]" id="modal-input-warehouse-edit" class="form-control selc1">@foreach($warehouses as $wh)'+
+                    '<option value="{{ $wh->id}}">{{ $wh->name }}</option>@endforeach</select><div>';
+
+            var html2_edit = '<div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-quantity-edit">Νέα Ποσότητα</label>'+
+                    '<input type="text" name="modal-input-quantity-edit[]" class="form-control qty" id="modal-input-quantity-edit" value="" /></div></div>'+
+                    '<button type="button" class="btn btn-danger col-lg-12 minus-btn-edit"><strong>[&ndash;]</strong>&nbsp;Αφαίρεσε Αποθήκη</button>';
+
+
+
+            //add new div
+            $('#add-whqt-button-edit').on('click', function(e){
+                e.preventDefault();
+
+                if(z <= rest_wh_count){
+                    ++z;
+                    $('#whqty-edit').append(html1_edit + html2_edit);
+                    $('#edit-form').find('select.selc1').val('');
+                    //return false;
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        type: "error",
+                        title: 'Προσοχή!',
+                        text: 'Δεν μπορείτε να προσθέσετε περισσότερες Αποθήκες!',
+                    });
+                }
+            });
+
+            //remove a div
+            $(document).on('click', '.minus-btn-edit', function(e){
+                e.preventDefault();
+                // console.log(x);
+                // console.log($(this));
+                console.log($('.whqty-edit').length);
+
+                if($('.whqty-edit').length > 1){
+                    $(this).siblings().remove();
+                    $(this).remove();
+                    z--; //reset the z count. it works!
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        type: "error",
+                        title: 'Προσοχή!',
+                        text: 'Πρέπει να δηλώσετε τουλάχιστον 1 Αποθήκη!',
+                    });
+                }
+            });
+
+
+        //Check for Duplicates!
+        $(document).on('change', 'select.selc1', function(){
+            // check input ($(this).val()) for validity here
+            console.log($(this).val());
+
+            var valueOfChangedInput = $(this).val();
+            var timeRepeated = 0;
+
+            $("select.selc").each(function(){
+                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                if ($(this).val() == valueOfChangedInput) {
+                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                }
+            });
+
+            $("select.selc1").each(function(){
+                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                if ($(this).val() == valueOfChangedInput) {
+                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                }
+            });
+
+            if(timeRepeated > 1) {
+                $('#edit-form').find('select.selc1').val('');
+
+                Swal.fire({
+                    icon: "error",
+                    type: "error",
+                    title: 'Προσοχή!',
+                    text: 'Οι Αποθήκες πρέπει να είναι διαφορετικές μεταξύ τους!',
+                });
+            }
+
+            timeRepeated--;
+
+        });
+
+
+        //also, populate the quantity fields!
+        // console.log('all Quantities: ', allquantities);
+        // console.log('allocated_warehouses: ', warehouses);
+
+        //first store the quantities in an array..and afterwards only allocate them to the quantity fields
+        var qt_arr = [];
+
+        $.each(allquantities, function(key, val){
+                $.each(warehouses, function(k,v){
+                    if((val.product_id == v.pivot.product_id) && (val.warehouse_id == v.id)){
+                       qt_arr.unshift(val.quantity); //Correct, moves value to beginning of the array,much unlike push (aka to the end of the array)
+                    }
+                });
+        });
+
+        //console.log('array of quantities: ',qt_arr);
+
+        // var t = JSON.stringify(qt_arr);
+        // console.log(t); //[]
+
+        $.each(qt_arr, function(){
+            var elem = qt_arr.shift();
+            //modal.find('.modal-body #modal-input-quantity-edit').val(elem);
+            $('.modal-body .qty').each(function(){
+                modal.find('.modal-body #modal-input-quantity-edit').val(elem);
+            });
+        });
+
+        // $('.modal-body .qty').each(function(){
+        //     modal.find('.modal-body #modal-input-quantity-edit').val(qt_arr.shift());
+        // });
+
+        // var t = JSON.stringify(qt_arr);
+        // console.log(t); //[]
+
+
+        // for(var i = 0; i < qt_arr.length; i++){
+        //     modal.find('.qty').val(qt_arr[i]);
+        // }
+
+        // $('.modal-body [name="modal-input-quantity-edit[]"]').each(function(key,val){
+        //     modal.find('.modal-body #modal-input-quantity-edit').val(qt_arr.shift());
+        // });
+
+        // $('.modal-body .qty').each(function(){
+        //     modal.find('.modal-body #modal-input-quantity-edit').val(qt_arr.shift());
+        // });
+
+        //modal.find('.modal-body .qty').val(qt_arr);
+
+
+
+
+
+
+
+
+
+
+
+            //warehouses, many-to-many with products
+            // modal.find('.modal-body #modal-input-warehouse-edit').empty();
+
+            // $.each(warehouses, function(key, val){
+            //     //console.log('key: ', key);
+            //     //console.log('val: ', val);
+            //     //modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+            //     //modal.find('.modal-body #modal-input-warehouses-edit option[value="'+ val.id +'"]').attr('selected', true);
+            //     modal.find('.modal-body #modal-input-warehouse-edit').append('<option selected value="'+ val['id'] +'">' + val['name'] + '</option>');
+            //  });
 
             //the below for loop is OK at first, but I need UNIQUE names for the case when there are selected more than 2 warehouses in the above loop.
             /*
@@ -679,24 +1115,25 @@
             }
             */
 
-            var rest_wh = [];
-            /*
-            rest_wh = allwarehouses.filter(function(n){
-                for(let i = 0; i < warehouses.length; i++){
-                    if(n.id != warehouses[i].id){
-                      rest_wh.push(n.id);
-                    }
-                }
-            });
-            */
+            // var rest_wh = [];
+            // /*
+            // rest_wh = allwarehouses.filter(function(n){
+            //     for(let i = 0; i < warehouses.length; i++){
+            //         if(n.id != warehouses[i].id){
+            //           rest_wh.push(n.id);
+            //         }
+            //     }
+            // });
+            // */
 
-            //list1.filter(a => list2.some(b => a.userId === b.userId));
-            rest_wh = allwarehouses.filter(a => !warehouses.some(b => a.id === b.id)); //it worked!! finds the diff of the 2 arrays!
-            //rest_wh = allwarehouses['id'].filter((x) => !warehouses['id'].include(x));
+            // //list1.filter(a => list2.some(b => a.userId === b.userId));
+            // rest_wh = allwarehouses.filter(a => !warehouses.some(b => a.id === b.id)); //it worked!! finds the diff of the 2 arrays!
+            // //rest_wh = allwarehouses['id'].filter((x) => !warehouses['id'].include(x));
+            // console.log('rest_warehouses', rest_wh);
 
-            $.each(rest_wh, function(key,val){
-                modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
-            });
+            // $.each(rest_wh, function(key,val){
+            //     modal.find('.modal-body #modal-input-warehouses-edit').append('<option value="'+ val['id'] +'">' + val['name'] + '</option>');
+            // });
 
 
             modal.find('.modal-footer #edit-button').attr("data-pid", pid);  //SET product id value in data-pid attribute
@@ -776,8 +1213,8 @@
 
 
 
-    //do not put the following inside $(document).ready()!
-    $('#delete-modal').on('show.bs.modal', function(event) {
+        //do not put the following inside $(document).ready()!
+        $('#delete-modal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
 
             var pid = button.data('pid'); // Extract info from data-* attributes
@@ -988,6 +1425,8 @@
 
         $('#edit-modal').on('hidden.bs.modal', function(evt){
             $(document).off('submit', '#edit-form');
+
+            $('.whqty-edit').remove(); //remove all dynamically created the divs
         });
 
         $('#delete-modal').on('hidden.bs.modal', function(e){
@@ -1010,6 +1449,14 @@
         $('#add-product-btn').on('click', function(evt){
             $('#add-form').find('select').val('');
             $('#add-form').find('select[name="modal-input-type-create"]').empty();
+
+            // $('.whqty').remove();
+            // x--; //x is not defined
+
+        //    $('.whqty').empty();
+        //    x = 1;
+        //    console.log(x);
+
         });
 
 

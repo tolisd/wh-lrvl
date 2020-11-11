@@ -80,35 +80,61 @@ class UserController extends Controller
 
                 if($validator->passes()){
 
-                    $user = User::findOrFail($id); //was findOrFail($u_id);
+                    DB::beginTransaction();
 
-                    $user->name      = $request->input('modal-input-name-edit');
-                    $user->email     = $request->input('modal-input-email-edit');
-                    // $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
-                    $user->user_type = $request->input('modal-input-usertype-edit');
-                    // ...image upload
-                    /*
-                    $path = $request->file('modal-input-photo-edit')->store('images/profile');  //stored in storage/app/images/
-                    $url = \Storage::url($path);
-                    */
-                    if($request->hasFile('modal-input-photo-edit')){
-                        //$path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
-                        $file = $request->file('modal-input-photo-edit');
-                        $name = $file->getClientOriginalName();
-                        $path = $file->storeAs('images/profile', $name);
-                        $url = \Storage::url($path); //stores the full path
+                    try{
+                        $user = User::findOrFail($id); //was findOrFail($u_id);
 
-                        $user->photo_url = $url;
+                        $user->name      = $request->input('modal-input-name-edit');
+                        $user->email     = $request->input('modal-input-email-edit');
+                        // $user->password  = \Hash::make($request->input('modal-input-passwd-edit'));
+                        $user->user_type = $request->input('modal-input-usertype-edit');
+                        // ...image upload
+                        /*
+                        $path = $request->file('modal-input-photo-edit')->store('images/profile');  //stored in storage/app/images/
+                        $url = \Storage::url($path);
+                        */
+                        if($request->hasFile('modal-input-photo-edit')){
+                            //$path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
+                            $file = $request->file('modal-input-photo-edit');
+                            $name = $file->getClientOriginalName();
+                            $path = $file->storeAs('images/profile', $name);
+                            $url = \Storage::url($path); //stores the full path
+
+                            $user->photo_url = $url;
+                        }
+
+
+                        $user->update($request->all());
+
+                        DB::commit();
+
+                        //validation success, 200 OK.
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        //validation success, 200 OK.
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
                     }
 
 
-                    $user->update($request->all());
 
-                    //validation success, 200 OK.
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // //validation success, 200 OK.
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -186,20 +212,20 @@ class UserController extends Controller
         //2 user types -> Admin, CEO.
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO'])){
 
-            //$u_id = $request->input("data-uid");   //take ALL input values into $input, as an assoc.array
-            //$u_id = $arr['data-uid'];
-
-            $user = User::findOrFail($id); //was findOrFail($u_id);
-            //first, make sure user is NOT logged in (or is logged out). Important!
-            $user->delete();
-
             //$json_user = json_encode($user);
 
             if ($request->ajax()){
+                //$u_id = $request->input("data-uid");   //take ALL input values into $input, as an assoc.array
+                //$u_id = $arr['data-uid'];
+
+                $user = User::findOrFail($id); //was findOrFail($u_id);
+                //first, make sure user is NOT logged in (or is logged out). Important!
+                $user->delete();
+
                 return \Response::json();
             }
 
-            return back();
+            // return back();
         }
         else
         {
@@ -301,45 +327,71 @@ class UserController extends Controller
 
                 if($validator->passes()){
 
-                    $user = new User();
+                    DB::beginTransaction();
 
-                    $user->name      = $request->input('modal-input-name-create');
-                    $user->email     = $request->input('modal-input-email-create');
-                    $user->password  = \Hash::make($request->input('modal-input-passwd-create'));
-                    $user->user_type = $request->input('modal-input-usertype-create');
-                    // Set other fields (if applicable)...
-                    // ...image upload
-                    if($request->hasFile('modal-input-photo-create')){
-                        //$path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
-                        $file = $request->file('modal-input-photo-create');
-                        $name = $file->getClientOriginalName();
-                        $path = $file->storeAs('images/profile', $name);
-                        $url = \Storage::url($path); //stores the full path
+                    try{
 
-                        $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
+                        $user = new User();
+
+                        $user->name      = $request->input('modal-input-name-create');
+                        $user->email     = $request->input('modal-input-email-create');
+                        $user->password  = \Hash::make($request->input('modal-input-passwd-create'));
+                        $user->user_type = $request->input('modal-input-usertype-create');
+                        // Set other fields (if applicable)...
+                        // ...image upload
+                        if($request->hasFile('modal-input-photo-create')){
+                            //$path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
+                            $file = $request->file('modal-input-photo-create');
+                            $name = $file->getClientOriginalName();
+                            $path = $file->storeAs('images/profile', $name);
+                            $url = \Storage::url($path); //stores the full path
+
+                            $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
+                        }
+
+                        $user->save(); //Save the new user into the database
+
+                        /*
+                        //Also, CREATE a new row in 'employees' table
+                        $employee = new Employee();
+
+                        $employee->name = $user->name;
+                        $employee->email = $user->email;
+                        $employee->employee_type = $user->user_type;
+
+                        //$employee->save();
+
+                        //$user = User::find(1);
+                        $user->profile()->save($employee); //when I create a new User, ALSO create a NEW Employee with/from the same(almost) data as the User.
+                        */
+
+
+                        DB::commit();
+
+                        //success, 200 OK.
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e){
+                        DB::rollBack();
+
+                        //something happened...
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
                     }
 
-                    $user->save(); //Save the new user into the database
 
-                    /*
-                    //Also, CREATE a new row in 'employees' table
-                    $employee = new Employee();
 
-                    $employee->name = $user->name;
-                    $employee->email = $user->email;
-                    $employee->employee_type = $user->user_type;
-
-                    //$employee->save();
-
-                    //$user = User::find(1);
-                    $user->profile()->save($employee); //when I create a new User, ALSO create a NEW Employee with/from the same(almost) data as the User.
-                    */
-
-                    //success, 200 OK.
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // //success, 200 OK.
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }

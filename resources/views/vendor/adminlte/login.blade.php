@@ -14,7 +14,7 @@
             /*
             background-image: linear-gradient(to right, blue , yellow);
             */
-            background-image: linear-gradient(gray , blue); /* default top to bottom */
+            background-image: linear-gradient(lightgray , skyblue); /* default top to bottom */
 
         }
     </style>
