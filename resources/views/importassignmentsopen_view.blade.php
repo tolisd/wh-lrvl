@@ -30,6 +30,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
                         <th class="text-left">Deadline</th>
@@ -42,6 +43,7 @@
                 <tbody>
                 @foreach($importassignments as $importassignment)
                     <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
                         <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td>
@@ -134,7 +136,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [ 0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
@@ -142,7 +144,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [ 0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
@@ -150,7 +152,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [ 0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
@@ -159,14 +161,14 @@
                             "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [ 0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [ 0, 1, 2, 3, 4, 5,6]
                             }
                         },
                     ],

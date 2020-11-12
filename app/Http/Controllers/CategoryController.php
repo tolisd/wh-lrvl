@@ -47,12 +47,13 @@ class CategoryController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
             $validation_rules = [
-                'modal-input-name-create' => 'required',
+                'modal-input-name-create' => 'required|unique:category,name',
                 'modal-input-description-create' => 'required'
             ];
 
             $custom_messages = [
                 'modal-input-name-create.required' => 'Το όνομα απαιτείται',
+                'modal-input-name-create.unique' => 'Το όνομα υπάρχει ήδη. Επιλέξτε διαφορετικό όνομα.',
                 'modal-input-description-create.required' => 'Η περιγραφή απαιτείται'
             ];
 
@@ -69,17 +70,41 @@ class CategoryController extends Controller
 
                 if($validator->passes()){
 
-                    $category = new Category();
+                    DB::beginTransaction();
 
-                    $category->name            = $request->input('modal-input-name-create');
-                    $category->description     = $request->input('modal-input-description-create');
+                    try{
+                        $category = new Category();
 
-                    $category->save();
+                        $category->name            = $request->input('modal-input-name-create');
+                        $category->description     = $request->input('modal-input-description-create');
 
-                    return \Response::json([
-                        'success' => false,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $category->save();
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch(\Exception $e) {
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
+                    }
+
+
+
+                    // return \Response::json([
+                    //     'success' => false,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -110,12 +135,13 @@ class CategoryController extends Controller
 
 
             $validation_rules = [
-                'modal-input-name-edit' => 'required',
-                'modal-input-description-edit' => 'required'
+                'modal-input-name-edit' => ['required', \Illuminate\Validation\Rule::unique('category', 'name')->ignore($id)],
+                'modal-input-description-edit' => ['required'],
             ];
 
             $custom_messages = [
                 'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
+                'modal-input-name-edit.unique' => 'Το όνομα υπάρχει ήδη. Επιλέξτε διαφορετικό όνομα.',
                 'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται'
             ];
 
@@ -133,17 +159,40 @@ class CategoryController extends Controller
 
                 if($validator->passes()){
 
-                    $category = Category::findOrFail($id); //was findOrFail($u_id);
+                    DB::beginTransaction();
 
-                    $category->name            = $request->input('modal-input-name-edit');
-                    $category->description     = $request->input('modal-input-description-edit');
+                    try{
+                        $category = Category::findOrFail($id); //was findOrFail($u_id);
 
-                    $category->update($request->all());
+                        $category->name            = $request->input('modal-input-name-edit');
+                        $category->description     = $request->input('modal-input-description-edit');
 
-                    return \Response::json([
-                        'success' => false,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $category->update($request->all());
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
+                    }
+
+
+
+                    // return \Response::json([
+                    //     'success' => false,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -173,10 +222,11 @@ class CategoryController extends Controller
          //if ($authenticatedUser){
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $category = Category::findOrFail($id);
-            $category->delete();
-
             if ($request->ajax()){
+
+                $category = Category::findOrFail($id);
+                $category->delete();
+
                 return \Response::json();
             }
 

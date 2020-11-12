@@ -662,8 +662,8 @@
 
                 modal.find('.modal-body #modal-input-warehouse-edit').empty();
 
-                console.log('warehousesall',warehousesall);
-                console.log('warehouses',warehouses);
+                // console.log('warehousesall',warehousesall);
+                // console.log('warehouses',warehouses);
 
 
                 var warehouses_in_company = [];

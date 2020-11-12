@@ -227,7 +227,8 @@ class EmployeeController extends Controller
                         //establish the association between the 2 entities. very important!
 
                         //$user = User::findOrFail($employee->user_id);
-                        //$user->employee()->save($employee);  //store the object   DB::commit();
+                        //$user->employee()->save($employee);  //store the object
+                        DB::commit();
 
                         return \Response::json([
                             'success' => true,
@@ -277,8 +278,13 @@ class EmployeeController extends Controller
             if ($request->ajax()){
 
                 $employee = Employee::findOrFail($id);
-                //should check if employee/user is logged out (or not logged in) first!
-                //or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
+                // Should check if employee/user is logged out (or not logged in) first!
+                // or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
+
+                // I DID the above in UserController.php, first user is logged out and afterwards he/she is deleted from the DB
+
+                // VERY IMPORTANT!
+                // Before deleting an Employee, check if he/she is involved in other activities in the program!!!
                 $employee->delete();
 
                 return \Response::json();

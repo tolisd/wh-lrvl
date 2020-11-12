@@ -52,18 +52,39 @@ class MeasureController extends Controller
 
                 if($validator->passes()){
 
-                    $measunit = new MeasureUnit();
+                    DB::beginTransaction();
 
-                    $measunit->name            = $request->input('modal-input-name-create');
-                    $measunit->description     = $request->input('modal-input-description-create');
+                    try{
+                        $measunit = new MeasureUnit();
 
-                    $measunit->save();
+                        $measunit->name            = $request->input('modal-input-name-create');
+                        $measunit->description     = $request->input('modal-input-description-create');
+
+                        $measunit->save();
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e){
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
+                    }
 
 
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -109,18 +130,41 @@ class MeasureController extends Controller
 
                 if($validator->passes()){
 
-                    $measunit = MeasureUnit::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $measunit->name            = $request->input('modal-input-name-edit');
-                    $measunit->description     = $request->input('modal-input-description-edit');
+                    try{
+                        $measunit = MeasureUnit::findOrFail($id);
 
-                    $measunit->update($request->all());
+                        $measunit->name            = $request->input('modal-input-name-edit');
+                        $measunit->description     = $request->input('modal-input-description-edit');
+
+                        $measunit->update($request->all());
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e){
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
+                    }
 
 
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+
+
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -142,10 +186,12 @@ class MeasureController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $measunit = MeasureUnit::findOrFail($id);
-            $measunit->delete();
 
             if ($request->ajax()){
+
+                $measunit = MeasureUnit::findOrFail($id);
+                $measunit->delete();
+
                 return \Response::json();
             }
 

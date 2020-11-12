@@ -80,7 +80,7 @@ class ProductController extends Controller
                 'modal-input-type-create' => 'required|exists:types,id',
                 'modal-input-category-create' => 'required|exists:category,id',
                 'modal-input-description-create' => 'required',
-                'modal-input-quantity-create.*' => 'required|filled',
+                'modal-input-quantity-create.*' => 'required|filled|numeric',
                 'modal-input-measureunit-create' => 'required|exists:measunits,id',
                 'modal-input-comments-create' => 'required',
                 'modal-input-warehouse-create.*' => 'required|filled',
@@ -94,6 +94,8 @@ class ProductController extends Controller
                 'modal-input-category-create.required' => 'Η κατηγορία απαιτείται',
                 'modal-input-description-create.required' => 'Η περιγραφή απαιτείται',
                 'modal-input-quantity-create.*.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-quantity-create.*.filled' => 'Δεν συμπληρώσατε ποσότητα',
+                'modal-input-quantity-create.*.numeric' => 'Η ποσότητα πρέπει να είναι αριθμός',
                 'modal-input-measureunit-create.required' => 'Η μονάδα μέτρησης απαιτείται',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-warehouse-create.*.required' => 'Η/Οι αποθήκη/-ες απαιτούνται',
@@ -177,14 +179,19 @@ class ProductController extends Controller
 
                         DB::commit(); //commit the changes
 
-                        return response()->json(['success'=>'Property has been created successfully'], 200);
+                        return response()->json([
+                            'success'=>'Property has been created successfully',
+                        ], 200);
 
 
                     } catch (\Exception $e) {
 
                         DB::rollBack(); //rollback the changes
 
-                        return response()->json(['error'=>'Something went wrong, please try later.'], 500);
+                        return response()->json([
+                            'error' => 'Something went wrong, please try later.',
+                            'message' => $e->getMessage(),
+                        ], 500);
                     }
 
                     //success, 200
@@ -225,7 +232,7 @@ class ProductController extends Controller
                 'modal-input-type-edit' => ['required', 'exists:types,id'],
                 'modal-input-category-edit' => ['required', 'exists:category,id'],
                 'modal-input-description-edit' => ['required'],
-                'modal-input-quantity-edit.*' => ['required'],
+                'modal-input-quantity-edit.*' => ['required', 'filled', 'numeric'],
                 'modal-input-measureunit-edit' => ['required', 'exists:measunits,id'],
                 'modal-input-comments-edit' => ['required'],
                 'modal-input-warehouse-edit.*' => ['required'],
@@ -237,7 +244,9 @@ class ProductController extends Controller
                 'modal-input-type-edit.required' => 'Το είδος απαιτείται',
                 'modal-input-category-edit.required' => 'Η κατηγορία απαιτείται',
                 'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται',
-                'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-quantity-edit.*.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-quantity-edit.*.filled' => 'Δεν συμπληρώσατε ποσότητα',
+                'modal-input-quantity-edit.*.numeric' => 'Η ποσότητα πρέπει να είναι αριθμός',
                 'modal-input-measureunit-edit.required' => 'Η μονάδα μέτρησης απαιτείται',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-warehouse-edit.required' => 'Η/Οι αποθήκη/-ες απαιτούνται',
@@ -281,6 +290,8 @@ class ProductController extends Controller
                         $wh_arr = $request->input('modal-input-warehouse-edit'); //array of warehouse data
                         $qt_arr = $request->input('modal-input-quantity-edit'); //array of quantities
 
+                        // if(count($wh_arr) != count($qt_arr)) throw new \Exception('Wh & Qt lengths are not equal! Array Mismatch!!');
+
                         $extra = array_map(function($qty){
                             return ['quantity' => $qty];
                         }, $qt_arr);
@@ -292,13 +303,18 @@ class ProductController extends Controller
 
                         DB::commit(); //commit the changes
 
-                        return response()->json(['success'=>'Property has been updated successfully'], 200);
+                        return response()->json([
+                            'success'=>'Property has been updated successfully',
+                        ], 200);
 
                     } catch (\Exception $e) {
 
                         DB::rollBack(); //rollback the changes
 
-                        return response()->json(['error'=>'Something went wrong, please try later.'], 500);
+                        return response()->json([
+                            'error'=>'Something went wrong, please try later.',
+                            'message' => $e->getMessage(),
+                        ], 500);
                     }
 
                     // //success, 200
@@ -345,13 +361,18 @@ class ProductController extends Controller
 
                     DB::commit();
 
-                    return response()->json(['success'=>'Property has been deleted successfully'], 200);
+                    return response()->json([
+                        'success'=>'Property has been deleted successfully'
+                    ], 200);
 
                 } catch (\Exception $e) {
 
                     DB::rollBack(); //rollback the changes
 
-                    return response()->json(['error'=>'Something went wrong, please try later.'], 500);
+                    return response()->json([
+                        'error'=>'Something went wrong, please try later.',
+                        'message' => $e->getMessage(),
+                    ], 500);
                 }
             }
 

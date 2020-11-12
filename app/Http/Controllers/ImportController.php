@@ -143,43 +143,69 @@ class ImportController extends Controller
 
 
                 if($validator->passes()){
-                    //success
-                    //save the object
 
-                    $import = new Import();
+                    DB::beginTransaction();
 
-                    $import->employee_id             = $request->input('modal-input-recipient-create');
-                    $import->company_id              = $request->input('modal-input-impco-create');
-                    $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-create'));
-                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
-                    $import->transport_id            = $request->input('modal-input-shipco-create');
-                    $import->delivery_address        = $request->input('modal-input-destin-create');
-                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
-                    $import->hours_worked            = $request->input('modal-input-hours-create');
-                    $import->discrete_description    = $request->input('modal-input-dtitle-create');
-                    //$import->shipment_address = $request->input('modal-input--create');
-                    //$import->product_id = $request->input('modal-input-products-create');
-                    $import->importassignment_id     = $request->input('modal-input-importassignment-create');
+                    try{
 
-                    if($request->hasFile('modal-input-bulletin-create')){
-                        $file = $request->file('modal-input-bulletin-create');
+                         //success
+                        //save the object
 
-                        $datetime_now = date_create();
-                        $datetime = date_format($datetime_now, 'YmdHis');
-                        $name = $datetime . '-' . $file->getClientOriginalName();
-                        $path = $file->storeAs('arxeia/eisagwgis', $name);
-                        $url  = \Storage::url($path);
+                        $import = new Import();
 
-                        $import->shipment_bulletin = $url;
+                        $import->employee_id             = $request->input('modal-input-recipient-create');
+                        $import->company_id              = $request->input('modal-input-impco-create');
+                        $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-create'));
+                        $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
+                        $import->transport_id            = $request->input('modal-input-shipco-create');
+                        $import->delivery_address        = $request->input('modal-input-destin-create');
+                        $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
+                        $import->hours_worked            = $request->input('modal-input-hours-create');
+                        $import->discrete_description    = $request->input('modal-input-dtitle-create');
+                        //$import->shipment_address = $request->input('modal-input--create');
+                        //$import->product_id = $request->input('modal-input-products-create');
+                        $import->importassignment_id     = $request->input('modal-input-importassignment-create');
+
+                        if($request->hasFile('modal-input-bulletin-create')){
+                            $file = $request->file('modal-input-bulletin-create');
+
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $file->getClientOriginalName();
+                            $path = $file->storeAs('arxeia/eisagwgis', $name);
+                            $url  = \Storage::url($path);
+
+                            $import->shipment_bulletin = $url;
+                        }
+
+                        $import->save();
+
+
+                        DB::commit();
+
+                        //success, 200 OK.
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
                     }
 
-                    $import->save();
 
-                    //success, 200 OK.
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // //success, 200 OK.
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -248,48 +274,73 @@ class ImportController extends Controller
 
                 }
 
+
                 if($validator->passes()){
-                    //success
-                    //save-update the object
 
-                    $import = Import::findOrFail($id);
+                    DB::beginTransaction();
+
+                    try{
+                        //success
+                        //save-update the object
+
+                        $import = Import::findOrFail($id);
 
 
-                    $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
-                    $import->delivery_address        = $request->input('modal-input-destin-edit');
-                    $import->discrete_description    = $request->input('modal-input-dtitle-edit');
-                    $import->hours_worked            = $request->input('modal-input-hours-edit');
-                    $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
+                        $import->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
+                        $import->delivery_address        = $request->input('modal-input-destin-edit');
+                        $import->discrete_description    = $request->input('modal-input-dtitle-edit');
+                        $import->hours_worked            = $request->input('modal-input-hours-edit');
+                        $import->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
 
-                    if($request->hasFile('modal-input-bulletin-edit')){
-                        $file = $request->file('modal-input-bulletin-edit');
+                        if($request->hasFile('modal-input-bulletin-edit')){
+                            $file = $request->file('modal-input-bulletin-edit');
 
-                        $datetime_now = date_create();
-                        $datetime = date_format($datetime_now, 'YmdHis');
-                        $name = $datetime . '-' . $file->getClientOriginalName();
-                        $path = $file->storeAs('arxeia/eisagwgis', $name);
-                        $url  = \Storage::url($path);
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $file->getClientOriginalName();
+                            $path = $file->storeAs('arxeia/eisagwgis', $name);
+                            $url  = \Storage::url($path);
 
-                        $import->shipment_bulletin = $url;
+                            $import->shipment_bulletin = $url;
+                        }
+
+                        $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
+                        //$import->shipment_address = $request->input('modal-input--create');
+                        //$import->product_id = $request->input('modal-input-products-create');
+                        $import->employee_id             = $request->input('modal-input-recipient-edit');
+                        $import->company_id              = $request->input('modal-input-impco-edit');
+                        $import->transport_id            = $request->input('modal-input-shipco-edit');
+                        $import->importassignment_id     = $request->input('modal-input-importassignment-edit');
+
+
+
+                        $import->update($request->all());
+
+
+                        DB::commit();
+
+                        //success, 200 OK.
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
                     }
 
-                    $import->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
-                    //$import->shipment_address = $request->input('modal-input--create');
-                    //$import->product_id = $request->input('modal-input-products-create');
-                    $import->employee_id             = $request->input('modal-input-recipient-edit');
-                    $import->company_id              = $request->input('modal-input-impco-edit');
-                    $import->transport_id            = $request->input('modal-input-shipco-edit');
-                    $import->importassignment_id     = $request->input('modal-input-importassignment-edit');
 
-
-
-                    $import->update($request->all());
-
-
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -311,10 +362,12 @@ class ImportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
-            $import = Import::findOrFail($id);
-            $import->delete();
 
             if ($request->ajax()){
+
+                $import = Import::findOrFail($id);
+                $import->delete();
+
                 return \Response::json();
             }
 

@@ -32,9 +32,10 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
-                        <th class="text-left">Deadline (Ημ/νία & Ώρα)</th>
+                        <th class="text-left">Deadline (Ημ/νία &amp; Ώρα)</th>
                         <th class="text-left">Επισυναπτόμενα Αρχεία</th>
                         <th class="text-left">Σχόλια</th>
 						<th class="text-left">Ανοιχτή?</th>
@@ -49,6 +50,7 @@
                 <tbody>
                 @foreach($exportassignments as $exportassignment)
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
                         <td>{{ $exportassignment->export_deadline->format('l, d/m/Y @ H:i') }}</td>
@@ -633,7 +635,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                                columns: [0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
@@ -641,7 +643,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Αναθέσεις Εξαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
@@ -649,7 +651,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Αναθέσεις Εξαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
@@ -658,14 +660,14 @@
                             "title"  : "Αναθέσεις Εξαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5,6]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5,6]
                             }
                         },
                     ],

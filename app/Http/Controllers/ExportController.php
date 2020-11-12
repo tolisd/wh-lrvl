@@ -143,45 +143,70 @@ class ExportController extends Controller
                 }
 
                 if($validator->passes()){
-                    //success
-                    //save the object
-                    $export = new Export();
 
-                    $export->employee_id             = $request->input('modal-input-recipient-create');
-                    $export->company_id              = $request->input('modal-input-expco-create');
-                    $export->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-create'));
-                    $export->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
-                    $export->transport_id            = $request->input('modal-input-shipco-create');
-                    $export->destination_address     = $request->input('modal-input-destin-create');
-                    $export->shipment_address        = $request->input('modal-input-sendplace-create');
-                    $export->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
-                    $export->hours_worked            = $request->input('modal-input-hours-create');
-                    $export->item_description        = $request->input('modal-input-dtitle-create');
-                    $export->exportassignment_id     = $request->input('modal-input-exportassignment-create');
+                    DB::beginTransaction();
 
-                    if($request->hasFile('modal-input-bulletin-create')){
-                        $file = $request->file('modal-input-bulletin-create');
+                    try{
+                         //success
+                        //save the object
+                        $export = new Export();
 
-                        $datetime_now = date_create();
-                        $datetime = date_format($datetime_now, 'YmdHis');
-                        $name = $datetime . '-' . $file->getClientOriginalName();
-                        $path = $file->storeAs('arxeia/exagwgis', $name);
-                        $url  = \Storage::url($path);
+                        $export->employee_id             = $request->input('modal-input-recipient-create');
+                        $export->company_id              = $request->input('modal-input-expco-create');
+                        $export->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-create'));
+                        $export->vehicle_reg_no          = $request->input('modal-input-vehicleregno-create');
+                        $export->transport_id            = $request->input('modal-input-shipco-create');
+                        $export->destination_address     = $request->input('modal-input-destin-create');
+                        $export->shipment_address        = $request->input('modal-input-sendplace-create');
+                        $export->chargeable_hours_worked = $request->input('modal-input-chargehrs-create');
+                        $export->hours_worked            = $request->input('modal-input-hours-create');
+                        $export->item_description        = $request->input('modal-input-dtitle-create');
+                        $export->exportassignment_id     = $request->input('modal-input-exportassignment-create');
 
-                        $export->shipment_bulletin = $url;
+                        if($request->hasFile('modal-input-bulletin-create')){
+                            $file = $request->file('modal-input-bulletin-create');
+
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $file->getClientOriginalName();
+                            $path = $file->storeAs('arxeia/exagwgis', $name);
+                            $url  = \Storage::url($path);
+
+                            $export->shipment_bulletin = $url;
+                        }
+
+                        $export->save();
+
+                        //also, update the pivot table, ie save the relation in the pivot table!
+                        // usually it is array of id's passed into the relationship
+                        $export->products()->sync($request->input('modal-input-products-create'));
+
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
                     }
 
-                    $export->save();
 
-                    //also, update the pivot table, ie save the relation in the pivot table!
-                    // usually it is array of id's passed into the relationship
-                    $export->products()->sync($request->input('modal-input-products-create'));
-
-
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -258,43 +283,69 @@ class ExportController extends Controller
                 }
 
                 if($validator->passes()){
-                    //success
-                    //save the object
-                    $export = Export::findOrFail($id);
 
-                    $export->employee_id             = $request->input('modal-input-recipient-edit');
-                    $export->company_id              = $request->input('modal-input-expco-edit');
-                    $export->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
-                    $export->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
-                    $export->transport_id            = $request->input('modal-input-shipco-edit');
-                    $export->destination_address     = $request->input('modal-input-destin-edit');
-                    $export->shipment_address        = $request->input('modal-input-sendplace-edit');
-                    $export->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
-                    $export->hours_worked            = $request->input('modal-input-hours-edit');
-                    $export->item_description        = $request->input('modal-input-dtitle-edit');
-                    $export->exportassignment_id     = $request->input('modal-input-exportassignment-edit');
+                    DB::beginTransaction();
 
-                    if($request->hasFile('modal-input-bulletin-edit')){
-                        $file = $request->file('modal-input-bulletin-edit');
+                    try{
+                         //success
+                        //save the object
+                        $export = Export::findOrFail($id);
 
-                        $datetime_now = date_create();
-                        $datetime = date_format($datetime_now, 'YmdHis');
-                        $name = $datetime . '-' . $file->getClientOriginalName();
-                        $path = $file->storeAs('arxeia/exagwgis', $name);
-                        $url  = \Storage::url($path);
+                        $export->employee_id             = $request->input('modal-input-recipient-edit');
+                        $export->company_id              = $request->input('modal-input-expco-edit');
+                        $export->delivered_on            = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-dtdeliv-edit'));
+                        $export->vehicle_reg_no          = $request->input('modal-input-vehicleregno-edit');
+                        $export->transport_id            = $request->input('modal-input-shipco-edit');
+                        $export->destination_address     = $request->input('modal-input-destin-edit');
+                        $export->shipment_address        = $request->input('modal-input-sendplace-edit');
+                        $export->chargeable_hours_worked = $request->input('modal-input-chargehrs-edit');
+                        $export->hours_worked            = $request->input('modal-input-hours-edit');
+                        $export->item_description        = $request->input('modal-input-dtitle-edit');
+                        $export->exportassignment_id     = $request->input('modal-input-exportassignment-edit');
 
-                        $export->shipment_bulletin = $url;
+                        if($request->hasFile('modal-input-bulletin-edit')){
+                            $file = $request->file('modal-input-bulletin-edit');
+
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $file->getClientOriginalName();
+                            $path = $file->storeAs('arxeia/exagwgis', $name);
+                            $url  = \Storage::url($path);
+
+                            $export->shipment_bulletin = $url;
+                        }
+
+                        $export->update($request->all());
+
+                        //also, update the pivot table, ie save the relation in the pivot table!
+                        $export->products()->sync($request->input('modal-input-products-edit'));
+
+
+                        DB::commit();
+
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch (\Exception $e) {
+
+                        DB::rollBack();
+
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
                     }
 
-                    $export->update($request->all());
 
-                    //also, update the pivot table, ie save the relation in the pivot table!
-                    $export->products()->sync($request->input('modal-input-products-edit'));
-
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -317,10 +368,11 @@ class ExportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
-            $export = Export::findOrFail($id);
-            $export->delete();
-
             if ($request->ajax()){
+
+                $export = Export::findOrFail($id);
+                $export->delete();
+
                 return \Response::json();
             }
 

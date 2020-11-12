@@ -76,8 +76,8 @@ class ImportAssignmentController extends Controller
                 'modal-input-warehouse-create.required' => 'Η αποθήκη απαιτείται',
                 'modal-input-text-create.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-create.required' => 'Η ημερομηνία/ώρα απαιτείται',
-                'modal-input-files-create.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
-                'modal-input-files-create.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
+                'modal-input-files-create.*.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
+                'modal-input-files-create.*.mimetypes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
             ];
 
@@ -99,53 +99,82 @@ class ImportAssignmentController extends Controller
 
                 if($validator->passes()){
 
-                    //dd(Carbon::parse($request->input('modal-input-picker-create')));
+                    DB::beginTransaction();
 
-                    $files_data = [];
-                    if($request->hasFile('modal-input-files-create')){
-                        foreach($request->file('modal-input-files-create') as $files){
-                            /*
-                            $name = $files->getClientOriginalName();
-                            $files->move('/arxeia/eisagwgi', $name);
-                            //$files_data[] = $name;
-                            array_push($files_data, $name);
-                            */
-                            $datetime_now = date_create();
-                            $datetime = date_format($datetime_now, 'YmdHis');
-                            $name = $datetime . '-' . $files->getClientOriginalName();
-                            $path = $files->storeAs('arxeia/eisagwgi', $name);
-                            $url  = \Storage::url($path); //stores the full path
-                            array_push($files_data, $url);
+                    try{
+                         //dd(Carbon::parse($request->input('modal-input-picker-create')));
+
+                        $files_data = [];
+                        if($request->hasFile('modal-input-files-create')){
+                            foreach($request->file('modal-input-files-create') as $files){
+                                /*
+                                $name = $files->getClientOriginalName();
+                                $files->move('/arxeia/eisagwgi', $name);
+                                //$files_data[] = $name;
+                                array_push($files_data, $name);
+                                */
+                                $datetime_now = date_create();
+                                $datetime = date_format($datetime_now, 'YmdHis');
+                                $name = $datetime . '-' . $files->getClientOriginalName();
+                                $path = $files->storeAs('arxeia/eisagwgi', $name);
+                                $url  = \Storage::url($path); //stores the full path
+                                array_push($files_data, $url);
+                            }
                         }
+                        //dd($files_data);
+                        /*
+                        $path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
+                        $url = \Storage::url($path); //stores the full path
+                        $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
+                        */
+                        $importassignment = new ImportAssignment();
+
+                        $importassignment->warehouse_id           = $request->input('modal-input-warehouse-create');
+                        $importassignment->import_assignment_text = $request->input('modal-input-text-create');
+                        //$importassignment->import_deadline      = $request->input(strtotime('modal-input-picker-create'));
+                        //$importassignment->import_deadline        = Carbon::create($request->input('modal-input-picker-create'))->format('d-m-Y H:i');
+                        $importassignment->import_deadline        = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-picker-create'));
+                        $importassignment->uploaded_files         = json_encode($files_data);
+                        $importassignment->comments               = $request->input('modal-input-comments-create');
+                        $importassignment->is_open                = 1; //true
+
+                        //Create a code for this assignment, 10 digits long, and get it from the input text as hashed text!
+                        //$importassignment->import_assignment_code = strtoupper(substr(\Hash::make($request->input('modal-input-text-create')), -10));
+
+                        $digits = 5; //a random integer between 10,000 and 99,999 as my assignment code
+                        $importassignment->import_assignment_code = rand(pow(10, $digits-1), pow(10, $digits)-1);
+
+
+                        $importassignment->save();
+
+
+                        DB::commit();
+
+                        //success, 200
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+
+                        //failure, 500
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
                     }
-                    //dd($files_data);
-                    /*
-                    $path = $request->file('modal-input-photo-create')->store('images/profile');  //stored in storage/app/images/profile/
-                    $url = \Storage::url($path); //stores the full path
-                    $user->photo_url = $url; //access it in Blade as:: {{ $user->photo_url }}
-                    */
-                    $importassignment = new ImportAssignment();
-
-                    $importassignment->warehouse_id           = $request->input('modal-input-warehouse-create');
-                    $importassignment->import_assignment_text = $request->input('modal-input-text-create');
-                    //$importassignment->import_deadline      = $request->input(strtotime('modal-input-picker-create'));
-                    //$importassignment->import_deadline        = Carbon::create($request->input('modal-input-picker-create'))->format('d-m-Y H:i');
-                    $importassignment->import_deadline        = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-picker-create'));
-                    $importassignment->uploaded_files         = json_encode($files_data);
-                    $importassignment->comments               = $request->input('modal-input-comments-create');
-                    $importassignment->is_open                = 1; //true
-
-                    //Create a code for this assignment, 10 digits long, and get it from the input text as hashed text!
-                    $importassignment->import_assignment_code = strtoupper(substr(\Hash::make($request->input('modal-input-text-create')), -10));
-
-                    $importassignment->save();
 
 
-                    //success, 200
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+
+                    // //success, 200
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
 
@@ -183,8 +212,8 @@ class ImportAssignmentController extends Controller
                 'modal-input-warehouse-edit.required' => 'Η αποθήκη απαιτείται',
                 'modal-input-text-edit.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-edit.required' => 'Η ημερομηνία/ώρα απαιτείται',
-                'modal-input-files-edit.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
-                'modal-input-files-edit.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
+                'modal-input-files-edit.*.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
+                'modal-input-files-edit.*.mimetypes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-isopen-edit.required' => 'Το πεδίο Ανοικτή/Κλειστή απαιτείται'
             ];
@@ -208,40 +237,67 @@ class ImportAssignmentController extends Controller
 
                 if($validator->passes()){
 
-                    $files_data = [];
-                    if($request->hasFile('modal-input-files-edit')){
-                        foreach($request->file('modal-input-files-edit') as $files){
-                            /*
-                            $name = $files->getClientOriginalName();
-                            $files->move('/arxeia/eisagwgi', $name);
-                            //$files_data[] = $name;
-                            array_push($files_data, $name);
-                            */
-                            $datetime_now = date_create();
-                            $datetime = date_format($datetime_now, 'YmdHis');
-                            $name = $datetime . '-' . $files->getClientOriginalName();
-                            $path = $files->storeAs('/arxeia/eisagwgi', $name);
-                            $url  = \Storage::url($path);
-                            array_push($files_data, $url);
+                    DB::beginTransaction();
+
+                    try{
+
+                        $files_data = [];
+                        if($request->hasFile('modal-input-files-edit')){
+                            foreach($request->file('modal-input-files-edit') as $files){
+                                /*
+                                $name = $files->getClientOriginalName();
+                                $files->move('/arxeia/eisagwgi', $name);
+                                //$files_data[] = $name;
+                                array_push($files_data, $name);
+                                */
+                                $datetime_now = date_create();
+                                $datetime = date_format($datetime_now, 'YmdHis');
+                                $name = $datetime . '-' . $files->getClientOriginalName();
+                                $path = $files->storeAs('/arxeia/eisagwgi', $name);
+                                $url  = \Storage::url($path);
+                                array_push($files_data, $url);
+                            }
                         }
+
+                        $importassignment = ImportAssignment::findOrFail($id);
+
+                        $importassignment->warehouse_id           = $request->input('modal-input-warehouse-edit');
+                        $importassignment->import_assignment_text = $request->input('modal-input-text-edit');
+                        $importassignment->import_deadline        = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-picker-edit'));
+                        $importassignment->uploaded_files         = json_encode($files_data);
+                        $importassignment->comments               = $request->input('modal-input-comments-edit');
+                        $importassignment->is_open                = $request->input('modal-input-isopen-edit');
+
+                        $importassignment->update($request->all());
+
+
+                        DB::commit();
+
+                        //success, 200
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+
+                        //failure, 500
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
                     }
 
-                    $importassignment = ImportAssignment::findOrFail($id);
 
-                    $importassignment->warehouse_id           = $request->input('modal-input-warehouse-edit');
-                    $importassignment->import_assignment_text = $request->input('modal-input-text-edit');
-                    $importassignment->import_deadline        = Carbon::createFromFormat('d-m-Y H:i', $request->input('modal-input-picker-edit'));
-                    $importassignment->uploaded_files         = json_encode($files_data);
-                    $importassignment->comments               = $request->input('modal-input-comments-edit');
-                    $importassignment->is_open                = $request->input('modal-input-isopen-edit');
 
-                    $importassignment->update($request->all());
-
-                    //success, 200
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // //success, 200
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -264,10 +320,12 @@ class ImportAssignmentController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
 
-            $importassignment = ImportAssignment::findOrFail($id);
-            $importassignment->delete();
 
             if ($request->ajax()){
+
+                $importassignment = ImportAssignment::findOrFail($id);
+                $importassignment->delete();
+
                 return \Response::json();
             }
 
@@ -283,18 +341,46 @@ class ImportAssignmentController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
 
-            $importassignment = ImportAssignment::findOrFail($id);
-
-            $importassignment->is_open = 1; //open the assignment
-
-            $importassignment->update($request->all());
-            //$export->update($request->only(['modal-input--']));
-
             if ($request->ajax()){
-                return \Response::json([
-                    'success' => true,
-                ], 200);
+
+                DB::beginTransaction();
+
+                try{
+                    $importassignment = ImportAssignment::findOrFail($id);
+
+                    $importassignment->is_open = 1; //open the assignment
+
+                    $importassignment->update($request->all());
+                    //$export->update($request->only(['modal-input--']));
+
+                    DB::commit();
+
+                    //success, 200
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                } catch (\Exception $e) {
+
+                    DB::rollBack();
+
+                    //failure, 500
+                    return \Response::json([
+                        'success' => false,
+                        'message' => $e->getMessage(),
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 500);
+
+                }
             }
+
+            return back();
+            // if ($request->ajax()){
+            //     return \Response::json([
+            //         'success' => true,
+            //     ], 200);
+            // }
 
 
         } else {
@@ -309,18 +395,47 @@ class ImportAssignmentController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
 
-            $importassignment = ImportAssignment::findOrFail($id);
-
-            $importassignment->is_open = 0; //close the assignment
-
-            $importassignment->update($request->all());
-            //$export->update($request->only(['modal-input--']));
-
             if ($request->ajax()){
-                return \Response::json([
-                    'success' => true,
-                ], 200);
+
+                DB::beginTransaction();
+
+                try{
+                    $importassignment = ImportAssignment::findOrFail($id);
+
+                    $importassignment->is_open = 0; //close the assignment
+
+                    $importassignment->update($request->all());
+                    //$export->update($request->only(['modal-input--']));
+
+                    DB::commit();
+
+                    //success, 200
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                } catch (\Exception $e) {
+
+                    DB::rollBack();
+
+                    //failure, 500
+                    return \Response::json([
+                        'success' => false,
+                        'message' => $e->getMessage(),
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 500);
+
+                }
             }
+
+
+            return back();
+            // if ($request->ajax()){
+            //     return \Response::json([
+            //         'success' => true,
+            //     ], 200);
+            // }
 
 
         } else {

@@ -88,39 +88,66 @@ class ToolController extends Controller
 
                 if($validator->passes()){
 
-                    $tool_for_charging = Tool::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $tool_for_charging->is_charged    = 1; //$request->input('modal-input-ischarged-charge');
-                    $tool_for_charging->employee_id   = $request->input('modal-input-towhom-charge');
-                    $tool_for_charging->comments      = $request->input('modal-input-comments-charge');
-                    //also, now upload the xrewstiko eggrafo...it is NECESSARY for the charging to be completed successfully
-                    //uncomment the following block for the file to be uploaded!
-                    /*
-                    $path = $request->file('modal-input-file-charge')->store('arxeia/xrewstika');  //stored in storage/app/arxeia/xrewstika/
-                    $url = \Storage::url($path); //stores the full path
-                    $tool_for_charging->file_url = $url; //access it in Blade as:: {{ $tool->file_url }}
-                    */
+                    try{
+                        $tool_for_charging = Tool::findOrFail($id);
 
-                    //$url = null;
-                    if($request->hasFile('modal-input-file-charge')){
-                        $file = $request->file('modal-input-file-charge');
-                        $datetime_now = date_create();
-                        $datetime = date_format($datetime_now, 'YmdHis');
-                        $name = $datetime . '-' . $file->getClientOriginalName();
-                        $path = $file->storeAs('arxeia/xrewstika', $name);
-                        $url  = \Storage::url($path);
+                        $tool_for_charging->is_charged    = 1; //$request->input('modal-input-ischarged-charge');
+                        $tool_for_charging->employee_id   = $request->input('modal-input-towhom-charge');
+                        $tool_for_charging->comments      = $request->input('modal-input-comments-charge');
+                        //also, now upload the xrewstiko eggrafo...it is NECESSARY for the charging to be completed successfully
+                        //uncomment the following block for the file to be uploaded!
+                        /*
+                        $path = $request->file('modal-input-file-charge')->store('arxeia/xrewstika');  //stored in storage/app/arxeia/xrewstika/
+                        $url = \Storage::url($path); //stores the full path
+                        $tool_for_charging->file_url = $url; //access it in Blade as:: {{ $tool->file_url }}
+                        */
 
-                        $tool_for_charging->file_url = $url;
+                        //$url = null;
+                        if($request->hasFile('modal-input-file-charge')){
+                            $file = $request->file('modal-input-file-charge');
+                            $datetime_now = date_create();
+                            $datetime = date_format($datetime_now, 'YmdHis');
+                            $name = $datetime . '-' . $file->getClientOriginalName();
+                            $path = $file->storeAs('arxeia/xrewstika', $name);
+                            $url  = \Storage::url($path);
+
+                            $tool_for_charging->file_url = $url;
+                        }
+
+                        $tool_for_charging->update($request->all());
+                        //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
+
+
+                        DB::commit();
+
+                        //success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                        //failure
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
                     }
 
-                    $tool_for_charging->update($request->all());
-                    //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
 
-                    //success
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+
+                    // //success
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -167,20 +194,48 @@ class ToolController extends Controller
 
                 if($validator->passes()){
 
-                    $tool_for_uncharging = Tool::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $tool_for_uncharging->is_charged  = 0; //$request->input('modal-input-ischarged-uncharge');
-                    $tool_for_uncharging->employee_id = null;
-                    $tool_for_uncharging->file_url    = null; //Important! Also, delete the actual xrewstiko arxeio/file here!!
-                    $tool_for_uncharging->comments    = $request->input('modal-input-comments-uncharge');
+                    try{
 
-                    $tool_for_uncharging->update($request->all());
-                    //$tool_for_uncharging->update($request->only(['modal-input-ischarged-uncharge']));
+                        $tool_for_uncharging = Tool::findOrFail($id);
 
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $tool_for_uncharging->is_charged  = 0; //$request->input('modal-input-ischarged-uncharge');
+                        $tool_for_uncharging->employee_id = null;
+                        $tool_for_uncharging->file_url    = null; //Important! Also, delete the actual xrewstiko arxeio/file here!!
+                        $tool_for_uncharging->comments    = $request->input('modal-input-comments-uncharge');
+
+                        $tool_for_uncharging->update($request->all());
+                        //$tool_for_uncharging->update($request->only(['modal-input-ischarged-uncharge']));
+
+
+                        DB::commit();
+
+                        //success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                        //failure
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
+
+
+
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
 
@@ -234,22 +289,49 @@ class ToolController extends Controller
                 }
                 if($validator->passes()){
 
-                    $tool = new Tool();
+                    DB::beginTransaction();
 
-                    $tool->name         = $request->input('modal-input-name-create');
-                    $tool->code         = $request->input('modal-input-code-create');
-                    $tool->description  = $request->input('modal-input-description-create');
-                    $tool->comments     = $request->input('modal-input-comments-create');
-                    $tool->quantity     = $request->input('modal-input-quantity-create');
-                    $tool->is_charged   = 0; //$request->input('modal-input-ischarged-create');  //should just be false? because a new tool is not charged yet...
-                    //$tool->employee_id  = //$request->input('modal-input-towhom-create');
-                    //$tool->file_url     = $request->input('modal-input-file-create');
-                    $tool->save();
+                    try{
 
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $tool = new Tool();
+
+                        $tool->name         = $request->input('modal-input-name-create');
+                        $tool->code         = $request->input('modal-input-code-create');
+                        $tool->description  = $request->input('modal-input-description-create');
+                        $tool->comments     = $request->input('modal-input-comments-create');
+                        $tool->quantity     = $request->input('modal-input-quantity-create');
+                        $tool->is_charged   = 0; //$request->input('modal-input-ischarged-create');  //should just be false? because a new tool is not charged yet...
+                        //$tool->employee_id  = //$request->input('modal-input-towhom-create');
+                        //$tool->file_url     = $request->input('modal-input-file-create');
+                        $tool->save();
+
+
+                        DB::commit();
+
+                        //success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                        //failure
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
+
+
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -304,23 +386,50 @@ class ToolController extends Controller
                 }
                 if($validator->passes()){
 
-                    $tool = Tool::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $tool->name         = $request->input('modal-input-name-edit');
-                    $tool->code         = $request->input('modal-input-code-edit');
-                    $tool->description  = $request->input('modal-input-description-edit');
-                    $tool->comments     = $request->input('modal-input-comments-edit');
-                    $tool->quantity     = $request->input('modal-input-quantity-edit');
-                    //$tool->is_charged   = $request->input('modal-input-ischarged-update');
-                    //$tool->employee_id  = $request->input('modal-input-towhom-update');
-                    //$tool->file_url     = $request->input('modal-input-file-update');
+                    try{
+                        $tool = Tool::findOrFail($id);
 
-                    $tool->update($request->all());
+                        $tool->name         = $request->input('modal-input-name-edit');
+                        $tool->code         = $request->input('modal-input-code-edit');
+                        $tool->description  = $request->input('modal-input-description-edit');
+                        $tool->comments     = $request->input('modal-input-comments-edit');
+                        $tool->quantity     = $request->input('modal-input-quantity-edit');
+                        //$tool->is_charged   = $request->input('modal-input-ischarged-update');
+                        //$tool->employee_id  = $request->input('modal-input-towhom-update');
+                        //$tool->file_url     = $request->input('modal-input-file-update');
 
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $tool->update($request->all());
+
+
+                        DB::commit();
+
+                        //success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                        //failure
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
+
+
+
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
 
                 }
             }
@@ -345,12 +454,13 @@ class ToolController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
 
-            $tool = Tool::findOrFail($id);
-            $tool->delete();
-
             //also, delete its charging (if charged already)?
 
             if ($request->ajax()){
+
+                $tool = Tool::findOrFail($id);
+                $tool->delete();
+
                 return \Response::json();
             }
 

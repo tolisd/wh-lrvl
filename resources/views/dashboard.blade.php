@@ -12,7 +12,7 @@
 
 @section('content')
 
-    <p>Καλώς ήλθατε, αυτή είναι η εφαρμογή Warehouse/Αποθήκη της <strong>Ypostirixis Group</strong>.</p>
+    <p>Καλώς ήλθατε, αυτή είναι η εφαρμογή "<strong>Warehouse/Αποθήκη</strong>" της <strong>Ypostirixis Group Constructions</strong>.</p>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 

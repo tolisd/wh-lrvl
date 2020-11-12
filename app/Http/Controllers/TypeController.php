@@ -39,13 +39,14 @@ class TypeController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
             $validation_rules = [
-                'modal-input-name-create' => 'required',  //also make unique? ..but it is not unique in the DB..
+                'modal-input-name-create' => 'required|unique:types,name',  //also make unique? ..but it is not unique in the DB..
                 'modal-input-description-create' => 'required',
                 'modal-input-category-create' => 'required|exists:category,id',
             ];
 
             $custom_messages = [
                 'modal-input-name-create.required' => 'Το όνομα απαιτείται',
+                'modal-input-name-create.unique' => 'Το όνομα υπάρχει ήδη. Επιλέξτε διαφορετικό όνομα.',
                 'modal-input-description-create.required' => 'Η περιγραφή απαιτείται',
                 'modal-input-category-create.required' => 'Η κατηγορία απαιτείται',
             ];
@@ -65,19 +66,45 @@ class TypeController extends Controller
 
                 if($validator->passes()){
 
-                    $type = new Type();
+                    DB::beginTransaction();
 
-                    $type->name            = $request->input('modal-input-name-create');
-                    $type->description     = $request->input('modal-input-description-create');
-                    $type->category_id     = $request->input('modal-input-category-create');
+                    try{
 
-                    $type->save();
+                        $type = new Type();
 
-                    //success
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                        $type->name            = $request->input('modal-input-name-create');
+                        $type->description     = $request->input('modal-input-description-create');
+                        $type->category_id     = $request->input('modal-input-category-create');
+
+                        $type->save();
+
+
+                        DB::commit();
+
+                        //success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch(\Exception $e) {
+
+                        DB::rollBack();
+
+                         //success
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+
+                    }
+
+                    // //success
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -100,13 +127,14 @@ class TypeController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
             $validation_rules = [
-                'modal-input-name-edit' => 'required', //also make unique? ..but it is not unique in the DB..
-                'modal-input-description-edit' => 'required',
-                'modal-input-category-edit' => 'required|exists:category,id',
+                'modal-input-name-edit' => ['required', \Illuminate\Validation\Rule::unique('types', 'name')->ignore($id)], //also make unique? ..but it is not unique in the DB..
+                'modal-input-description-edit' => ['required'],
+                'modal-input-category-edit' => ['required', 'exists:category,id'],
             ];
 
             $custom_messages = [
                 'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
+                'modal-input-name-edit.unique' => 'Το όνομα υπάρχει ήδη. Επιλέξτε διαφορετικό όνομα.',
                 'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται',
                 'modal-input-category-edit.required' => 'Η κατηγορία απαιτείται',
             ];
@@ -126,21 +154,44 @@ class TypeController extends Controller
 
                 if($validator->passes()){
 
-                    //update the object in the database
-                    $type = Type::findOrFail($id);
+                    DB::beginTransaction();
 
-                    $type->name            = $request->input('modal-input-name-edit');
-                    $type->description     = $request->input('modal-input-description-edit');
-                    $type->category_id     = $request->input('modal-input-category-edit');
+                    try{
+                         //update the object in the database
+                        $type = Type::findOrFail($id);
 
-                    $type->update($request->all());
+                        $type->name            = $request->input('modal-input-name-edit');
+                        $type->description     = $request->input('modal-input-description-edit');
+                        $type->category_id     = $request->input('modal-input-category-edit');
+
+                        $type->update($request->all());
+
+
+                        DB::commit();
+
+                         //success
+                        return \Response::json([
+                            'success' => true,
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 200);
+
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+
+                         //success
+                        return \Response::json([
+                            'success' => false,
+                            'message' => $e->getMessage(),
+                            //'errors' => $validator->getMessageBag()->toArray(),
+                        ], 500);
+                    }
 
 
                     //success
-                    return \Response::json([
-                        'success' => true,
-                        //'errors' => $validator->getMessageBag()->toArray(),
-                    ], 200);
+                    // return \Response::json([
+                    //     'success' => true,
+                    //     //'errors' => $validator->getMessageBag()->toArray(),
+                    // ], 200);
                 }
             }
 
@@ -163,10 +214,13 @@ class TypeController extends Controller
         //4 user types -> Admin, CEO, Foreman, Worker
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
-            $type = Type::findOrFail($id);
-            $type->delete();
+
 
             if ($request->ajax()){
+
+                $type = Type::findOrFail($id);
+                $type->delete();
+
                 return \Response::json();
             }
 

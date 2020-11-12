@@ -189,7 +189,7 @@
                                         <div class="col-lg-9">
                                             <select name="modal-input-exportassignment-create" id="modal-input-exportassignment-create" class="form-control">
                                             @foreach($exportassignments as $expassgnm)
-                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->warehouse->name }}], [{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]/[{{ $expassgnm->warehouse->name }}],[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
                                         </div>
@@ -414,7 +414,7 @@
                                         -->
                                             <select name="modal-input-exportassignment-edit" id="modal-input-exportassignment-edit" class="form-control">
                                             @foreach($exportassignments as $expassgnm)
-                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->warehouse->name }}], [{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]/[{{ $expassgnm->warehouse->name }}],[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
 
@@ -858,7 +858,7 @@
             //Export assignment name!
             modal.find('.modal-body #modal-input-exportassignment-edit').empty();
             //console.log(export_assignment);
-            modal.find('.modal-body #modal-input-exportassignment-edit').val('['+export_assignment.warehouse.name +'], [' + export_assignment.export_deadline+']');
+            modal.find('.modal-body #modal-input-exportassignment-edit').val('['+export_assignment.export_assignment_code+']/['+export_assignment.warehouse.name +'],[' + export_assignment.export_deadline+']');
 
 
 

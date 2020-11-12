@@ -119,7 +119,7 @@ class UserController extends Controller
 
                         DB::rollBack();
 
-                        //validation success, 200 OK.
+                        //validation failure, 500 OK.
                         return \Response::json([
                             'success' => false,
                             'message' => $e->getMessage(),
@@ -217,12 +217,51 @@ class UserController extends Controller
             if ($request->ajax()){
                 //$u_id = $request->input("data-uid");   //take ALL input values into $input, as an assoc.array
                 //$u_id = $arr['data-uid'];
+                DB::beginTransaction();
 
-                $user = User::findOrFail($id); //was findOrFail($u_id);
-                //first, make sure user is NOT logged in (or is logged out). Important!
-                $user->delete();
+                try{
+                    //User needs to be logged out BEFORE he is deleted from the Database.
+                    //first, make sure user is NOT logged in (or is logged out). Important!
 
-                return \Response::json();
+                    // logout a specific user (by his/her $id) (found this solution in StackOverflow!)
+
+                    // 1. get current (currently logged in?) user
+                    $current_user = Auth::user();
+
+                    // 2. logout user
+                    $userToLogout = User::findOrFail($id);
+                    // \Session::getHandler()->destroy($userToLogout->session_id); //taken from another answer in the same thread...
+                    Auth::setUser($userToLogout); //from Laravel API 7.x Docs: "Set the current user" Contracts/Auth/Guard/setUser()
+                    Auth::logout();
+
+                    // 3. set again current user
+                    Auth::setUser($current_user);
+
+                    //after he/she is logged out as above, delete the actual user..!
+                    $user = User::findOrFail($id); //was findOrFail($u_id);
+                    $user->delete();
+
+                    DB::commit(); //commit the changes
+
+                    //success, 200 OK.
+                    return \Response::json([
+                        'success' => true,
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 200);
+
+                } catch(\Exception $e){
+
+                    DB::rollBack();
+
+                    //something happened...
+                    return \Response::json([
+                        'success' => false,
+                        'message' => $e->getMessage(),
+                        //'errors' => $validator->getMessageBag()->toArray(),
+                    ], 500);
+                }
+
+                //return \Response::json();
             }
 
             // return back();
@@ -382,7 +421,7 @@ class UserController extends Controller
                             'success' => false,
                             'message' => $e->getMessage(),
                             //'errors' => $validator->getMessageBag()->toArray(),
-                        ], 200);
+                        ], 500);
                     }
 
 

@@ -70,7 +70,7 @@
                         <td>
                             <ul>
                             @foreach($product->warehouses as $warehouse)
-                                <li>{{ $warehouse->name }}, ποσότητα:{{ $warehouse->pivot->quantity }}</li>
+                                <li>{{ $warehouse->name }}&nbsp;({{ $warehouse->pivot->quantity }}&nbsp;{{ $product->measureunit->name }})</li>
                             @endforeach
                             </ul>
                         </td>
@@ -307,7 +307,7 @@
 
                                                     <div class="form-group col-lg-12">
                                                         <label class="col-form-label text-right" for="modal-input-warehouse-create">Αποθήκη</label>
-                                                        <select name="modal-input-warehouse-create[]" id="modal-input-warehouse-create" class="form-control selc">
+                                                        <select name="modal-input-warehouse-create[]" id="modal-input-warehouse-create" class="form-control selc-crt">
                                                         @foreach($warehouses as $warehouse)
                                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                                         @endforeach
@@ -732,7 +732,7 @@
         var x = 1;
 
         var html1 = '<div class="whqty"><div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-warehouse-create">Αποθήκη</label>'+
-            '<select name="modal-input-warehouse-create[]" id="modal-input-warehouse-create" class="form-control selc"> @foreach($warehouses as $warehouse)'+
+            '<select name="modal-input-warehouse-create[]" id="modal-input-warehouse-create" class="form-control selc-crt"> @foreach($warehouses as $warehouse)'+
             '<option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option> @endforeach </select><div>';
 
         var html2 = '<div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-quantity-create">Ποσότητα</label>'+
@@ -747,7 +747,7 @@
             if(x < count){
                 ++x;
                 $('#whqty-create').append(html1 + html2);
-                $('#add-form').find('select.selc').val('');
+                $('#add-form').find('select.selc-crt').val('');
                 // $(this).remove();
                 return false;
             }
@@ -786,7 +786,7 @@
 
 
         //Check for Duplicates!
-        $(document).on('change', 'select.selc', function(){
+        $(document).on('change', 'select.selc-crt', function(){
         //$("select.selc").change(function(){
             // check input ($(this).val()) for validity here
             console.log($(this).val());
@@ -794,7 +794,7 @@
             var valueOfChangedInput = $(this).val();
             var timeRepeated = 0;
 
-            $("select.selc").each(function(){
+            $("select.selc-crt").each(function(){
                 //Inside each() check the 'valueOfChangedInput' with all other existing input
                 if ($(this).val() == valueOfChangedInput) {
                     timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
@@ -806,7 +806,7 @@
 
             if(timeRepeated > 1) {
                 //alert("Δηλώσατε ίδιες Αποθήκες!");
-                $('#add-form').find('select.selc,input.qty').val('');
+                $('#add-form').find('select.selc-crt,input.qty').val('');
 
                 Swal.fire({
                     icon: "error",
@@ -819,6 +819,60 @@
             //     alert("No Duplicates!");
             // }
         });
+
+
+            //Check for Duplicates in update modal!
+            //It will not allow you to enter an already "selected" warehouse, in any permutation/combination!
+            $(document).on('change', 'select.selc1', function(){
+                // check input ($(this).val()) for validity here
+                // console.log('selc1_change',$(this));
+                // console.log($(this).val());
+
+                var valueOfChangedInput = $(this).val();
+                // var valueOfChangedInput1 = $('select.selc').val();
+                var timeRepeated = 0;
+                var tR = 0;
+
+                //"old" select VS. "new" select
+                $("select.selc").each(function(){
+                    // console.log('selc_each: ', $(this));
+                    // console.log('this(selc1).val: ', $(this).val());
+                    // console.log('valueOFChangedInput_selc', valueOfChangedInput);
+                    // console.log($(this).val() == valueOfChangedInput);
+
+                    //Inside each() check the 'valueOfChangedInput' with all other existing input
+                    if ($(this).val() == valueOfChangedInput) {
+                        timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                    }
+                });
+
+                //"new" select VS. "new" select
+                $('select.selc1').each(function(){ //this == select.selc1
+                    // console.log('selc1_each: ', $(this));
+                    // console.log($(this).val());
+                    // console.log('valueOFChangedInput_selc1', valueOfChangedInput1);
+                    // console.log($(this).val() == valueOfChangedInput1);
+
+                    //Inside each() check the 'valueOfChangedInput' with all other existing input
+                    if ($(this).val() == valueOfChangedInput) {
+                        tR++; //this will be executed at least 1 time because of the input, which is changed just now
+                    }
+                });
+
+                if((timeRepeated >= 1) || (tR > 1)){ //changed from timeRepeated > 1 TO timeRepeated >= 1, and it worked!
+                    $('#edit-form').find('select.selc1').val('');
+
+                    Swal.fire({
+                        icon: "error",
+                        type: "error",
+                        title: 'Προσοχή!',
+                        text: 'Οι Αποθήκες πρέπει να είναι διαφορετικές μεταξύ τους! Παρακαλώ επανεπιλέξτε Αποθήκες!',
+                    });
+                }
+
+                //console.log('timeRepeated_after: ', timeRepeated);
+                // console.log('tR_after: ', tR);
+            });
 
 
 
@@ -892,17 +946,17 @@
 
             //foreach of the warehouses i want to display on screen the whole block, [warehouse + quantity]!
             //first, remove the old divs, because with each Update click there will be added again!
-            console.log($('.whqty-edit').length); //0
+            // console.log($('.whqty-edit').length); //0
             // console.log($('#whqt-edit-wrapper').children().size());
             // if($('#whqty-edit').length > warehouses.length){
             //     $('#whqty-edit').remove();
             // }
 
-            console.log('Warehouses: ', warehouses);
+            // console.log('Warehouses: ', warehouses);
 
             $.each(warehouses, function (key, val){
 
-                console.log('warehouses_value', val);
+                // console.log('warehouses_value', val);
 
                 var html1_edit = '<div class="whqty-edit"><div class="form-group col-lg-12"><label class="col-form-label text-right" for="modal-input-warehouse-edit">Αποθήκη</label>'+
                     '<select name="modal-input-warehouse-edit[]" id="modal-input-warehouse-edit" class="form-control selc">'+
@@ -920,13 +974,13 @@
 
                 $('#whqty-edit').append(html1_edit + html2_edit);
 
-                console.log($('#whqt-edit-wrapper > div.whqty-edit').length);
+                // console.log($('#whqt-edit-wrapper > div.whqty-edit').length);
 
             });
 
 
             // console.log('after: ', $('.whqty-edit').length); //correct value
-
+            //Add the "add new div" button
             $('#add-whqt-button-edit').remove(); //remove it, or else the buttons are adding up...
 
             var html3_edit = '<div class="form-group col-lg-12">'+
@@ -959,136 +1013,77 @@
                 e.preventDefault();
 
                 if(z <= rest_wh_count){
-                    ++z;
+
+                    z++;
+
                     $('#whqty-edit').append(html1_edit + html2_edit);
                     $('#edit-form').find('select.selc1').val('');
                     //return false;
+
                 } else {
+
                     Swal.fire({
                         icon: "error",
                         type: "error",
                         title: 'Προσοχή!',
                         text: 'Δεν μπορείτε να προσθέσετε περισσότερες Αποθήκες!',
                     });
+
                 }
+
+                // console.log('zPlus: ', z);
+                // console.log('plus: ',$('.whqty-edit').length);
+                // console.log('restWHcount_PLUS: ', rest_wh_count);
             });
 
-            //remove a div
+            //remove am existing div
             $(document).on('click', '.minus-btn-edit', function(e){
                 e.preventDefault();
-                // console.log(x);
-                // console.log($(this));
-                console.log($('.whqty-edit').length);
 
-                if($('.whqty-edit').length > 1){
+                if(z >= rest_wh_count){
+                //if($('.whqty-edit').length > 1){
                     $(this).siblings().remove();
                     $(this).remove();
+
                     z--; //reset the z count. it works!
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        type: "error",
-                        title: 'Προσοχή!',
-                        text: 'Πρέπει να δηλώσετε τουλάχιστον 1 Αποθήκη!',
-                    });
+
                 }
+                // else {
+
+                //     Swal.fire({
+                //         icon: "error",
+                //         type: "error",
+                //         title: 'Προσοχή!',
+                //         text: 'Πρέπει να δηλώσετε τουλάχιστον 1 Αποθήκη!',
+                //     });
+
+                // }
+
+                // console.log('zMinus: ', z);
+                // console.log('minus: ', $('.whqty-edit').length);
+                // console.log('restWHcount_MINUS: ', rest_wh_count);
             });
 
 
-        //Check for Duplicates!
-        $(document).on('change', 'select.selc1', function(){
-            // check input ($(this).val()) for validity here
-            console.log($(this).val());
+            //also, populate the quantity fields!
+            // console.log('all_Quantities: ', allquantities);
+            // console.log('allocated_wareh: ', warehouses);
 
-            var valueOfChangedInput = $(this).val();
-            var timeRepeated = 0;
+            //first store the quantities in an array..and afterwards only allocate them to the quantity fields
+            var qt_arr = [];
 
-            $("select.selc").each(function(){
-                //Inside each() check the 'valueOfChangedInput' with all other existing input
-                if ($(this).val() == valueOfChangedInput) {
-                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
-                }
-            });
-
-            $("select.selc1").each(function(){
-                //Inside each() check the 'valueOfChangedInput' with all other existing input
-                if ($(this).val() == valueOfChangedInput) {
-                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
-                }
-            });
-
-            if(timeRepeated > 1) {
-                $('#edit-form').find('select.selc1').val('');
-
-                Swal.fire({
-                    icon: "error",
-                    type: "error",
-                    title: 'Προσοχή!',
-                    text: 'Οι Αποθήκες πρέπει να είναι διαφορετικές μεταξύ τους!',
-                });
-            }
-
-            timeRepeated--;
-
-        });
-
-
-        //also, populate the quantity fields!
-        // console.log('all Quantities: ', allquantities);
-        // console.log('allocated_warehouses: ', warehouses);
-
-        //first store the quantities in an array..and afterwards only allocate them to the quantity fields
-        var qt_arr = [];
-
-        $.each(allquantities, function(key, val){
+            $.each(allquantities, function(key, val){
                 $.each(warehouses, function(k,v){
                     if((val.product_id == v.pivot.product_id) && (val.warehouse_id == v.id)){
-                       qt_arr.unshift(val.quantity); //Correct, moves value to beginning of the array,much unlike push (aka to the end of the array)
+                        qt_arr[k] = val.quantity; //not push, not unshift either here!! it's mixing the results!!
                     }
                 });
-        });
-
-        //console.log('array of quantities: ',qt_arr);
-
-        // var t = JSON.stringify(qt_arr);
-        // console.log(t); //[]
-
-        $.each(qt_arr, function(){
-            var elem = qt_arr.shift();
-            //modal.find('.modal-body #modal-input-quantity-edit').val(elem);
-            $('.modal-body .qty').each(function(){
-                modal.find('.modal-body #modal-input-quantity-edit').val(elem);
             });
-        });
 
-        // $('.modal-body .qty').each(function(){
-        //     modal.find('.modal-body #modal-input-quantity-edit').val(qt_arr.shift());
-        // });
-
-        // var t = JSON.stringify(qt_arr);
-        // console.log(t); //[]
-
-
-        // for(var i = 0; i < qt_arr.length; i++){
-        //     modal.find('.qty').val(qt_arr[i]);
-        // }
-
-        // $('.modal-body [name="modal-input-quantity-edit[]"]').each(function(key,val){
-        //     modal.find('.modal-body #modal-input-quantity-edit').val(qt_arr.shift());
-        // });
-
-        // $('.modal-body .qty').each(function(){
-        //     modal.find('.modal-body #modal-input-quantity-edit').val(qt_arr.shift());
-        // });
-
-        //modal.find('.modal-body .qty').val(qt_arr);
-
-
-
-
-
-
-
+            //populate the fields! done! notice, its byClass not byId, "input.qty"
+            $('.modal-body .whqty-edit input.qty').each(function(i,obj){
+                $(this).val(qt_arr[i]);
+            });
 
 
 

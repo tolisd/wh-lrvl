@@ -182,7 +182,7 @@
                                             -->
                                             <select name="modal-input-importassignment-create" id="modal-input-importassignment-create" class="form-control">
                                             @foreach($importassignments as $impassgnm)
-                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]/[{{ $impassgnm->warehouse->name }}],[{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
                                         </div>
@@ -401,9 +401,9 @@
                                             <input type="text" name="modal-input-exportassignment-edit" class="form-control-plaintext"
                                                 id="modal-input-importassignment-edit" value="" readonly />
                                         -->
-                                            <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control">
+                                            <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control mia-edt">
                                             @foreach($importassignments as $impassgnm)
-                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]/[{{ $impassgnm->warehouse->name }}],[{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
 
@@ -801,7 +801,7 @@
             modal.find('.modal-body #modal-input-warehouse-edit').val(warehouseid); //hidden input in edit modal.
 
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
-            modal.find('.modal-body #modal-input-importassignmentid-edit').val(iimportassignmentid); //hidden input
+            modal.find('.modal-body #modal-input-importassignmentid-edit').val(importassignmentid); //hidden input
 
             modal.find('.modal-body #modal-input-impco-edit').val(companyid);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
@@ -825,10 +825,26 @@
             modal.find('.modal-body #modal-input-recipient-edit').empty();
 
             //Export assignment name!
-            modal.find('.modal-body #modal-input-importassignment-edit').empty();
+            console.log('im_as: ' ,import_assignment); //array of i_a?
+            // modal.find('.modal-body #modal-input-importassignment-edit').empty();
             //console.log(export_assignment);
-            modal.find('.modal-body #modal-input-importassignment-edit').val('['+import_assignment.warehouse.name +'], [' + import_assignment.import_deadline+']');
+            modal.find('.modal-body #modal-input-importassignment-edit').val('['+import_assignment.import_assignment_code+']/['+import_assignment.warehouse.name +'],[' + import_assignment.import_deadline+']');
 
+
+
+            // $.each(import_assignment, function(key,val){
+            //     // console.log('key: ', key);
+            //     // console.log('value: ', val);
+            //     if()
+
+            // });
+
+            // $('.mia-edt').each(function(k,v){
+            //     console.log('key: ', k);
+            //     console.log('value: ', v);
+            //     console.log('$thisVAL: ', $(this).val());
+            //     //modal.find($(this)).append();
+            // });
 
 
             //console.log('emps_per_wh: ', employeesperwarehouse);

@@ -6,6 +6,8 @@
 
 @section('content_header')
     <h1>Αποθήκη/Warehouse | Όλα τα Εργαλεία</h1>
+    <img src="/images/pexels-energepiccom-175039-gamma.jpg" alt="">
+    <!-- <div class="parallax"></div> -->
 @stop
 
 
@@ -14,6 +16,11 @@
     .dt-buttons{
         margin-bottom: 10px;
         padding-bottom: 5px;
+    }
+    .content-header img{
+        width: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
     }
 </style>
 
@@ -56,11 +63,13 @@
                             <td>{{ $tool->comments }}</td>
                             <td>{{ $tool->quantity }}</td> <!--σε τεμάχια ALWAYS! 'τμχ.' -->
 
-                            @if($tool->is_charged == 0) <!-- boolean -->
-                                <td><i class="far fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Όχι</td>
-                            @elseif($tool->is_charged == 1)
-                                <td><i class="fas fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Ναι</td>
-                            @endif
+                            <td>
+                                @if($tool->is_charged == 0) <!-- boolean -->
+                                    <i class="far fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Όχι
+                                @elseif($tool->is_charged == 1)
+                                    <i class="fas fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Ναι
+                                @endif
+                            </td>
 
                             <td>
                                 {{ $employees->find($tool->employee_id)->user->name ?? '' }}
