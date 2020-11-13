@@ -23,7 +23,7 @@ class ExportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
-            $exportassignments = ExportAssignment::all();
+            $exportassignments = ExportAssignment::where('is_open', '=', 1)->get(); // was: ExportAssignment::all();, but I only want the currently OPEN ones
             $exports = Export::all();
             $companies = Company::all();
             $transport_companies = Transport::all();
@@ -102,8 +102,8 @@ class ExportController extends Controller
                 'modal-input-shipco-create' => 'required',
                 'modal-input-sendplace-create' => 'required',
                 'modal-input-destin-create' => 'required',
-                'modal-input-chargehrs-create' => 'required',
-                'modal-input-hours-create' => 'required',
+                'modal-input-chargehrs-create' => 'required|numeric',
+                'modal-input-hours-create' => 'required|numeric',
                 'modal-input-bulletin-create' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-exportassignment-create' => 'required',
@@ -113,16 +113,18 @@ class ExportController extends Controller
             //custom error messages for the above validation rules
             $custom_messages = [
                 'modal-input-recipient-create.required' => 'Ο Υπεύθυνος Παράδοσης απαιτείται',
-                'modal-input-expco-create.required' => 'Η Εταιρεία Ααράδοσης απαιτείται',
+                'modal-input-expco-create.required' => 'Η Εταιρεία Παράδοσης απαιτείται',
                 'modal-input-dtdeliv-create.required' => 'Η Ημ/νία & Ώρα Παράδοσης απαιτείται',
                 'modal-input-vehicleregno-create.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-create.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-sendplace-create.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-destin-create.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
+                'modal-input-chargehrs-create.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-hours-create.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
-                'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
+                'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-create.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
                 'modal-input-products-create.required' => 'Τα Προϊόντα απαιτούνται',
@@ -143,6 +145,8 @@ class ExportController extends Controller
                 }
 
                 if($validator->passes()){
+
+                    // dd($request->input('modal-input-products-create'));
 
                     DB::beginTransaction();
 
@@ -176,6 +180,7 @@ class ExportController extends Controller
                         }
 
                         $export->save();
+
 
                         //also, update the pivot table, ie save the relation in the pivot table!
                         // usually it is array of id's passed into the relationship
@@ -240,8 +245,8 @@ class ExportController extends Controller
                 'modal-input-shipco-edit' => 'required',
                 'modal-input-sendplace-edit' => 'required',
                 'modal-input-destin-edit' => 'required',
-                'modal-input-chargehrs-edit' => 'required',
-                'modal-input-hours-edit' => 'required',
+                'modal-input-chargehrs-edit' => 'required|numeric',
+                'modal-input-hours-edit' => 'required|numeric',
                 'modal-input-bulletin-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-exportassignment-edit' => 'required',
@@ -258,7 +263,9 @@ class ExportController extends Controller
                 'modal-input-sendplace-edit.required' => 'Ο Τόπος Αποστολής απαιτείται',
                 'modal-input-destin-edit.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
+                'modal-input-chargehrs-edit.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-hours-edit.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
                 'modal-input-bulletin-edit.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',

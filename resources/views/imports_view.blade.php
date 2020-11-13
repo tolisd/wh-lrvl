@@ -35,11 +35,10 @@
                         <th class="text-left">Υπεύθυνος Παραλαβής</th>
                         <th class="text-left">Εταιρεία Εισαγωγής</th>
                         <th class="text-left">Ημ/νία &amp; Ώρα Παραλαβής</th>
-                        <th class="text-left">Αρ.Κυκλοφορίας Μεταφορικού Μέσου</th>
+                        <th class="text-left">Αρ.Κυκλ. Μεταφ.Μέσου</th>
                         <th class="text-left">Μεταφορική Εταιρεία</th>
 						<th class="text-left">Τόπος Αποστολής</th>
-						<th class="text-left">Χρεώσιμες Ώρες Εργασίας</th>
-						<th class="text-left">Ώρες Εργασίας</th>
+						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
 						<th class="text-left">Δελτίο Αποστολής</th>
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
                         <!-- <th class="text-left">Προϊόντα</th> -->
@@ -52,15 +51,16 @@
                 <tbody>
                 @foreach($imports as $import)
                     <tr class="user-row" data-iid="{{ $import->id }}">  <!-- necessary additions -->
-                        <td>[{{ $import->import_assignment->warehouse->name }}], [{{ $import->import_assignment->import_deadline->isoFormat('llll') }}]</td>
+                        <td>[{{ $import->import_assignment->import_assignment_code }}] <br/>
+                            [{{ $import->import_assignment->warehouse->name }}] <br/>
+                            [{{ $import->import_assignment->import_deadline->isoFormat('llll') }}]</td>
 						<td>{{ $import->employee->user->name }}</td>
                         <td>{{ $import->company->name }}</td>
 						<td>{{ $import->delivered_on->format('l d/m/Y @ H:i') }}</td>
 						<td>{{ $import->vehicle_reg_no }}</td>
 						<td>{{ $import->transport->name }}</td>
 						<td>{{ $import->delivery_address }}</td>
-						<td>{{ $import->chargeable_hours_worked }}</td>
-						<td>{{ $import->hours_worked }}</td>
+						<td>{{ $import->hours_worked }}/{{ $import->chargeable_hours_worked }}</td>
 						<td>{{ substr(basename($import->shipment_bulletin), 15) }}</td>
 						<td>{{ $import->discrete_description }}</td>
                         <!-- <td>{{ $import->product_id }}</td> -->
@@ -86,7 +86,8 @@
 									data-bulletin="{{ $import->shipment_bulletin }}"
 									data-description="{{ $import->discrete_description }}"
                                     data-importassignmentid="{{ $import->importassignment_id }}"
-                                    data-importassignment="{{ $import->import_assignment }}">
+                                    data-importassignment="{{ $import->import_assignment }}"
+                                    data-iacode="{{ $import->import_assignment->import_assignment_code }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -94,6 +95,7 @@
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-iid="{{ $import->id }}"
+                                    data-iacode="{{ $import->import_assignment->import_assignment_code }}"
                                     data-warehouse="{{ $import->import_assignment->warehouse->name }}"
                                     data-deliveredon="{{ $import->delivered_on->format('l, d-m-Y H:i') }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
@@ -182,7 +184,7 @@
                                             -->
                                             <select name="modal-input-importassignment-create" id="modal-input-importassignment-create" class="form-control">
                                             @foreach($importassignments as $impassgnm)
-                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]/[{{ $impassgnm->warehouse->name }}],[{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]&nbsp;/&nbsp;[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
                                         </div>
@@ -403,7 +405,7 @@
                                         -->
                                             <select name="modal-input-importassignment-edit" id="modal-input-importassignment-edit" class="form-control mia-edt">
                                             @foreach($importassignments as $impassgnm)
-                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]/[{{ $impassgnm->warehouse->name }}],[{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]&nbsp;/&nbsp;[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
 
@@ -607,6 +609,12 @@
                                     </div>
 
                                     <div class="form-group">
+										<label class="col-form-label" for="modal-input-code-del">Κωδικός Ανάθεσης</label>
+										<input type="text" name="modal-input-code-del" class="form-control-plaintext" id="modal-input-code-del"
+											value="" />
+									</div>
+
+                                    <div class="form-group">
 										<label class="col-form-label" for="modal-input-warehouse-del">Αποθήκη</label>
 										<input type="text" name="modal-input-warehouse-del" class="form-control-plaintext" id="modal-input-warehouse-del"
 											value="" />
@@ -687,7 +695,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
@@ -695,7 +703,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
@@ -703,7 +711,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
@@ -712,14 +720,14 @@
                             "title"  : "Στοιχεία Αναθέσεων Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                             }
                         },
                     ],
@@ -790,6 +798,7 @@
             var description = button.data('description');
             var importassignmentid = button.data('importassignmentid');
             var import_assignment = button.data('importassignment');
+            var iacode = button.data('iacode');
             //var products = button.data('productid');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -828,7 +837,10 @@
             console.log('im_as: ' ,import_assignment); //array of i_a?
             // modal.find('.modal-body #modal-input-importassignment-edit').empty();
             //console.log(export_assignment);
-            modal.find('.modal-body #modal-input-importassignment-edit').val('['+import_assignment.import_assignment_code+']/['+import_assignment.warehouse.name +'],[' + import_assignment.import_deadline+']');
+            // modal.find('.modal-body #modal-input-importassignment-edit').val('['+import_assignment.import_assignment_code+']/['+import_assignment.warehouse.name +'],[' + import_assignment.import_deadline+']');
+            modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
+
+
 
 
 
@@ -956,6 +968,7 @@
             var iid = button.data('iid'); // Extract info from data-* attributes
             var dtdeliv = button.data('deliveredon');
             var warehouse = button.data('warehouse');
+            var iacode = button.data('iacode');
 
 
             var modal = $(this);
@@ -963,6 +976,7 @@
             //modal.find('.modal-body .card .card-body #modal-input-iid-del').val(iid); //change the value to...
             modal.find('.modal-body .card .card-body #modal-input-dtdeliv-del').val(dtdeliv);
             modal.find('.modal-body .card .card-body #modal-input-warehouse-del').val(warehouse);
+            modal.find('.modal-body .card .card-body #modal-input-code-del').val(iacode);
 
             modal.find('.modal-footer #delete-button').attr("data-iid", iid); //SET user id value in data-iid attribute
 

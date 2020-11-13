@@ -34,7 +34,7 @@ class CreateExportProductTable extends Migration
     public function down()
     {
          //added this for dropping the 2 FKs
-         Schema::table('product_warehouse', function (Blueprint $table){
+         Schema::table('export_product', function (Blueprint $table){
             $table->dropForeign(['product_id']);
             $table->dropColumn('product_id');
 

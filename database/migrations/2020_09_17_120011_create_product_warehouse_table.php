@@ -20,6 +20,7 @@ class CreateProductWarehouseTable extends Migration
 
             $table->float('quantity'); //inserted here, after it was removed from the 'products' table
                                        //should be nullable(?) for the case when i dont have a product in that warehouse..
+                                       // NO! not nullable, its ok like this!
 
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('warehouse_id')->references('id')->on('warehouse');

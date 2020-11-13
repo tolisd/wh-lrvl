@@ -5,9 +5,12 @@
 @section('title', 'Αποθήκη | Εργαλεία')
 
 @section('content_header')
-    <h1>Αποθήκη/Warehouse | Όλα τα Εργαλεία</h1>
-    <img src="/images/pexels-energepiccom-175039-gamma.jpg" alt="">
-    <!-- <div class="parallax"></div> -->
+    <div id="tools-heading">
+        <h1>Αποθήκη/Warehouse | Όλα τα Εργαλεία</h1>
+    </div>
+
+    <!-- <img src="/images/pexels-energepiccom-175039-gamma.jpg" alt="" style="width: auto; border: 1px solid #ddd; border-radius: 24px;"> -->
+    <div class="parallax"></div>
 @stop
 
 
@@ -17,10 +20,24 @@
         margin-bottom: 10px;
         padding-bottom: 5px;
     }
-    .content-header img{
-        width: auto;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+
+    #tools-heading{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+
+    .parallax {
+        /* The image used */
+        background-image: url("/images/pexels-energepiccom-175039-gamma.jpg");
+
+        /* Set a specific height */
+        min-height: 350px;
+
+        /* Create the parallax scrolling effect */
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 </style>
 
@@ -76,7 +93,15 @@
                             </td> <!-- I need the employee's name here... -->
 
                             <td>
-                               {{ substr(basename($tool->file_url), 15) ?? '' }}
+                                @if(($tool->file_url != null) && ($tool->is_charged == 1))
+                                    @if(substr($tool->file_url, -3) == 'pdf')
+                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                    @elseif((substr($tool->file_url, -3) == 'doc') or (substr($tool->file_url, -4) == 'docx'))
+                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                    @else
+                                        <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}
+                                    @endif
+                                @endif
                             </td>
 
                             <td>
@@ -146,8 +171,6 @@
 
             <br/><br/>
             @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman -->
-
-
 
 
 

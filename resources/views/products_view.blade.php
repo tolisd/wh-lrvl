@@ -5,7 +5,10 @@
 @section('title', 'Αποθήκη | Όλα τα Προϊόντα')
 
 @section('content_header')
-    <h1><strong>Αποθήκη/Warehouse</strong> | Όλα τα Προϊόντα</h1>
+    <div id="products-heading">
+        <h1><strong>Αποθήκη/Warehouse</strong> | Όλα τα Προϊόντα</h1>
+    </div>
+    <div class="parallax"></div>
 @stop
 
 
@@ -16,9 +19,28 @@
         padding-bottom: 5px;
     }
 
+    #products-heading{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+
     #add-whqt-button-create{
         padding: 5px;
         margin: 5px;
+    }
+
+    .parallax {
+        /* The image used */
+        background-image: url("/images/pexels-tiger-lily-4483610-gamma.jpg");
+
+        /* Set a specific height */
+        min-height: 350px;
+
+        /* Create the parallax scrolling effect */
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
 </style>
@@ -42,7 +64,7 @@
                         <th class="text-left">Κατηγορία</th>
                         <th class="text-left">Είδος</th>  <!-- product type -->
                         <!--  <th class="text-left">Ποσότητα</th> -->
-                        <th class="text-left">Μον.Μέτρ.</th>
+                        <th class="text-left">Μονάδα</th>
                         <th class="text-left">Σχόλια</th>
                         <th class="text-left">Αποθήκη/-ες &amp; Ποσότητα</th>
                         <!--
@@ -128,12 +150,12 @@
                 <a href="{{ route('manager.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
-            @can('isAccountant')
-                <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
-            @endcan
-
             @can('isWarehouseForeman')
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
+            @can('isWarehouseWorker')
+                <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
@@ -663,6 +685,37 @@
             ordering: true,
             searching: true,
             select: true,
+
+            // language: {
+            //     "url": "resources/views/greek/greek.json", //404 isn't loading at all
+            // },
+
+            // language: {
+            //     "sDecimal":           ",",
+            //     "sEmptyTable":        "Δεν υπάρχουν δεδομένα στον πίνακα",
+            //     "sInfo":              "Εμφανίζονται _START_ έως _END_ από _TOTAL_ εγγραφές",
+            //     "sInfoEmpty":         "Εμφανίζονται 0 έως 0 από 0 εγγραφές",
+            //     "sInfoFiltered":      "(φιλτραρισμένες από _MAX_ συνολικά εγγραφές)",
+            //     "sInfoThousands":     ".",
+            //     "sLengthMenu":        "Δείξε _MENU_ εγγραφές",
+            //     "sLoadingRecords":    "Φόρτωση...",
+            //     "sProcessing":        "Επεξεργασία...",
+            //     "sSearch":            "Αναζήτηση:",
+            //     "sSearchPlaceholder": "Αναζήτηση",
+            //     "sThousands":         ".",
+            //     "sZeroRecords":       "Δεν βρέθηκαν εγγραφές που να ταιριάζουν",
+            //     "oPaginate": {
+            //         "sFirst":    "Πρώτη",
+            //         "sPrevious": "Προηγούμενη",
+            //         "sNext":     "Επόμενη",
+            //         "sLast":     "Τελευταία"
+            //     },
+            //     "oAria": {
+            //         "sSortAscending":  ": ενεργοποιήστε για αύξουσα ταξινόμηση της στήλης",
+            //         "sSortDescending": ": ενεργοποιήστε για φθίνουσα ταξινόμηση της στήλης"
+            //     }
+            // },
+
             dom: "Bfrtlip",
             /*
             buttons: [
@@ -812,7 +865,7 @@
                     icon: "error",
                     type: "error",
                     title: 'Προσοχή!',
-                    text: 'Οι Αποθήκες πρέπει να είναι διαφορετικές μεταξύ τους!',
+                    text: 'Οι Αποθήκες πρέπει να είναι διαφορετικές μεταξύ τους! Παρακαλώ επανεπιλέξτε Αποθήκες!',
                 });
             }
             // else {
@@ -1008,7 +1061,7 @@
 
 
 
-            //add new div
+            //add a new div
             $('#add-whqt-button-edit').on('click', function(e){
                 e.preventDefault();
 
@@ -1046,7 +1099,6 @@
                     $(this).remove();
 
                     z--; //reset the z count. it works!
-
                 }
                 // else {
 
@@ -1069,7 +1121,7 @@
             // console.log('all_Quantities: ', allquantities);
             // console.log('allocated_wareh: ', warehouses);
 
-            //first store the quantities in an array..and afterwards only allocate them to the quantity fields
+            //first store the quantities in an array..and afterwards only allocate them to the corresponding quantity fields
             var qt_arr = [];
 
             $.each(allquantities, function(key, val){
@@ -1141,7 +1193,7 @@
                 var formData = new FormData(this);
 
                 console.log(pid);
-                console.log(formData);
+                // console.log(formData);
 
                 //also, reset the error field(s).
                 $('.alert-danger').hide();
@@ -1232,7 +1284,7 @@
                 var formData = new FormData(this);
 
                 console.log(pid);
-                console.log(formData);
+                // console.log(formData);
 
                 $.ajax({
                     method: "POST",
@@ -1286,7 +1338,7 @@
             evt.preventDefault();
             var formData = new FormData(this);
 
-            console.log(formData);
+            // console.log(formData);
 
             //also, reset the error field(s).
             $('.alert-danger').hide();
@@ -1390,8 +1442,9 @@
                     url: '{{ url(request()->route()->getPrefix()) }}' + '/products/type/' + categ_id,
 
                     success: function(data){
-                        console.log('Data : ', data);
+                        // console.log('Data : ', data);
                         $('#modal-input-type-edit').empty();
+
                         $.each(data, function(key, value){
                             $('#modal-input-type-edit').append('<option value="'+ value +'">'+ key +'</option>');
                             //console.log('key='+key+ ', value='+value);

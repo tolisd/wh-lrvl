@@ -23,7 +23,7 @@ class ImportController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
 
-            $importassignments = ImportAssignment::all();
+            $importassignments = ImportAssignment::where('is_open', '=', 1)->get(); //was: ImportAssignment::all();, but I only want the currently OPEN ones
             $imports = Import::all();
             $companies = Company::all();
             $transport_companies = Transport::all();
@@ -103,8 +103,8 @@ class ImportController extends Controller
                 'modal-input-vehicleregno-create' => 'required',
                 'modal-input-shipco-create' => 'required',
                 'modal-input-destin-create' => 'required',
-                'modal-input-chargehrs-create' => 'required',
-                'modal-input-hours-create' => 'required',
+                'modal-input-chargehrs-create' => 'required|numeric',
+                'modal-input-hours-create' => 'required|numeric',
                 'modal-input-bulletin-create' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-importassignment-create' => 'required',
@@ -119,8 +119,10 @@ class ImportController extends Controller
                 'modal-input-vehicleregno-create.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-create.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-destin-create.required' => 'Ο Τόπος Αποστολής απαιτείται',
-                'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
+                'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
+                'modal-input-chargehrs-create.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-hours-create.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
                 'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
@@ -236,8 +238,8 @@ class ImportController extends Controller
                 'modal-input-vehicleregno-edit' => 'required',
                 'modal-input-shipco-edit' => 'required',
                 'modal-input-destin-edit' => 'required',
-                'modal-input-chargehrs-edit' => 'required',
-                'modal-input-hours-edit' => 'required',
+                'modal-input-chargehrs-edit' => 'required|numeric',
+                'modal-input-hours-edit' => 'required|numeric',
                 'modal-input-bulletin-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-importassignment-edit' => 'required',
@@ -252,8 +254,10 @@ class ImportController extends Controller
                 'modal-input-vehicleregno-edit.required' => 'Ο Αρ.Κυκλ. Μεταφορικού Μέσου απαιτείται',
                 'modal-input-shipco-edit.required' => 'Η Μεταφορική Εταιρεία απαιτείται',
                 'modal-input-destin-edit.required' => 'Ο Τόπος Αποστολής απαιτείται',
-                'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες ώρες εργασίας απαιτούνται',
+                'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
+                'modal-input-chargehrs-edit.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
+                'modal-input-hours-edit.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
                 'modal-input-bulletin-edit.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',

@@ -36,16 +36,14 @@
 						<th class="text-left">Υπεύθυνος Παράδοσης</th>
                         <th class="text-left">Εταιρεία Παράδοσης</th>
                         <th class="text-left">Ημ/νία &amp; Ώρα Παράδοσης</th>
-                        <th class="text-left">Αρ.Κυκλοφορίας Μεταφορικού Μέσου</th>
+                        <th class="text-left">Αρ.Κυκλ. Μετ.Μέσου</th>
                         <th class="text-left">Μεταφορική Εταιρεία</th>
 						<th class="text-left">Τόπος Αποστολής</th>
 						<th class="text-left">Τόπος Προορισμού</th>
-						<th class="text-left">Χρεώσιμες Ώρες Εργασίας</th>
-						<th class="text-left">Ώρες Εργασίας</th>
+						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
 						<th class="text-left">Δελτίο Αποστολής</th>
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
                         <th class="text-left">Προϊόντα</th>
-
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -55,7 +53,9 @@
                 <tbody>
                 @foreach($exports as $export)
                     <tr class="user-row" data-eid="{{ $export->id }}">  <!-- necessary additions -->
-                        <td>[{{ $export->export_assignment->warehouse->name }}], [{{ $export->export_assignment->export_deadline->isoFormat('llll') }}]</td>
+                        <td>[{{ $export->export_assignment->export_assignment_code }}] <br/>
+                            [{{ $export->export_assignment->warehouse->name }}] <br/>
+                            [{{ $export->export_assignment->export_deadline->isoFormat('llll') }}]</td>
                         <td>{{ $export->employee->user->name }}</td>
                         <td>{{ $export->company->name }}</td>
                         <td>{{ $export->delivered_on->format('l d/m/Y @ H:i') }}</td>
@@ -63,8 +63,7 @@
                         <td>{{ $export->transport->name }}</td>
                         <td>{{ $export->shipment_address }}</td>
                         <td>{{ $export->destination_address }}</td>
-                        <td>{{ $export->chargeable_hours_worked }}</td>
-                        <td>{{ $export->hours_worked }}</td>
+                        <td>{{ $export->hours_worked }}/{{ $export->chargeable_hours_worked }}</td>
                         <td>{{ substr(basename($export->shipment_bulletin), 15) }}</td> <!-- attached pdf file -->
                         <td>{{ $export->item_description }}</td>
                         <td>
@@ -189,7 +188,7 @@
                                         <div class="col-lg-9">
                                             <select name="modal-input-exportassignment-create" id="modal-input-exportassignment-create" class="form-control">
                                             @foreach($exportassignments as $expassgnm)
-                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]/[{{ $expassgnm->warehouse->name }}],[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]&nbsp;/&nbsp;[{{ $expassgnm->warehouse->name }}],&nbsp;[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
                                         </div>
@@ -332,9 +331,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-create">Προϊόντα</label>
                                         <div class="col-lg-9">
                                             <select name="modal-input-products-create[]" id="modal-input-products-create" class="form-control" multiple="multiple">
-                                            @foreach($products as $product)
-                                                <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                            @endforeach
+
                                             </select>
                                         </div>
 									</div>
@@ -414,7 +411,7 @@
                                         -->
                                             <select name="modal-input-exportassignment-edit" id="modal-input-exportassignment-edit" class="form-control">
                                             @foreach($exportassignments as $expassgnm)
-                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]/[{{ $expassgnm->warehouse->name }}],[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
+                                                <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]&nbsp;/&nbsp;[{{ $expassgnm->warehouse->name }}],&nbsp;[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
 
@@ -824,7 +821,9 @@
 
             //console.log('deltio apostolis: ', shipmentbulletin);
 
-
+            // console.log('products: ', products);
+            // console.log('allproducts: ', allproducts);
+            // console.log('products_in_warehouse (pivot table):', products_in_warehouse);
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -836,9 +835,7 @@
             modal.find('.modal-body #modal-input-recipient-edit').val(employeeid);
             modal.find('.modal-body #modal-input-expco-edit').val(companyid);
             modal.find('.modal-body #modal-input-shipco-edit').val(transportid);
-
             modal.find('.modal-body #modal-input-exportassignmentid-edit').val(exportassignmentid); //hidden input
-
             modal.find('.modal-body #modal-input-vehicleregno-edit').val(vehicleregno);
             modal.find('.modal-body #modal-input-dtdeliv-edit').val(deliveredon);
             modal.find('.modal-body #modal-input-sendplace-edit').val(shipmentaddress);
@@ -856,9 +853,10 @@
 
 
             //Export assignment name!
-            modal.find('.modal-body #modal-input-exportassignment-edit').empty();
+            // modal.find('.modal-body #modal-input-exportassignment-edit').empty();
             //console.log(export_assignment);
-            modal.find('.modal-body #modal-input-exportassignment-edit').val('['+export_assignment.export_assignment_code+']/['+export_assignment.warehouse.name +'],[' + export_assignment.export_deadline+']');
+            // modal.find('.modal-body #modal-input-exportassignment-edit').val('['+export_assignment.export_assignment_code+']/['+export_assignment.warehouse.name +'],[' + export_assignment.export_deadline+']');
+            modal.find('.modal-body #modal-input-exportassignment-edit').val(exportassignmentid);
 
 
 
@@ -890,14 +888,15 @@
 
             var prods_in_wh = [];
             prods_in_wh = products_in_warehouse.filter(a => a.warehouse_id === warehouseid);
-            // console.log('prods_in_wh', prods_in_wh);
+            // console.log('prods_in_wh: ', prods_in_wh);
 
             //the Selected ones
             var selected_prds = [];
+            //selected_prds = products_in_warehouse.filter(a => products.some(b => a.product_id === b.id));
             selected_prds = products_in_warehouse.filter(a => products.some(b => a.product_id === b.id));
-            // console.log('selected_prds', selected_prds);
+            // console.log('selected_prds: ', selected_prds);
 
-            $.each(selected_prds, function(k,v){
+            $.each(products, function(k,v){
                 modal.find('.modal-body #modal-input-products-edit').append('<option selected value="'+ v.id +'">' + v.name + '</option>');
             });
 
@@ -905,7 +904,7 @@
             // ----> (prods_in_wh - selected_prds) == difference
             var difference = []; //the rest of the products, in the same warehouse, (but non-selected).
             difference = prods_in_wh.filter(a => !selected_prds.some(b => a.product_id === b.product_id));
-            // console.log('difference', difference);
+            // console.log('difference: ', difference);
 
             $.each(difference, function(k,v){
                 modal.find('.modal-body #modal-input-products-edit').append('<option value="'+ v.id +'">' + v.name + '</option>');
@@ -924,7 +923,7 @@
                 var formData = new FormData(this);
 
                 console.log(eid);
-                console.log(formData);
+                // console.log(formData);
 
                 //reset the error field(s).
                 $('.alert-danger').hide();
@@ -1018,7 +1017,7 @@
                 var formData = new FormData(this);
 
                 console.log(eid);
-                console.log(formData);
+                // console.log(formData);
 
                 $.ajax({
                     method: "POST",
@@ -1075,7 +1074,7 @@
             evt.preventDefault();
             var formData = new FormData(this);
 
-            console.log(formData);
+            // console.log(formData);
 
             //reset the error field(s).
             $('.alert-danger').hide();
@@ -1153,14 +1152,14 @@
 
                     success: function(data){
                         //variable "data" is received from the appropriate controller, as defined in web.php and it returns:= return json_encode($.....);
-                        console.log('Data: ', data);
+                        // console.log('Data: ', data);
 
                         $('.modal-body #modal-input-recipient-create').empty();
                         $('.modal-body #modal-input-products-create').empty();
 
                         $.each(data, function(key, value){
 
-                            //console.log('data_again', data);
+                            // console.log('data_again', data);
                             // console.log('key=', key);
                             // console.log('value= ', value);
                             // console.log('value_length', value.length);
@@ -1175,7 +1174,7 @@
 
                             if(key == 1){
                                 $.each(value, function(k,v){
-                                    $('.modal-body #modal-input-products-create').append('<option value="'+ v.id +'">' + v.name+ '</option>');
+                                    $('.modal-body #modal-input-products-create').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
                                 });
                             }
 
@@ -1196,7 +1195,7 @@
 
 
         //ajax edit modal
-        /*
+
         $(document).on('change', '#modal-input-exportassignment-edit', function(evt){
             console.log('Event', evt);
             var wh_id = evt.target.value;
@@ -1209,13 +1208,16 @@
                     url: '{{ url(request()->route()->getPrefix()) }}' + '/assignments/exports/warehouse/' + wh_id,
 
                     success: function(data){
-                        console.log('Data : ', data);
+                        // console.log('Data : ', data);
 
                         $('.modal-body #modal-input-recipient-edit').empty();
                         $('.modal-body #modal-input-products-edit').empty();
+
                         $.each(data, function(key, value){
                             // $('#modal-input-recipient-edit').append('<option value="'+ value.id +'">'+ value.name +'</option>');
                             //console.log('key='+key+ ', value='+value);
+                            // console.log('Data(again) : ', data);
+
                             if(key == 0){
                                 $.each(value, function(k,v){
                                     $('.modal-body #modal-input-recipient-edit').append('<option value="'+ v.id +'">'+ v.name +'</option>');
@@ -1224,7 +1226,7 @@
 
                             if(key == 1){
                                 $.each(value, function(k,v){
-                                    $('.modal-body #modal-input-products-edit').append('<option value="'+ v.id +'">' + v.name+ '</option>');
+                                    $('.modal-body #modal-input-products-edit').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
                                 });
                             }
 
@@ -1237,7 +1239,7 @@
                 $('#modal-input-recipient-edit').empty();
             }
         });
-        */
+
 
 
 

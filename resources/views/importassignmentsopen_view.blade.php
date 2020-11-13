@@ -51,11 +51,21 @@
                             $attached_files = json_decode($importassignment->uploaded_files, true);
                         @endphp
                         <td>
-                            <ul>
-                            @foreach($attached_files as $att_file)
-                                <li>{{ substr(basename($att_file), 15) }}</li>
-                            @endforeach
-                            </ul>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+                                    @if(substr($att_file, -3) == 'pdf')
+                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                    @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                    @elseif(substr($att_file, -3) == 'txt')
+                                        <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                    @else
+                                        <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                    @endif
+                                @endforeach
+                            @endif
                         </td>
                         <td>{{ $importassignment->comments }}</td>
 						<td>
@@ -93,6 +103,10 @@
 
             @can('isWarehouseForeman')
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
+            @can('isWarehouseWorker')
+                <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 

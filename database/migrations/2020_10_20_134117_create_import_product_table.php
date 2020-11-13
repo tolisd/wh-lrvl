@@ -14,15 +14,15 @@ class CreateImportProductTable extends Migration
     public function up()
     {
         Schema::create('import_product', function (Blueprint $table) {
-            $table->id();
+            // $table->id();
 
-            $table->unsignedBigInteger('import_id');
-            $table->unsignedBigInteger('product_id');
+            // $table->unsignedBigInteger('import_id');
+            // $table->unsignedBigInteger('product_id');
 
-            $table->foreign('import_id')->references('id')->on('imports');
-            $table->foreign('product_id')->references('id')->on('products');
+            // $table->foreign('import_id')->references('id')->on('imports');
+            // $table->foreign('product_id')->references('id')->on('products');
 
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 
@@ -34,14 +34,14 @@ class CreateImportProductTable extends Migration
     public function down()
     {
         //added this for dropping the 2 FKs
-        Schema::table('product_warehouse', function (Blueprint $table){
-            $table->dropForeign(['product_id']);
-            $table->dropColumn('product_id');
+        Schema::table('import_product', function (Blueprint $table){
+            // $table->dropForeign(['product_id']);
+            // $table->dropColumn('product_id');
 
-            $table->dropForeign(['import_id']);
-            $table->dropColumn('import_id');
+            // $table->dropForeign(['import_id']);
+            // $table->dropColumn('import_id');
         });
 
-        Schema::dropIfExists('import_product');
+        // Schema::dropIfExists('import_product');
     }
 }

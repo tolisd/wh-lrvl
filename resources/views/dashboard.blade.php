@@ -2,17 +2,41 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη | Κεντρικός Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη | Πίνακας Ελέγχου')
 
 @section('content_header')
-    <h1><strong>Warehouse/Αποθήκη</strong> | Πίνακας Ελέγχου</h1>
+    <div id="central-heading">
+        <h1><strong>Αποθήκη/Warehouse</strong> | Πίνακας Ελέγχου</h1>
+    </div>
+
+    <div class="parallax"></div>
 @stop
 
 <!-- Originally, NO sidebar section in this file! I added this section! Beware! -->
 
 @section('content')
+<style>
+    #central-heading{
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
 
-    <p>Καλώς ήλθατε, αυτή είναι η εφαρμογή "<strong>Warehouse/Αποθήκη</strong>" της <strong>Ypostirixis Group Constructions</strong>.</p>
+    .parallax {
+        /* The image used */
+        background-image: url("/images/pexels-cleyder-duque-01a.jpg");
+
+        /* Set a specific height */
+        min-height: 400px;;
+
+        /* Create the parallax scrolling effect */
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
+    <p><em>Καλώς ήλθατε</em> στην εφαρμογή "<strong>Warehouse/Αποθήκη</strong>" της <strong>Ypostirixis Group Constructions</strong>.</p>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
