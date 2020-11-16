@@ -94,13 +94,67 @@
 
                             <td>
                                 @if(($tool->file_url != null) && ($tool->is_charged == 1))
-                                    @if(substr($tool->file_url, -3) == 'pdf')
-                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
-                                    @elseif((substr($tool->file_url, -3) == 'doc') or (substr($tool->file_url, -4) == 'docx'))
-                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
-                                    @else
-                                        <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}
+
+                                    @if(\Auth::user()->user_type == 'super_admin')
+                                        @if(substr($tool->file_url, -3) == 'pdf')
+                                        <a href="{{ route('admin.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @elseif((substr($tool->file_url, -3) == 'doc') or (substr($tool->file_url, -4) == 'docx'))
+                                        <a href="{{ route('admin.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @elseif(substr($tool->file_url, -3) == 'txt')
+                                        <a href="{{ route('admin.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @else
+                                        <a href="{{ route('admin.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}
+                                        </a>
+                                        @endif
                                     @endif
+
+                                    @if(\Auth::user()->user_type == 'company_ceo')
+                                        @if(substr($tool->file_url, -3) == 'pdf')
+                                        <a href="{{ route('manager.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @elseif((substr($tool->file_url, -3) == 'doc') or (substr($tool->file_url, -4) == 'docx'))
+                                        <a href="{{ route('manager.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @elseif(substr($tool->file_url, -3) == 'txt')
+                                        <a href="{{ route('manager.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @else
+                                        <a href="{{ route('manager.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}
+                                        </a>
+                                        @endif
+                                    @endif
+
+                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                        @if(substr($tool->file_url, -3) == 'pdf')
+                                        <a href="{{ route('foreman.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @elseif((substr($tool->file_url, -3) == 'doc') or (substr($tool->file_url, -4) == 'docx'))
+                                        <a href="{{ route('foreman.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @elseif(substr($tool->file_url, -3) == 'txt')
+                                        <a href="{{ route('foreman.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($tool->file_url), 15) }}<br/>
+                                        @else
+                                        <a href="{{ route('foreman.tools.download.file', ['filename' => substr(basename($tool->file_url), 15)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($tool->file_url), 15) }}
+                                        </a>
+                                        @endif
+                                    @endif
+
                                 @endif
                             </td>
 

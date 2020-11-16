@@ -63,14 +63,14 @@ class ToolController extends Controller
             $validation_rules = [
                 'modal-input-towhom-charge' => 'required|exists:employees,id',
                 'modal-input-comments-charge' => 'required',
-                'modal-input-file-charge' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-file-charge' => 'required||mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
             ]; //maximumFileSize = 250kB, zip means: both, doc & docx
 
             $custom_messages = [
                 'modal-input-towhom-charge.required' => 'Το όνομα εργαζομένου απαιτείται',
                 'modal-input-comments-charge.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-file-charge.required' => 'Το αρχείο απαιτείται',
-                'modal-input-file-charge.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
+                'modal-input-file-charge.mimes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -111,7 +111,9 @@ class ToolController extends Controller
                             $datetime = date_format($datetime_now, 'YmdHis');
                             $name = $datetime . '-' . $file->getClientOriginalName();
                             $path = $file->storeAs('arxeia/xrewstika', $name);
-                            $url  = \Storage::url($path);
+                            $url  = \Storage::url($path);   // You may use the url method to get the URL for the given file.
+                                                            // If you are using the local driver, this will typically just PREPEND /storage
+                                                            // to the given path and return a relative URL to the file.
 
                             $tool_for_charging->file_url = $url;
                         }
@@ -557,6 +559,119 @@ class ToolController extends Controller
 
 
             return view('tools_my_charged_view', ['my_charged_tools' => $my_charged_tools]);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
+    //the authorised roles CAN download the file, else 403!
+    public function get_file(Request $request, $filename){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
+
+            // $file = $request->input('filename');
+            // $path = storage_path('/'.'app'.'/arxeia/xrewstika/'.$filename);
+            // $file = \Storage::url($filename);
+
+            // $storagePath  = \Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+            // // dd($storagePath); //returns the absolute url. should i use dirinfo()??
+            // $path_to_file = $storagePath .'arxeia'.DIRECTORY_SEPARATOR.'xrewstika'.DIRECTORY_SEPARATOR.basename($filename); //CORRECT!
+
+            // dd($filename); //basename, because thats what i pass from the view as route parameter!
+            // $path_to_file = env('APP_URL') . request()->route()->getPrefix() . '/tools/download/storage/app/arxeia/xrewstika/' . $filename;
+            // $path_to_file = 'http://localhost:8000' . request()->route()->getPrefix() . '/tools/download/storage/app/arxeia/xrewstika/' . $filename;
+            // $path_to_file = \Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($filename);
+
+            // $file = storage_path($filename);
+            // dd(\Storage::disk('local')->exists($path_to_file));
+            // dd(\Storage::disk('local')->exists($filename)); //FALSE! File is empty or not downloaded at all!
+
+            $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'xrewstika'.DIRECTORY_SEPARATOR.$filename;
+            //$filename is the value that i pass from the view as route parameter!
+            //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+            if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
+
+                $name = $filename; //'xrewstiko_arxeio.txt'; fixed value..
+
+                // $headers = [
+                //     // 'Content-Type' => 'application/pdf',
+                //     // 'Content-Type' => 'text/plain',
+                //     'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                //     'Pragma' => 'no-cache',
+                //     'Expires' => '0',
+                //     'Content-Disposition' => 'attachment',
+                //     // 'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                // ];
+
+                if(substr($name, -4) == '.txt'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.pdf'){
+
+                    $headers = [
+                        'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.doc'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Content-Type' => 'application/msword',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else {
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                }
+
+                //force download the file! I also needed to add the "download" html attribute in the view
+                // return response()->download($path_to_file);
+                // File can also be downloaded as: return \Storage::download($path_to_file);, ie without the $headers...
+                return \Storage::download($path_to_file, $name, $headers);
+
+            } else {
+                abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+            }
+
+            // if(file_exists($filename) && is_file($filename)){
+                // return response()->download(storage_path('app'.DIRECTORY_SEPARATOR.($file))); //the downloaded filename should be different than that stored in server
+
+                // dd(response()->download($filename)); //BLANK page...
+            // }
 
         } else {
             return abort(403, 'Sorry you cannot view this page');

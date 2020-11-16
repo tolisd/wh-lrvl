@@ -67,7 +67,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-warehouse-create' => 'required|exists:warehouse,id',
                 'modal-input-text-create' => 'required',
                 'modal-input-picker-create' => 'required',
-                'modal-input-files-create.*' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-files-create.*' => 'required||mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-create' => 'required',
             ];
 
@@ -76,7 +76,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-text-create.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-create.required' => 'Η ημερομηνία/ώρα απαιτείται',
                 'modal-input-files-create.*.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
-                'modal-input-files-create.*.mimetypes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
+                'modal-input-files-create.*.mimes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
             ];
 
@@ -187,7 +187,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-warehouse-edit' => 'required|exists:warehouse,id',
                 'modal-input-text-edit' => 'required',
                 'modal-input-picker-edit' => 'required',
-                'modal-input-files-edit.*' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-files-edit.*' => 'required||mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-edit' => 'required',
                 'modal-input-isopen-edit' => 'required',
             ];
@@ -197,7 +197,7 @@ class ExportAssignmentController extends Controller
                 'modal-input-text-edit.required' => 'Το κείμενο ανάθεσης απαιτείται',
                 'modal-input-picker-edit.required' => 'Η ημερομηνία/ώρα απαιτείται',
                 'modal-input-files-edit.*.required' => 'Απαιτείται τουλάχιστον 1 αρχείο',
-                'modal-input-files-edit.*.mimetypes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
+                'modal-input-files-edit.*.mimes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων που υποστηρίζονται: pdf, txt, doc, docx.',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-isopen-edit.required' => 'Το πεδίο Ανοικτή/Κλειστή απαιτείται',
             ];
@@ -419,6 +419,266 @@ class ExportAssignmentController extends Controller
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
+    }
+
+
+
+    public function get_files(Request $request, $filenames){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isNormalUser'])){
+
+
+                $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eksagwgi'.DIRECTORY_SEPARATOR . $filenames;
+
+                //$filename is the value that i pass from the view as route parameter!
+                //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+
+
+                if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
+
+
+                    $name = substr($filenames, 15);
+
+
+                    if(substr($name, -4) == '.txt'){
+
+                        $headers = [
+                            // 'Content-Type' => 'application/pdf',
+                            'Content-Type' => 'text/plain',
+                            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                            'Pragma' => 'no-cache',
+                            'Expires' => '0',
+                            // // 'Content-Disposition' => 'attachment',
+                            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                        ];
+
+                    } else if(substr($name, -4) == '.pdf'){
+
+                        $headers = [
+                            'Content-Type' => 'application/pdf',
+                            // 'Content-Type' => 'text/plain',
+                            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                            'Pragma' => 'no-cache',
+                            'Expires' => '0',
+                            // 'Content-Disposition' => 'attachment',
+                            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                        ];
+
+                    } else if(substr($name, -4) == '.doc'){
+
+                        $headers = [
+                            // 'Content-Type' => 'application/pdf',
+                            // 'Content-Type' => 'text/plain',
+                            'Content-Type' => 'application/msword',
+                            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                            'Pragma' => 'no-cache',
+                            'Expires' => '0',
+                            // 'Content-Disposition' => 'attachment',
+                            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                        ];
+
+                    } else {
+
+                        $headers = [
+                            // 'Content-Type' => 'application/pdf',
+                            // 'Content-Type' => 'text/plain',
+                            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                            'Pragma' => 'no-cache',
+                            'Expires' => '0',
+                            // 'Content-Disposition' => 'attachment',
+                            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                        ];
+
+                    }
+
+
+                    return \Storage::download($path_to_file, $name, $headers);
+
+
+                } else {
+                    return abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+                }
+
+
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
+
+    public function get_files_closed_exp(Request $request, $filenames){
+
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
+
+
+            $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eksagwgi'.DIRECTORY_SEPARATOR . $filenames;
+
+            //$filename is the value that i pass from the view as route parameter!
+            //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+
+            if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
+
+
+                $name = substr($filenames, 15);
+
+
+                if(substr($name, -4) == '.txt'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.pdf'){
+
+                    $headers = [
+                        'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.doc'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Content-Type' => 'application/msword',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else {
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                }
+
+
+                return \Storage::download($path_to_file, $name, $headers);
+
+
+            } else {
+                return abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+            }
+
+
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
+    public function get_files_open_exp(Request $request, $filenames){
+
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isWarehouseWorker'])){
+
+
+            $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eksagwgi'.DIRECTORY_SEPARATOR . $filenames;
+
+            //$filename is the value that i pass from the view as route parameter!
+            //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+
+            if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
+
+
+                $name = substr($filenames, 15);
+
+
+                if(substr($name, -4) == '.txt'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.pdf'){
+
+                    $headers = [
+                        'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.doc'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Content-Type' => 'application/msword',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else {
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                }
+
+
+                return \Storage::download($path_to_file, $name, $headers);
+
+
+            } else {
+                return abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+            }
+
+
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
     }
 
 

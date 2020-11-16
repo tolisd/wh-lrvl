@@ -58,20 +58,139 @@
                         @php
                             $attached_files = json_decode($importassignment->uploaded_files, true);
                         @endphp
+
                         <td>
                             @if($attached_files == null)
                                 <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
                             @else
                                 @foreach($attached_files as $att_file)
-                                    @if(substr($att_file, -3) == 'pdf')
-                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-                                    @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
-                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-                                    @elseif(substr($att_file, -3) == 'txt')
-                                        <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-                                    @else
-                                       <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+
+                                    @if(\Auth::user()->user_type == 'super_admin')
+
+
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('admin.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('admin.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('admin.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('admin.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
                                     @endif
+
+
+                                    @if(\Auth::user()->user_type == 'company_ceo')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('manager.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('manager.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('manager.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('manager.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+
+
+                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+
+
+                                    @if(\Auth::user()->user_type == 'accountant')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('accountant.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('accountant.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('accountant.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('accountant.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+
+
+                                    @if(\Auth::user()->user_type == 'normal_user')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+
                                 @endforeach
                             @endif
                         </td>

@@ -37,7 +37,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
-                        <th class="text-left">ID</th>
+                        <!-- <th class="text-left">ID</th> -->
                         <th class="text-left">Όνομα</th>
                         <th class="text-left">E-mail</th>
                         <th class="text-left">Τύπος χρήστη</th>
@@ -50,7 +50,7 @@
                 <tbody>
                     @foreach($users as $user)
                         <tr class="user-row" data-uid="{{ $user->id }}">  <!-- necessary additions -->
-                            <td>{{ $user->id }}</td>
+                            <!-- <td>{{ $user->id }}</td> -->
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
 
@@ -75,12 +75,16 @@
                             <!--
                             <td><img src="{{ Storage::url('app/images/profile/' . $user->photo_url) }}" alt=""></td>
                             -->
-                            <td>
-                                <img src="{{ $user->photo_url }}" alt=""></img>
-                                <br>
-                                {{ basename($user->photo_url) }}
+
+                            <td align="center">
+                                @if(\Auth::user()->user_type == 'super_admin')
+                                    <img src="{{ route('admin.user.show.photo', ['photo' => basename($user->photo_url)]) }}" alt="{{ basename($user->photo_url) }}"></img>
+                                @endif
+                                @if(\Auth::user()->user_type == 'company_ceo')
+                                    <img src="{{ route('manager.user.show.photo', ['photo' => basename($user->photo_url)]) }}" alt="{{ basename($user->photo_url) }}"></img>
+                                @endif
                             </td>
-                            <!-- <td>{{ $user->photo_url }}</td> -->
+
 
                             <td>
                                 <button class="edit-modal btn btn-info"

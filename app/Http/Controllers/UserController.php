@@ -223,7 +223,7 @@ class UserController extends Controller
                     //User needs to be logged out BEFORE he is deleted from the Database.
                     //first, make sure user is NOT logged in (or is logged out). Important!
 
-                    // logout a specific user (by his/her $id) (found this solution in StackOverflow!)
+                    // Logout a specific user (by his/her $id) (found this solution in StackOverflow!)
 
                     // 1. get current (currently logged in?) user
                     $current_user = Auth::user();
@@ -447,6 +447,94 @@ class UserController extends Controller
         } else {
             return abort(403, 'Sorry, you cannot add users.');
         }
+
+    }
+
+    public function show_photo(Request $request, $photo){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO'])){
+
+
+            $path_to_file = 'images'.DIRECTORY_SEPARATOR.'profile'.DIRECTORY_SEPARATOR.$photo;
+            //$photo is the value that i pass from the view as route parameter!
+            //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+            if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path.
+                                                                //so in our example we pass directly the path (/.../laravelProject/storage/app)
+                                                                //is the default one (referenced with the helper storage_path('app')
+
+                $name = $photo; //'.txt'; fixed value..
+
+                $headers = [
+                    // 'Content-Type' => 'application/pdf',
+                    // 'Content-Type' => 'text/plain',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0',
+                    // 'Content-Disposition' => 'attachment',
+                    // 'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                ];
+
+                return \Storage::get($path_to_file); //return [photo/file] contents
+
+
+            } else {
+                abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+            }
+
+
+        } else {
+            return abort(403, 'Sorry, you cannot add users.');
+        }
+
+    }
+
+
+
+    public function show_userpic(Request $request, $photo){
+
+        // ALL user_types can view their own profile pic! ..provided one is uploaded. else BLANK <li> in the view
+        if(\Gate::any(['isSuperAdmin',
+                        'isCompanyCEO',
+                        'isAccountant',
+                        'isWarehouseForeman',
+                        'isWarehouseWorker',
+                        'isTechnician',
+                        'isNormalUser'])){
+
+
+            $path_to_file = 'images'.DIRECTORY_SEPARATOR.'profile'.DIRECTORY_SEPARATOR.$photo;
+            //$photo is the value that i pass from the view as route parameter!
+            //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+            if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path.
+                                                                //so in our example we pass directly the path (/.../laravelProject/storage/app)
+                                                                //is the default one (referenced with the helper storage_path('app')
+
+                $name = $photo; //'.txt'; fixed value..
+
+                $headers = [
+                    // 'Content-Type' => 'application/pdf',
+                    // 'Content-Type' => 'text/plain',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0',
+                    // 'Content-Disposition' => 'attachment',
+                    // 'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                ];
+
+                return \Storage::get($path_to_file); //return [photo/file] contents
+
+
+            } else {
+                abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+            }
+
+
+        } else {
+            return abort(403, 'Sorry, you cannot add users.');
+        }
+
 
     }
 }

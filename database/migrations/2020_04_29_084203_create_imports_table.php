@@ -22,7 +22,7 @@ class CreateImportsTable extends Migration
             $table->mediumText('discrete_description');
             $table->float('hours_worked');
             $table->float('chargeable_hours_worked');
-            $table->string('shipment_bulletin', 255);
+            $table->string('shipment_bulletin', 255)->nullable();
             //$table->string('shipment_address', 255);
             $table->string('vehicle_reg_no', 20);
             $table->timestamps();

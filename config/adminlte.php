@@ -14,7 +14,8 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Warehouse - Ypostirixis Group',
+    // 'title' => 'AdminLTE 3',
     'title_prefix' => '',
     'title_postfix' => '',
 
