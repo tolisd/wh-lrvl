@@ -21,7 +21,7 @@ class ImportController extends Controller
     //
     public function view_imports(Request $request){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
 
             $importassignments = ImportAssignment::where('is_open', '=', 1)->get(); //was: ImportAssignment::all();, but I only want the currently OPEN ones
             $imports = Import::all();
@@ -92,7 +92,7 @@ class ImportController extends Controller
 
     public function create_import(Request $request){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
 
 
             //validation rules
@@ -105,7 +105,7 @@ class ImportController extends Controller
                 'modal-input-destin-create' => 'required',
                 'modal-input-chargehrs-create' => 'required|numeric',
                 'modal-input-hours-create' => 'required|numeric',
-                'modal-input-bulletin-create' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-bulletin-create' => 'required|mimes:pdf,txt,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-importassignment-create' => 'required',
                 //'modal-input-products-create' => 'required',
@@ -124,7 +124,7 @@ class ImportController extends Controller
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-create.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
-                'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
+                'modal-input-bulletin-create.mimes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
                 'modal-input-importassignment-create.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
                 //'modal-input-products-create.required' => 'Τα προϊόντα απαιτούνται',
@@ -228,7 +228,7 @@ class ImportController extends Controller
 
     public function update_import(Request $request, $id){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
 
              //validation rules
              $validation_rules = [
@@ -240,7 +240,7 @@ class ImportController extends Controller
                 'modal-input-destin-edit' => 'required',
                 'modal-input-chargehrs-edit' => 'required|numeric',
                 'modal-input-hours-edit' => 'required|numeric',
-                'modal-input-bulletin-edit' => 'required|mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-bulletin-edit' => 'required|mimes:pdf,txt,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-importassignment-edit' => 'required',
                 //'modal-input-products-edit' => 'required',
@@ -259,7 +259,7 @@ class ImportController extends Controller
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-edit.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
-                'modal-input-bulletin-edit.mimetypes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
+                'modal-input-bulletin-edit.mimes' => 'Μη έγκυρο αρχείο. Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παραλαβής απαιτείται',
                 'modal-input-importassignment-edit.required' => 'Η Ανάθεση Εισαγωγής απαιτείται',
                 //'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
@@ -364,7 +364,7 @@ class ImportController extends Controller
 
     public function delete_import(Request $request, $id){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
 
 
             if ($request->ajax()){
@@ -376,6 +376,92 @@ class ImportController extends Controller
             }
 
             return back();
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
+    public function get_deltio_imp(Request $request, $filename){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
+
+
+            $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eisagwgis'.DIRECTORY_SEPARATOR . $filename;
+
+            //$filename is the value that i pass from the view as route parameter!
+            //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+
+            if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
+
+
+                // $name = substr($filenames, 15);
+                $name = str_replace(' ', '_', substr($filename, 15));
+
+
+                if(substr($name, -4) == '.txt'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.pdf'){
+
+                    $headers = [
+                        'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else if(substr($name, -4) == '.doc'){
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Content-Type' => 'application/msword',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                } else {
+
+                    $headers = [
+                        // 'Content-Type' => 'application/pdf',
+                        // 'Content-Type' => 'text/plain',
+                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                        // 'Content-Disposition' => 'attachment',
+                        'Content-Disposition' => 'attachment; filename="'.$name.'"',
+                    ];
+
+                }
+
+
+                return \Storage::download($path_to_file, $name, $headers);
+
+
+            } else {
+                return abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+            }
+
+
 
         } else {
             return abort(403, 'Sorry you cannot view this page');

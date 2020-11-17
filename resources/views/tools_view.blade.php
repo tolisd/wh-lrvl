@@ -31,7 +31,7 @@
         background-image: url("/images/pexels-energepiccom-175039-gamma.jpg");
 
         /* Set a specific height */
-        min-height: 350px;
+        min-height: 200px;
 
         /* Create the parallax scrolling effect */
         background-attachment: fixed;

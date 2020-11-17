@@ -21,7 +21,7 @@ class ExportController extends Controller
     //
     public function view_exports(){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman','isAccountant', 'isWarehouseWorker'])){
 
             $exportassignments = ExportAssignment::where('is_open', '=', 1)->get(); // was: ExportAssignment::all();, but I only want the currently OPEN ones
             $exports = Export::all();
@@ -91,7 +91,7 @@ class ExportController extends Controller
 
     public function create_export(Request $request){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])){
 
             //validation rules
             $validation_rules = [
@@ -104,7 +104,7 @@ class ExportController extends Controller
                 'modal-input-destin-create' => 'required',
                 'modal-input-chargehrs-create' => 'required|numeric',
                 'modal-input-hours-create' => 'required|numeric',
-                'modal-input-bulletin-create' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                // 'modal-input-bulletin-create' => 'required|mimes:txt,pdf,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-exportassignment-create' => 'required',
                 'modal-input-products-create' => 'required',
@@ -123,8 +123,8 @@ class ExportController extends Controller
                 'modal-input-chargehrs-create.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-create.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
-                'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
-                'modal-input-bulletin-create.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx',
+                // 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                // 'modal-input-bulletin-create.mimes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-create.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
                 'modal-input-products-create.required' => 'Τα Προϊόντα απαιτούνται',
@@ -167,17 +167,18 @@ class ExportController extends Controller
                         $export->item_description        = $request->input('modal-input-dtitle-create');
                         $export->exportassignment_id     = $request->input('modal-input-exportassignment-create');
 
-                        if($request->hasFile('modal-input-bulletin-create')){
-                            $file = $request->file('modal-input-bulletin-create');
+                        // if($request->hasFile('modal-input-bulletin-create')){
+                        //     $file = $request->file('modal-input-bulletin-create');
 
-                            $datetime_now = date_create();
-                            $datetime = date_format($datetime_now, 'YmdHis');
-                            $name = $datetime . '-' . $file->getClientOriginalName();
-                            $path = $file->storeAs('arxeia/exagwgis', $name);
-                            $url  = \Storage::url($path);
+                        //     $datetime_now = date_create();
+                        //     $datetime = date_format($datetime_now, 'YmdHis');
+                        //     $name = $datetime . '-' . $file->getClientOriginalName();
+                        //     $path = $file->storeAs('arxeia/exagwgis', $name);
+                        //     $url  = \Storage::url($path);
 
-                            $export->shipment_bulletin = $url;
-                        }
+                        //     $export->shipment_bulletin = $url;
+                        // }
+                        $export->shipment_bulletin = null;
 
                         $export->save();
 
@@ -247,7 +248,7 @@ class ExportController extends Controller
                 'modal-input-destin-edit' => 'required',
                 'modal-input-chargehrs-edit' => 'required|numeric',
                 'modal-input-hours-edit' => 'required|numeric',
-                'modal-input-bulletin-edit' => 'required|mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                // 'modal-input-bulletin-edit' => 'required|mimes:txt,pdf,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-exportassignment-edit' => 'required',
                 'modal-input-products-edit' => 'required',
@@ -266,8 +267,8 @@ class ExportController extends Controller
                 'modal-input-chargehrs-edit.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-edit.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
-                'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
-                'modal-input-bulletin-edit.mimetypes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
+                // 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
+                // 'modal-input-bulletin-edit.mimes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-edit.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
                 'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
@@ -310,17 +311,18 @@ class ExportController extends Controller
                         $export->item_description        = $request->input('modal-input-dtitle-edit');
                         $export->exportassignment_id     = $request->input('modal-input-exportassignment-edit');
 
-                        if($request->hasFile('modal-input-bulletin-edit')){
-                            $file = $request->file('modal-input-bulletin-edit');
+                        // if($request->hasFile('modal-input-bulletin-edit')){
+                        //     $file = $request->file('modal-input-bulletin-edit');
 
-                            $datetime_now = date_create();
-                            $datetime = date_format($datetime_now, 'YmdHis');
-                            $name = $datetime . '-' . $file->getClientOriginalName();
-                            $path = $file->storeAs('arxeia/exagwgis', $name);
-                            $url  = \Storage::url($path);
+                        //     $datetime_now = date_create();
+                        //     $datetime = date_format($datetime_now, 'YmdHis');
+                        //     $name = $datetime . '-' . $file->getClientOriginalName();
+                        //     $path = $file->storeAs('arxeia/exagwgis', $name);
+                        //     $url  = \Storage::url($path);
 
-                            $export->shipment_bulletin = $url;
-                        }
+                        //     $export->shipment_bulletin = $url;
+                        // }
+                        $export->shipment_bulletin = null;
 
                         $export->update($request->all());
 
@@ -373,7 +375,7 @@ class ExportController extends Controller
 
     public function delete_export(Request $request, $id){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
 
             if ($request->ajax()){
 
@@ -390,4 +392,90 @@ class ExportController extends Controller
         }
 
     }
+
+
+    // public function get_deltio_exp(Request $request, $filename){
+
+    //     if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker'])){
+
+
+    //         $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eksagwgis'.DIRECTORY_SEPARATOR . $filename;
+
+    //         //$filename is the value that i pass from the view as route parameter!
+    //         //in this case it is:: ['filename' => substr(basename($tool->file_url), 15)]
+
+
+    //         if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
+
+
+    //             // $name = substr($filenames, 15);
+    //             $name = str_replace(' ', '_', substr($filename, 15));
+
+
+    //             if(substr($name, -4) == '.txt'){
+
+    //                 $headers = [
+    //                     // 'Content-Type' => 'application/pdf',
+    //                     'Content-Type' => 'text/plain',
+    //                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    //                     'Pragma' => 'no-cache',
+    //                     'Expires' => '0',
+    //                     // // 'Content-Disposition' => 'attachment',
+    //                     'Content-Disposition' => 'attachment; filename="'.$name.'"',
+    //                 ];
+
+    //             } else if(substr($name, -4) == '.pdf'){
+
+    //                 $headers = [
+    //                     'Content-Type' => 'application/pdf',
+    //                     // 'Content-Type' => 'text/plain',
+    //                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    //                     'Pragma' => 'no-cache',
+    //                     'Expires' => '0',
+    //                     // 'Content-Disposition' => 'attachment',
+    //                     'Content-Disposition' => 'attachment; filename="'.$name.'"',
+    //                 ];
+
+    //             } else if(substr($name, -4) == '.doc'){
+
+    //                 $headers = [
+    //                     // 'Content-Type' => 'application/pdf',
+    //                     // 'Content-Type' => 'text/plain',
+    //                     'Content-Type' => 'application/msword',
+    //                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    //                     'Pragma' => 'no-cache',
+    //                     'Expires' => '0',
+    //                     // 'Content-Disposition' => 'attachment',
+    //                     'Content-Disposition' => 'attachment; filename="'.$name.'"',
+    //                 ];
+
+    //             } else {
+
+    //                 $headers = [
+    //                     // 'Content-Type' => 'application/pdf',
+    //                     // 'Content-Type' => 'text/plain',
+    //                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    //                     'Pragma' => 'no-cache',
+    //                     'Expires' => '0',
+    //                     // 'Content-Disposition' => 'attachment',
+    //                     'Content-Disposition' => 'attachment; filename="'.$name.'"',
+    //                 ];
+
+    //             }
+
+
+    //             return \Storage::download($path_to_file, $name, $headers);
+
+
+    //         } else {
+    //             return abort('404', 'Το αρχείο δεν υπάρχει'); // we redirect to 404 page if it doesn't exist
+    //         }
+
+
+
+    //     } else {
+    //         return abort(403, 'Sorry you cannot view this page');
+    //     }
+
+    // }
 }

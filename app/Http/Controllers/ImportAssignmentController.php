@@ -68,7 +68,7 @@ class ImportAssignmentController extends Controller
                 'modal-input-warehouse-create' => 'required|exists:warehouse,id',
                 'modal-input-text-create' => 'required',
                 'modal-input-picker-create' => 'required',
-                'modal-input-files-create.*' => 'required|mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-files-create.*' => 'required|mimes:pdf,txt,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-create' => 'required',
             ];
 
@@ -203,7 +203,7 @@ class ImportAssignmentController extends Controller
                 'modal-input-warehouse-edit' => 'required|exists:warehouse,id',
                 'modal-input-text-edit' => 'required',
                 'modal-input-picker-edit' => 'required',
-                'modal-input-files-edit.*' => 'required|mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-files-edit.*' => 'required|mimes:pdf,txt,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-comments-edit' => 'required',
                 'modal-input-isopen-edit' => 'required',
             ];
@@ -562,7 +562,8 @@ class ImportAssignmentController extends Controller
             if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
 
 
-                $name = substr($filenames, 15);
+                // $name = substr($filenames, 15);
+                $name = str_replace(' ', '_', substr($filenames, 15));
 
 
                 if(substr($name, -4) == '.txt'){
@@ -647,8 +648,8 @@ class ImportAssignmentController extends Controller
 
             if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
 
-
-                $name = substr($filenames, 15);
+                $name = str_replace(' ', '_', substr($filenames, 15));
+                // $name = substr($filenames, 15);
 
 
                 if(substr($name, -4) == '.txt'){

@@ -34,7 +34,7 @@
         background-image: url("/images/pexels-tiger-lily-4483610-gamma.jpg");
 
         /* Set a specific height */
-        min-height: 350px;
+        min-height: 200px;
 
         /* Create the parallax scrolling effect */
         background-attachment: fixed;

@@ -561,6 +561,12 @@ return [
             'can' => 'isWarehouseForeman',
             'icon' => 'fas fa-fw fa-circle',
         ],
+        [
+            'text' => 'Στοιχεία Αναθ.Εισαγωγών',
+            'route' => 'worker.imports.view',
+            'can' => 'isWarehouseWorker',
+            'icon' => 'fas fa-fw fa-circle',
+        ],
 
 
         [
@@ -585,6 +591,12 @@ return [
             'text' => 'Στοιχεία Αναθ.Εξαγωγών',
             'route' => 'foreman.exports.view',
             'can' => 'isWarehouseForeman',
+            'icon' => 'far fa-fw fa-circle',
+        ],
+        [
+            'text' => 'Στοιχεία Αναθ.Εξαγωγών',
+            'route' => 'worker.exports.view',
+            'can' => 'isWarehouseWorker',
             'icon' => 'far fa-fw fa-circle',
         ],
 

@@ -297,7 +297,7 @@ class WarehouseController extends Controller
     //ajax json method in imports_view.blade.php for dynamic dropdownlist
     public function get_employees_imp($id){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
             //Query Builder is 10x faster than Eloquent ORM.
 
@@ -322,7 +322,7 @@ class WarehouseController extends Controller
     //ajax json method in imports_view.blade.php for dynamic dropdownlist
     public function get_employees_exp($id){
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isWarehouseForeman', 'isWarehouseWorker'])){
 
             //Query Builder is 10x faster than Eloquent ORM.
 

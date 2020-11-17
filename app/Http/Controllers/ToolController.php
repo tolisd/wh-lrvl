@@ -63,7 +63,7 @@ class ToolController extends Controller
             $validation_rules = [
                 'modal-input-towhom-charge' => 'required|exists:employees,id',
                 'modal-input-comments-charge' => 'required',
-                'modal-input-file-charge' => 'required|mimes:pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-file-charge' => 'required|mimes:pdf,txt,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
             ]; //maximumFileSize = 250kB, zip means: both, doc & docx
 
             $custom_messages = [
@@ -595,7 +595,7 @@ class ToolController extends Controller
 
             if (\Storage::disk('local')->exists($path_to_file)){ // note that disk()->exists() expect a relative path, from your disk root path. so in our example we pass directly the path (/.../laravelProject/storage/app) is the default one (referenced with the helper storage_path('app')
 
-                $name = $filename; //'xrewstiko_arxeio.txt'; fixed value..
+                $name = str_replace(' ', '_', $filename); //'xrewstiko_arxeio.txt'; fixed value..
 
                 // $headers = [
                 //     // 'Content-Type' => 'application/pdf',

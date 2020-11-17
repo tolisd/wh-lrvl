@@ -25,7 +25,7 @@
 
             <p>Στοιχεία Αναθέσεων Εξαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -41,7 +41,7 @@
 						<th class="text-left">Τόπος Αποστολής</th>
 						<th class="text-left">Τόπος Προορισμού</th>
 						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
-						<th class="text-left">Δελτίο Αποστολής</th>
+						<!-- <th class="text-left">Δελτίο Αποστολής</th> -->
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
                         <th class="text-left">Προϊόντα</th>
 
@@ -64,7 +64,7 @@
                         <td>{{ $export->shipment_address }}</td>
                         <td>{{ $export->destination_address }}</td>
                         <td>{{ $export->hours_worked }}/{{ $export->chargeable_hours_worked }}</td>
-                        <td>{{ substr(basename($export->shipment_bulletin), 15) }}</td> <!-- attached pdf file -->
+                        <!-- <td>{{ substr(basename($export->shipment_bulletin), 15) }}</td> attached pdf file -->
                         <td>{{ $export->item_description }}</td>
                         <td>
                             <ul>
@@ -138,6 +138,10 @@
 
             @can('isWarehouseForeman')
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
+            @can('isWarehouseWorker')
+                <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
@@ -305,7 +309,7 @@
 									<!-- /work_hours -->
 
 									<!-- shipping_bulletin -->
-									<div class="form-group row">
+									<!-- <div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-create">Δελτίο Αποστολής [αρχείο PDF]
                                         <i class="fas fa-paperclip text-danger" aria-hidden="true"></i></label>
 
@@ -313,7 +317,7 @@
                                             <input type="file" name="modal-input-bulletin-create" class="form-control" id="modal-input-bulletin-create"
                                                 value="" />
                                         </div>
-									</div>
+									</div> -->
 									<!-- /shipping_bulletin -->
 
 									<!-- delivery_description -->
@@ -529,7 +533,7 @@
 									<!-- /work_hours -->
 
 									<!-- shipping_bulletin -->
-									<div class="form-group row">
+									<!-- <div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-bulletin-edit">Δελτίο Αποστολής [αρχείο PDF]
                                         <i class="fas fa-paperclip text-danger" aria-hidden="true"></i></label>
 
@@ -538,7 +542,7 @@
                                             <input type="file" name="modal-input-bulletin-edit" class="form-control" id="modal-input-bulletin-edit"
                                                 value="" />
                                         </div>
-									</div>
+									</div> -->
 									<!-- /shipping_bulletin -->
 
 									<!-- delivery_description -->

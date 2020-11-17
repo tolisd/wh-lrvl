@@ -26,7 +26,7 @@
         background-image: url("/images/pexels-cleyder-duque-01a.jpg");
 
         /* Set a specific height */
-        min-height: 400px;;
+        min-height: 200px;
 
         /* Create the parallax scrolling effect */
         background-attachment: fixed;
@@ -222,6 +222,8 @@
                             @endforeach
                             </ul>
 
+                        <hr>
+
 
                         {{-- warehouse product count in here.. --}}
                         <h3>{{ $warehouse->products->count() }}</h3>
@@ -293,6 +295,8 @@
                                             @endif
                                         @endforeach
                                         </ul>
+
+                                        <hr>
 
 
                                     {{-- warehouse product count in here.. --}}

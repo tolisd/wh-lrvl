@@ -24,7 +24,7 @@
 
             <p>Στοιχεία Αναθέσεων Εισαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -61,7 +61,133 @@
 						<td>{{ $import->transport->name }}</td>
 						<td>{{ $import->delivery_address }}</td>
 						<td>{{ $import->hours_worked }}/{{ $import->chargeable_hours_worked }}</td>
-						<td>{{ substr(basename($import->shipment_bulletin), 15) }}</td>
+
+						<!-- <td>{{ substr(basename($import->shipment_bulletin), 15) }}</td> -->
+                        <td>
+                            @if(\Auth::user()->user_type == 'super_admin')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('admin.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('admin.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('admin.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('admin.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+
+
+                            @if(\Auth::user()->user_type == 'company_ceo')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('manager.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('manager.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('manager.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('manager.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+
+
+
+                            @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+
+
+
+                            @if(\Auth::user()->user_type == 'accountant')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('accountant.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('accountant.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('accountant.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('accountant.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+
+
+
+                            @if(\Auth::user()->user_type == 'warehouse_worker')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+                        </td>
+
+
 						<td>{{ $import->discrete_description }}</td>
                         <!-- <td>{{ $import->product_id }}</td> -->
                         <!-- <td>{{ $import->import_assignment->import_assignment_text }}</td> -->
@@ -83,7 +209,7 @@
 									data-deliveryaddress="{{ $import->delivery_address }}"
 									data-chargeablehours="{{ $import->chargeable_hours_worked }}"
 									data-hours="{{ $import->hours_worked }}"
-									data-bulletin="{{ $import->shipment_bulletin }}"
+									data-bulletin="{{ basename($import->shipment_bulletin) }}"
 									data-description="{{ $import->discrete_description }}"
                                     data-importassignmentid="{{ $import->importassignment_id }}"
                                     data-importassignment="{{ $import->import_assignment }}"
@@ -130,6 +256,10 @@
 
             @can('isWarehouseForeman')
                 <a href="{{ route('foreman.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
+            @can('isWarehouseWorker')
+                <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
@@ -819,7 +949,9 @@
             modal.find('.modal-body #modal-input-destin-edit').val(deliveryaddress);
             modal.find('.modal-body #modal-input-chargehrs-edit').val(chargeablehours);
             modal.find('.modal-body #modal-input-hours-edit').val(hours);
-            //modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
+
+            modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
+
             modal.find('.modal-body #modal-input-dtitle-edit').val(description);
             // modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
             //modal.find('.modal-body #modal-input-products-edit').val(products);

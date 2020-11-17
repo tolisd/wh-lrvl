@@ -140,6 +140,7 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('admin.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('admin.imports.delete');
     Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
+    Route::get('assignments/imports/download/{filename?}', 'ImportController@get_deltio_imp')->where('filename', '(.*)')->name('admin.imports.deltio.download');
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('admin.exports.view');
@@ -147,6 +148,7 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('admin.exports.update');
     Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('admin.exports.delete');
     Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
+    // Route::get('assignments/exports/download/{filename?}', 'ExportController@get_deltio_exp')->where('filename', '(.*)')->name('admin.exports.deltio.download');
 
 
     Route::get('/products/view', 'ProductController@view_products')->name('admin.products.view'); //view products
@@ -291,7 +293,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('manager.assignment.export.delete');
     Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('manager.assignment.export.open');
     Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('manager.assignment.export.close');
-    Route::get('assignments/export/download/{filenames?}', 'ExportAssignmentController@get_files')->where('filenames','(.*)')->name('manager.assignment.export.files');
+    // Route::get('assignments/export/download/{filenames?}', 'ExportAssignmentController@get_files')->where('filenames','(.*)')->name('manager.assignment.export.files');
 
 
     //imports
@@ -300,6 +302,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('manager.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('manager.imports.delete');
     Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
+    Route::get('assignments/imports/download/{filename?}', 'ImportController@get_deltio_imp')->where('filename', '(.*)')->name('manager.imports.deltio.download');
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('manager.exports.view');
@@ -307,6 +310,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
     Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('manager.exports.update');
     Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('manager.exports.delete');
     Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
+    Route::get('assignments/exports/download/{filename?}', 'ExportController@get_deltio_exp')->where('filename', '(.*)')->name('manager.exports.deltio.download');
 
    Route::get('/products/view', 'ProductController@view_products')->name('manager.products.view'); //view products
    Route::get('/product/view/{id}', 'DashboardController@view_product')->name('manager.product.view'); //view single product
@@ -459,6 +463,8 @@ Route::middleware(['auth', 'accountant'])->prefix('accountant')->group(function(
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('accountant.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('accountant.imports.delete');
     Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
+    Route::get('assignments/imports/download/{filename?}', 'ImportController@get_deltio_imp')->where('filename', '(.*)')->name('accountant.imports.deltio.download');
+
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('accountant.exports.view');
@@ -558,6 +564,8 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('foreman.imports.update');
     Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('foreman.imports.delete');
     Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
+    Route::get('assignments/imports/download/{filename?}', 'ImportController@get_deltio_imp')->where('filename', '(.*)')->name('foreman.imports.deltio.download');
+
 
     //exports
     Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('foreman.exports.view');
@@ -613,6 +621,21 @@ Route::middleware(['auth', 'worker'])->prefix('worker')->group(function(){
 
     Route::get('assignments/export/open/download/{filenames?}', 'ExportAssignmentController@get_files_open_exp')->where('filenames', '(.*)')->name('worker.assignments.export.open.getfiles');
     Route::get('assignments/import/open/download/{filenames?}', 'ImportAssignmentController@get_files_open_imp')->where('filenames', '(.*)')->name('worker.assignments.import.open.getfiles');
+
+    //imports
+    Route::get('/assignments/imports/view', 'ImportController@view_imports')->name('worker.imports.view');
+    Route::post('/assignments/imports/create', 'ImportController@create_import')->name('worker.imports.create');
+    Route::put('/assignments/imports/update/{id}', 'ImportController@update_import')->name('worker.imports.update');
+    Route::delete('/assignments/imports/delete/{id}', 'ImportController@delete_import')->name('worker.imports.delete');
+    Route::get('assignments/imports/warehouse/{id}', 'WarehouseController@get_employees_imp'); //ajax route
+    Route::get('assignments/imports/download/{filename?}', 'ImportController@get_deltio_imp')->where('filename', '(.*)')->name('worker.imports.deltio.download');
+
+    //exports
+    Route::get('/assignments/exports/view', 'ExportController@view_exports')->name('worker.exports.view');
+    Route::post('/assignments/exports/create', 'ExportController@create_export')->name('worker.exports.create');
+    Route::put('/assignments/exports/update/{id}', 'ExportController@update_export')->name('worker.exports.update');
+    Route::delete('/assignments/exports/delete/{id}', 'ExportController@delete_export')->name('worker.exports.delete');
+    Route::get('assignments/exports/warehouse/{id}', 'WarehouseController@get_employees_exp'); //ajax route
 
 
     Route::get('/products/view', 'ProductController@view_products')->name('worker.products.view'); //view products
