@@ -232,14 +232,16 @@ class UserController extends Controller
                     $userToLogout = User::findOrFail($id);
                     // \Session::getHandler()->destroy($userToLogout->session_id); //taken from another answer in the same thread...
                     Auth::setUser($userToLogout); //from Laravel API 7.x Docs: "Set the current user" Contracts/Auth/Guard/setUser()
-                    Auth::logout();
+                    Auth::logout(); //From github/laravel--> seems Auth::logout will just logging out the current user and not the specific one.
 
-                    // 3. set again current user
-                    Auth::setUser($current_user);
+                    $userToLogout->delete();
 
                     //after he/she is logged out as above, delete the actual user..!
-                    $user = User::findOrFail($id); //was findOrFail($u_id);
-                    $user->delete();
+                    // $user = User::findOrFail($id); //was findOrFail($u_id);
+                    // $user->delete();
+
+                     // 3. set again current user
+                     Auth::setUser($current_user);
 
                     DB::commit(); //commit the changes
 
