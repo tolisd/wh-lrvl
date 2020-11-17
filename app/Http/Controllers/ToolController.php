@@ -63,7 +63,7 @@ class ToolController extends Controller
             $validation_rules = [
                 'modal-input-towhom-charge' => 'required|exists:employees,id',
                 'modal-input-comments-charge' => 'required',
-                'modal-input-file-charge' => 'required||mimes:doc,docx,pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
+                'modal-input-file-charge' => 'required|mimes:pdf,txt,zip', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
             ]; //maximumFileSize = 250kB, zip means: both, doc & docx
 
             $custom_messages = [
