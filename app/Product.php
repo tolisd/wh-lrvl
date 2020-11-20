@@ -27,7 +27,7 @@ class Product extends Model
     //warehouses is many-to-many with products
     public function warehouses(){
         return $this->belongsToMany('App\Warehouse', 'product_warehouse', 'product_id', 'warehouse_id')
-                    ->withPivot('quantity')
+                    ->withPivot('quantity') //for increment and decrement i added the id column
                     ->withTimestamps(); //for the timestamps created_at updated_at, to be maintained.
     }
     //The third argument is the foreign key name of the model on which you are defining the relationship,
@@ -35,11 +35,13 @@ class Product extends Model
 
     public function imports(){
         return $this->belongsToMany('App\Import', 'import_product', 'product_id', 'import_id')
+                    ->withPivot('quantity')
                     ->withTimestamps();
     }
 
     public function exports(){
         return $this->belongsToMany('App\Export', 'export_product', 'product_id', 'export_id')
+                    ->withPivot('quantity')
                     ->withTimestamps();
     }
 

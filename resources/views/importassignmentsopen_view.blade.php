@@ -23,7 +23,7 @@
 
             <p>Ανοιχτές Αναθέσεις Εισαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -110,7 +110,7 @@
 
 
 
-                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                    <!-- @if(\Auth::user()->user_type == 'warehouse_foreman')
                                         @if(substr($att_file, -3) == 'pdf')
                                         <a href="{{ route('foreman.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
                                             <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
@@ -131,7 +131,7 @@
                                             <i class="far fa-file fa-lg" aria-hidden="true"></i>
                                         </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
                                         @endif
-                                    @endif
+                                    @endif -->
 
 
 
@@ -160,6 +160,120 @@
 
 
 
+                                    <!-- @if(\Auth::user()->user_type == 'warehouse_worker')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('worker.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('worker.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('worker.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('worker.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif -->
+
+
+                                @endforeach
+                            @endif
+                        </td>
+
+                        <td>{{ $importassignment->comments }}</td>
+						<td>
+                            @if($importassignment->is_open == 1)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
+                            @elseif($importassignment->is_open == 0)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Κλειστή
+                            @endif
+                        </td>
+
+                    </tr>
+                @endforeach
+                </tbody>
+
+            </table>
+
+
+            <br/><br/>
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, -->
+
+
+
+            @canany(['isWarehouseForeman', 'isWarehouseWorker'])
+
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
+                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
+                        <th class="text-left">Deadline</th>
+                        <th class="text-left">Επισυναπτόμενα Αρχεία</th>
+                        <th class="text-left">Σχόλια</th>
+						<th class="text-left">Ανοιχτή?</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($importassignments as $importassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($importassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && (($employee->user->user_type == 'warehouse_foreman') || ($employee->user->user_type == 'warehouse_worker')))
+
+                    <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->import_assignment_code }}</td>
+                        <td>{{ $importassignment->warehouse->name }}</td>
+                        <td>{{ $importassignment->import_assignment_text }}</td>
+                        <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td>
+
+                        @php
+                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                        @endphp
+
+                        <td>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+
+                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('foreman.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('foreman.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('foreman.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('foreman.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+
                                     @if(\Auth::user()->user_type == 'warehouse_worker')
                                         @if(substr($att_file, -3) == 'pdf')
                                         <a href="{{ route('worker.assignments.import.open.getfiles', ['filenames' => basename($att_file)]) }}" download>
@@ -183,7 +297,6 @@
                                         @endif
                                     @endif
 
-
                                 @endforeach
                             @endif
                         </td>
@@ -198,16 +311,21 @@
                         </td>
 
                     </tr>
+                    @endif
+
+                @endforeach
+                @endforeach
                 @endforeach
                 </tbody>
 
             </table>
 
 
-
-
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+
+            @endcanany
+            <!-- 'isWarehouseForeman', 'isWarehouseWorker' -->
+
 
 
 			@can('isSuperAdmin')

@@ -19,7 +19,9 @@ class AddImportassignmentIdToImports extends Migration
 
             $table->foreign('importassignment_id')
                     ->references('id')
-                    ->on('importassignments');
+                    ->on('importassignments')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 

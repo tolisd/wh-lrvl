@@ -19,8 +19,8 @@ class CreateEmployeeWarehouseTable extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('warehouse_id');
 
-            $table->foreign('employee_id')->references('id')->on('employees');
-            $table->foreign('warehouse_id')->references('id')->on('warehouse');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });

@@ -19,8 +19,10 @@ class CreateExportProductTable extends Migration
             $table->unsignedBigInteger('export_id');
             $table->unsignedBigInteger('product_id');
 
-            $table->foreign('export_id')->references('id')->on('exports');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->float('quantity'); // extra/custom field in this pivot table (Export Assignments Info Screen)
+
+            $table->foreign('export_id')->references('id')->on('exports')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });

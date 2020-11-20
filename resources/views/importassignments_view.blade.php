@@ -24,7 +24,7 @@
 
             <p>Όλες οι Αναθέσεις Εισαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isNormalUser'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -67,7 +67,6 @@
 
 
                                     @if(\Auth::user()->user_type == 'super_admin')
-
 
                                         @if(substr($att_file, -3) == 'pdf')
                                         <a href="{{ route('admin.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
@@ -116,32 +115,6 @@
                                     @endif
 
 
-
-                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
-                                        @if(substr($att_file, -3) == 'pdf')
-                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-
-                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
-                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-
-                                        @elseif(substr($att_file, -3) == 'txt')
-                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-
-                                        @else
-                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-                                        @endif
-                                    @endif
-
-
-
                                     @if(\Auth::user()->user_type == 'accountant')
                                         @if(substr($att_file, -3) == 'pdf')
                                         <a href="{{ route('accountant.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
@@ -160,31 +133,6 @@
 
                                         @else
                                         <a href="{{ route('accountant.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-                                        @endif
-                                    @endif
-
-
-
-                                    @if(\Auth::user()->user_type == 'normal_user')
-                                        @if(substr($att_file, -3) == 'pdf')
-                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-
-                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
-                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-
-                                        @elseif(substr($att_file, -3) == 'txt')
-                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
-                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
-                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
-
-                                        @else
-                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
                                             <i class="far fa-file fa-lg" aria-hidden="true"></i>
                                         </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
                                         @endif
@@ -267,7 +215,320 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-impassgn-btn">Προσθήκη Νέας Ανάθεσης Εισαγωγής</button>
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant -->
+
+
+
+
+            @canany(['isWarehouseForeman'])
+
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
+                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Κείμενο Ανάθεσης</th>
+                        <th class="text-left">Deadline (Ημ/νία &amp; Ώρα)</th>
+                        <th class="text-left">Επισυναπτόμενα Αρχεία</th>
+                        <th class="text-left">Σχόλια</th>
+						<th class="text-left">Ανοιχτή?</th>
+
+                        <!-- <th class="text-left">Άνοιγμα</th>
+						<th class="text-left">Κλείσιμο</th> -->
+
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($importassignments as $importassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($importassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && ($employee->user->user_type == 'warehouse_foreman'))
+
+                    <tr class="user-row" data-iid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->import_assignment_code }}</td>
+                        <td>{{ $importassignment->warehouse->name }}</td>
+                        <td>{{ $importassignment->import_assignment_text }}</td>
+                        <td>{{ $importassignment->import_deadline->format('l, d/m/Y @ H:i') }}</td>
+
+                        @php
+                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                        @endphp
+
+                        <td>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+
+                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('foreman.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+                                @endforeach
+                            @endif
+                        </td>
+
+                        <td>{{ $importassignment->comments }}</td>
+                        <td>
+                            @if($importassignment->is_open == 1)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
+                            @elseif($importassignment->is_open == 0)
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp;Κλειστή
+                            @endif
+                        </td>
+
+                        <!-- Κουμπί Ανοίγματος Ανάθεσης Εισαγωγής -->
+                        <!-- <td>
+                            @if($importassignment->is_open == 0)
+                            <button class="open-modal btn btn-success"
+                               data-toggle="modal" data-target="#open-modal"
+                               data-iid="{{ $importassignment->id }}"
+                               data-warehousename="{{ $importassignment->warehouse->name }}"
+                               data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
+                               data-text="{{ $importassignment->import_assignment_text }}">
+                            <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Άνοιγμα
+                            </button>
+                            @endif
+                        </td> -->
+
+                        <!-- Κουμπί Κλεισίματος Ανάθεσης Εισαγωγής -->
+                        <!-- <td>
+                            @if($importassignment->is_open == 1)
+                            <button class="close-modal btn btn-warning"
+                                data-toggle="modal" data-target="#close-modal"
+                                data-iid="{{ $importassignment->id }}"
+                                data-warehousename="{{ $importassignment->warehouse->name }}"
+                                data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
+                                data-text="{{ $importassignment->import_assignment_text }}">
+                            <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
+                            </button>
+                            @endif
+                        </td> -->
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-iid="{{ $importassignment->id }}"
+									data-warehouse="{{ $importassignment->warehouse_id }}"
+                                    data-text="{{ $importassignment->import_assignment_text }}"
+                                    data-deadline="{{ $importassignment->import_deadline->format('d-m-Y H:i') }}"
+                                    data-files="{{ $importassignment->uploaded_files }}"
+									data-comments="{{ $importassignment->comments }}"
+									data-isopen="{{ $importassignment->is_open }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-iid="{{ $importassignment->id }}"
+                                    data-warehousename="{{ $importassignment->warehouse->name }}"
+                                    data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
+                                    data-text1="{{ $importassignment->import_assignment_text }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+                    </tr>
+
+                    @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-impassgn-btn">Προσθήκη Νέας Ανάθεσης Εισαγωγής</button>
+
+            <br/><br/>
+
+            @endcanany
+            <!-- /isWarehouseForeman -->
+
+
+            @canany(['isNormalUser']) <!-- the table is empty for this user! he is not allowed to see what he just posted! -->
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
+                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Κείμενο Ανάθεσης</th>
+                        <th class="text-left">Deadline (Ημ/νία &amp; Ώρα)</th>
+                        <th class="text-left">Επισυναπτόμενα Αρχεία</th>
+                        <th class="text-left">Σχόλια</th>
+						<th class="text-left">Ανοιχτή?</th>
+
+                        <!-- <th class="text-left">Άνοιγμα</th>
+						<th class="text-left">Κλείσιμο</th> -->
+
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($importassignments as $importassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($importassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && ($employee->user->user_type == 'normal_user'))
+
+                    <tr class="user-row" data-iid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->import_assignment_code }}</td>
+                        <td>{{ $importassignment->warehouse->name }}</td>
+                        <td>{{ $importassignment->import_assignment_text }}</td>
+                        <td>{{ $importassignment->import_deadline->format('l, d/m/Y @ H:i') }}</td>
+
+                        @php
+                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                        @endphp
+
+                        <td>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+
+                                    @if(\Auth::user()->user_type == 'normal_user')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('user.assignment.import.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+                                @endforeach
+                            @endif
+                        </td>
+
+                        <td>{{ $importassignment->comments }}</td>
+                        <td>
+                            @if($importassignment->is_open == 1)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
+                            @elseif($importassignment->is_open == 0)
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp;Κλειστή
+                            @endif
+                        </td>
+
+                        <!-- Κουμπί Ανοίγματος Ανάθεσης Εισαγωγής -->
+                        <!-- <td>
+                            @if($importassignment->is_open == 0)
+                            <button class="open-modal btn btn-success"
+                               data-toggle="modal" data-target="#open-modal"
+                               data-iid="{{ $importassignment->id }}"
+                               data-warehousename="{{ $importassignment->warehouse->name }}"
+                               data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
+                               data-text="{{ $importassignment->import_assignment_text }}">
+                            <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Άνοιγμα
+                            </button>
+                            @endif
+                        </td> -->
+
+                        <!-- Κουμπί Κλεισίματος Ανάθεσης Εισαγωγής -->
+                        <!-- <td>
+                            @if($importassignment->is_open == 1)
+                            <button class="close-modal btn btn-warning"
+                                data-toggle="modal" data-target="#close-modal"
+                                data-iid="{{ $importassignment->id }}"
+                                data-warehousename="{{ $importassignment->warehouse->name }}"
+                                data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
+                                data-text="{{ $importassignment->import_assignment_text }}">
+                            <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
+                            </button>
+                            @endif
+                        </td> -->
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-iid="{{ $importassignment->id }}"
+									data-warehouse="{{ $importassignment->warehouse_id }}"
+                                    data-text="{{ $importassignment->import_assignment_text }}"
+                                    data-deadline="{{ $importassignment->import_deadline->format('d-m-Y H:i') }}"
+                                    data-files="{{ $importassignment->uploaded_files }}"
+									data-comments="{{ $importassignment->comments }}"
+									data-isopen="{{ $importassignment->is_open }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-iid="{{ $importassignment->id }}"
+                                    data-warehousename="{{ $importassignment->warehouse->name }}"
+                                    data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
+                                    data-text1="{{ $importassignment->import_assignment_text }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+                    </tr>
+
+                    @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-impassgn-btn">Προσθήκη Νέας Ανάθεσης Εισαγωγής</button>
+
+            <br/><br/>
+
+            @endcanany
+            <!-- isNormalUser -->
 
 
 			@can('isSuperAdmin')

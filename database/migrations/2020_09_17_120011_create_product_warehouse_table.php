@@ -22,8 +22,8 @@ class CreateProductWarehouseTable extends Migration
                                        //should be nullable(?) for the case when i dont have a product in that warehouse..
                                        // NO! not nullable, its ok like this!
 
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('warehouse_id')->references('id')->on('warehouse');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });

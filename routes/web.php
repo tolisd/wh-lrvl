@@ -19,7 +19,8 @@ Route::get('/', function () {
 
 // Route::get('/home', 'PagesController@home'); //is overridden by the other route
 
-Auth::routes();
+// Auth::routes();
+Auth::routes(['register' => false]);
 
 //I added this following logout line, it works, and it needs to be a GET request..
 Route::get('/logout', 'Auth\LoginController@logout');

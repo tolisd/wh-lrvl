@@ -39,7 +39,7 @@ class ExportController extends Controller
             }
 
             $employees_per_warehouse = DB::table('employees')
-                                        //->join('imports', 'employees.id', '=', 'imports.employee_id')
+                                        //->join('exports', 'employees.id', '=', 'exports.employee_id')
                                         ->join('employee_warehouse', 'employees.id','=','employee_warehouse.employee_id')
                                         ->join('exportassignments', 'exportassignments.warehouse_id', '=', 'employee_warehouse.warehouse_id')
                                         ->join('users', 'users.id', '=', 'employees.user_id')
@@ -102,12 +102,13 @@ class ExportController extends Controller
                 'modal-input-shipco-create' => 'required',
                 'modal-input-sendplace-create' => 'required',
                 'modal-input-destin-create' => 'required',
-                'modal-input-chargehrs-create' => 'required|numeric',
+                'modal-input-chargehrs-create' => 'required|numeric|gt:modal-input-hours-create',
                 'modal-input-hours-create' => 'required|numeric',
                 // 'modal-input-bulletin-create' => 'required|mimes:txt,pdf,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-create' => 'required',
                 'modal-input-exportassignment-create' => 'required',
-                'modal-input-products-create' => 'required',
+                'modal-input-prod-create.*' => 'required',
+                'modal-input-prodqty-create.*' => 'required|numeric|gt:0',
             ];
 
             //custom error messages for the above validation rules
@@ -121,13 +122,17 @@ class ExportController extends Controller
                 'modal-input-destin-create.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-create.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
                 'modal-input-chargehrs-create.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
+                'modal-input-chargehrs-create.gt' => 'Οι ΧρΩΕ πρέπει να είναι περισσότερες από τις ΩΕ',
                 'modal-input-hours-create.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-create.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 // 'modal-input-bulletin-create.required' => 'Το Δελτίο Αποστολής απαιτείται',
                 // 'modal-input-bulletin-create.mimes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx',
                 'modal-input-dtitle-create.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-create.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
-                'modal-input-products-create.required' => 'Τα Προϊόντα απαιτούνται',
+                'modal-input-prod-create.*.required' => 'Τα Προϊόντα απαιτούνται',
+                'modal-input-prodqty-create.*.required' => 'Η Ποσότητα απαιτείται',
+                'modal-input-prodqty-create.*.numeric' => 'Η Ποσότητα πρέπει να είναι αριθμός',
+                'modal-input-prodqty-create.*.gt' => 'Εισάγατε μηδενική ή αρνητική Ποσότητα',
             ];
 
             //prepare the $validator variable for these validation rules
@@ -178,14 +183,99 @@ class ExportController extends Controller
 
                         //     $export->shipment_bulletin = $url;
                         // }
-                        $export->shipment_bulletin = null;
+                        $export->shipment_bulletin = null; //I do not need it for the export-information
 
                         $export->save();
 
 
                         //also, update the pivot table, ie save the relation in the pivot table!
                         // usually it is array of id's passed into the relationship
-                        $export->products()->sync($request->input('modal-input-products-create'));
+
+                        // $export->products()->sync($request->input('modal-input-products-create'));
+
+                        //take the warehouse_id from the hidden input
+                        // $w_id = $request->input('modal-input-warehouse-create');
+
+                        $prd_arr = $request->input('modal-input-prod-create');    //array of product id's
+                        $qty_arr = $request->input('modal-input-prodqty-create'); //array of quantity id's
+
+                        // $export->products()->sync($prd_arr); //the products.. this is OK,
+                                                             //but where is their quantity? it should go into the 'product_warehouse' table.
+
+                        $extra = array_map(function($qty){
+                            return ['quantity' => $qty];
+                        }, $qty_arr);
+
+                        $data = array_combine($prd_arr, $extra);
+                        // dd($data);
+
+                        $export->products()->sync($data); //OK data is PASSED into export_product table CORRECTLY!
+
+
+
+
+
+                        // find the warehouse id from the ExportAssignment!
+                        $wh_id = DB::table('exportassignments')
+                                ->where('id', $request->input('modal-input-exportassignment-create'))
+                                ->pluck('warehouse_id')->toArray();
+
+                        foreach($wh_id as $key=>$value){
+                            $warehouse_id = $value;
+                        } //returns only the 1 value.
+
+                        $warehouse = Warehouse::find($warehouse_id);
+
+                        $old_quantities = [];
+
+                        foreach($prd_arr as $prd){
+
+                            //get the old values for quantities (the already stored values in the DB), for THIS warehouse_id
+                            $old_quantities[] = DB::table('product_warehouse')
+                            ->where('warehouse_id', $wh_id)
+                            ->where('product_id', $prd)
+                            ->pluck('quantity')
+                            ->toArray();
+                            // ->lists('quantity')
+                            // ->all();
+                        }
+
+                        // dd($old_quantities); //associative array
+
+                        $old_qty = [];
+                        // $olq_qty = array_values($old_quantities);
+                        foreach($old_quantities as $key=>$value){
+                            foreach($value as $k=>$v){
+                               $old_qty[] = $v;
+                            }
+                        }
+
+                        $old_qtys = array_values($old_qty);
+                        // dd($old_qty);
+
+                        //subtraction!
+                        $new_quantities = array_map(function($o, $q){
+                            if($o < $q){
+                                return 0;
+                            }
+                            return $o - $q;
+                        }, $old_qtys, $qty_arr);
+
+
+                        $extra1 = array_map(function($qt){
+                            return ['quantity' => $qt];
+                        }, $new_quantities);
+
+                        $data1 = array_combine($prd_arr, $extra1);
+
+
+                        $warehouse->products()->syncWithoutDetaching($data1);
+
+
+
+
+
+
 
 
                         DB::commit();
@@ -251,7 +341,8 @@ class ExportController extends Controller
                 // 'modal-input-bulletin-edit' => 'required|mimes:txt,pdf,zip,doc,docx', //mimetypes:application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument-wordprocessingml.document',
                 'modal-input-dtitle-edit' => 'required',
                 'modal-input-exportassignment-edit' => 'required',
-                'modal-input-products-edit' => 'required',
+                // 'modal-input-prod-edit.*' => 'required',
+                // 'modal-input-prodqty-edit.*' => 'required|numeric|gt:0',
             ];
 
             //custom error messages for the above validation rules
@@ -265,13 +356,17 @@ class ExportController extends Controller
                 'modal-input-destin-edit.required' => 'Ο Τόπος Προορισμού απαιτείται',
                 'modal-input-chargehrs-edit.required' => 'Οι χρεώσιμες εργάσιμες ώρες απαιτούνται',
                 'modal-input-chargehrs-edit.numeric' => 'Οι χρεώσιμες εργάσιμες πρέπει να είναι αριθμός',
+                'modal-input-chargehrs-edit.gt' => 'Οι ΧρΩΕ πρέπει να είναι περισσότερες από τις ΩΕ',
                 'modal-input-hours-edit.required' => 'Οι εργάσιμες ώρες απαιτούνται',
                 'modal-input-hours-edit.numeric' => 'Οι εργάσιμες ώρες πρέπει να είναι αριθμός',
                 // 'modal-input-bulletin-edit.required' => 'Το Δελτίο Αποστολής απαιτείται',
                 // 'modal-input-bulletin-edit.mimes' => 'Τύποι αρχείων για το Δελτίο Αποστολής: pdf, txt, doc, docx.',
                 'modal-input-dtitle-edit.required' => 'Ο Διακριτός Τίτλος Παράδοσης απαιτείται',
                 'modal-input-exportassignment-edit.required' => 'Η Ανάθεση Εξαγωγής απαιτείται',
-                'modal-input-products-edit.required' => 'Τα Προϊόντα απαιτούνται',
+                // 'modal-input-prod-edit.*.required' => 'Τα Προϊόντα απαιτούνται',
+                // 'modal-input-prodqty-edit.*.required' => 'Η Ποσότητα απαιτείται',
+                // 'modal-input-prodqty-edit.*.numeric' => 'Η Ποσότητα πρέπει να είναι αριθμός',
+                // 'modal-input-prodqty-edit.*.gt' => 'Εισάγατε μηδενική ή αρνητική Ποσότητα',
             ];
 
 
@@ -326,8 +421,9 @@ class ExportController extends Controller
 
                         $export->update($request->all());
 
+                        //No, NOT products in the update..!
                         //also, update the pivot table, ie save the relation in the pivot table!
-                        $export->products()->sync($request->input('modal-input-products-edit'));
+                        // $export->products()->sync($request->input('modal-input-products-edit'));
 
 
                         DB::commit();

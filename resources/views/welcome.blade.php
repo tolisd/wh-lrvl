@@ -126,7 +126,7 @@
                         </button>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Εγγραφή</a>
+                            <!-- <a href="{{ route('register') }}">Εγγραφή</a> -->
                         @endif
                     @endauth
                 </div>

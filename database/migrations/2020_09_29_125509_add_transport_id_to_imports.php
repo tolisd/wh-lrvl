@@ -19,7 +19,9 @@ class AddTransportIdToImports extends Migration
 
             $table->foreign('transport_id')
                     ->references('id')
-                    ->on('transports');
+                    ->on('transports')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 

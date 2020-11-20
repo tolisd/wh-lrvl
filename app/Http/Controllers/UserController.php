@@ -51,7 +51,7 @@ class UserController extends Controller
             //the validation rules
             $validation_rules = [
                 'modal-input-name-edit' => 'required',
-                'modal-input-email-edit' => 'required',
+                'modal-input-email-edit' => 'required|email',
                 //'modal-input-passwd-edit' => 'required',
                 'modal-input-usertype-edit' => 'required',
                 'modal-input-photo-edit' => 'nullable|mimetypes:image/jpeg,image/png',
@@ -61,6 +61,7 @@ class UserController extends Controller
             $custom_messages = [
                 'modal-input-name-edit.required' => 'Το όνομα απαιτείται',
                 'modal-input-email-edit.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-email-edit.email' => 'Το ηλ.ταχυδρομείο δεν είναι έγκυρο',
                 //'modal-input-passwd-edit.required' => 'Το συνθηματικό απαιτείται',
                 'modal-input-usertype-edit.required' => 'Ο ρόλος χρήστη απαιτείται',
                 'modal-input-photo-edit.mimetypes' => 'Τύποι αρχείων που υποστηρίζονται: jpg, jpeg, png.',
@@ -337,7 +338,7 @@ class UserController extends Controller
 
             $validation_rules = [
                 'modal-input-name-create' => 'required',
-                'modal-input-email-create' => 'required',
+                'modal-input-email-create' => 'required|email',
                 'modal-input-passwd-create' => 'required|min:8',
                 'modal-input-usertype-create' => 'required',
                 'modal-input-photo-create' => 'nullable|mimetypes:image/jpeg,image/png', //image_jpeg include both jpg & jpeg files.
@@ -346,6 +347,7 @@ class UserController extends Controller
             $custom_messages = [
                 'modal-input-name-create.required' => 'Το όνομα απαιτείται',
                 'modal-input-email-create.required' => 'Το ηλ.ταχυδρομείο απαιτείται',
+                'modal-input-email-create.email' => 'Το ηλ.ταχυδρομείο δεν είναι έγκυρο',
                 'modal-input-passwd-create.required' => 'Το συνθηματικό απαιτείται',
                 'modal-input-passwd-create.min' => 'Το συνθηματικό πρέπει να έχει τουλάχιστον 8 χαρακτήρες',
                 'modal-input-usertype-create.required' => 'Ο ρόλος χρήστη απαιτείται',

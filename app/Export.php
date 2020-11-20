@@ -36,6 +36,7 @@ class Export extends Model
 
     public function products(){
         return $this->belongsToMany('App\Product', 'export_product', 'export_id', 'product_id')
+                    ->withPivot('quantity')
                     ->withTimestamps();
     }
 

@@ -18,7 +18,9 @@ class AddCompanyIdToWarehouse extends Migration
 
             $table->foreign('company_id')
                     ->references('id')
-                    ->on('company');
+                    ->on('company')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 

@@ -326,6 +326,7 @@
                 </div>
 
             @endcanany
+            <!-- isWarehouseForeman, Auth -->
 
         </div>
 

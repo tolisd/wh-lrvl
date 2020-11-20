@@ -24,7 +24,7 @@
 
             <p>Στοιχεία Αναθέσεων Εισαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -41,6 +41,7 @@
 						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
 						<th class="text-left">Δελτίο Αποστολής</th>
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
+                        <th class="text-left">Εισαγόμενα Προϊόντα</th>
                         <!-- <th class="text-left">Προϊόντα</th> -->
 
                         <th class="text-left">Μεταβολή</th>
@@ -113,30 +114,6 @@
 
 
 
-                            @if(\Auth::user()->user_type == 'warehouse_foreman')
-                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
-                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-
-                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
-                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-
-                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
-                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-
-                                @else
-                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-                                @endif
-                            @endif
-
-
 
                             @if(\Auth::user()->user_type == 'accountant')
                                 @if(substr($import->shipment_bulletin, -3) == 'pdf')
@@ -161,36 +138,20 @@
                                 @endif
                             @endif
 
-
-
-                            @if(\Auth::user()->user_type == 'warehouse_worker')
-                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
-                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-
-                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
-                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-
-                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
-                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-
-                                @else
-                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
-                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
-                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
-                                @endif
-                            @endif
                         </td>
 
 
 						<td>{{ $import->discrete_description }}</td>
                         <!-- <td>{{ $import->product_id }}</td> -->
                         <!-- <td>{{ $import->import_assignment->import_assignment_text }}</td> -->
+
+                        <td>
+                        <ul>
+                            @foreach($import->products as $product)
+                                <li>{{ $product->name }}:&nbsp;{{ $product->pivot->quantity }}&nbsp;{{ $product->measureunit->name }}</li>
+                            @endforeach
+                        </ul>
+                        </td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -239,7 +200,181 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-import-btn">Προσθήκη Στοιχείων Ανάθεσης Εισαγωγής</button>
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant -->
+
+
+
+
+
+            @canany(['isWarehouseForeman', 'isWarehouseWorker'])
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Ανάθεση Εισαγωγής</th>
+                        <th class="text-left">Υπεύθυνος Παραλαβής</th>
+                        <th class="text-left">Εταιρεία Εισαγωγής</th>
+                        <th class="text-left">Ημ/νία &amp; Ώρα Παραλαβής</th>
+                        <th class="text-left">Αρ.Κυκλ. Μεταφ.Μέσου</th>
+                        <th class="text-left">Μεταφορική Εταιρεία</th>
+						<th class="text-left">Τόπος Αποστολής</th>
+						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
+						<th class="text-left">Δελτίο Αποστολής</th>
+						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
+                        <th class="text-left">Εισαγόμενα Προϊόντα</th>
+                        <!-- <th class="text-left">Προϊόντα</th> -->
+
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($imports as $import)
+                @foreach($importassignments as $importassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($import->importassignment_id == $importassignment->id)
+                     && ($importassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && (($employee->user->user_type == 'warehouse_foreman') || ($employee->user->user_type == 'warehouse_worker')))
+
+
+                    <tr class="user-row" data-iid="{{ $import->id }}">  <!-- necessary additions -->
+                        <td>[{{ $import->import_assignment->import_assignment_code }}] <br/>
+                            [{{ $import->import_assignment->warehouse->name }}] <br/>
+                            [{{ $import->import_assignment->import_deadline->isoFormat('llll') }}]</td>
+						<td>{{ $import->employee->user->name }}</td>
+                        <td>{{ $import->company->name }}</td>
+						<td>{{ $import->delivered_on->format('l d/m/Y @ H:i') }}</td>
+						<td>{{ $import->vehicle_reg_no }}</td>
+						<td>{{ $import->transport->name }}</td>
+						<td>{{ $import->delivery_address }}</td>
+						<td>{{ $import->hours_worked }}/{{ $import->chargeable_hours_worked }}</td>
+
+						<!-- <td>{{ substr(basename($import->shipment_bulletin), 15) }}</td> -->
+                        <td>
+
+                            @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('foreman.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+
+
+                            @if(\Auth::user()->user_type == 'warehouse_worker')
+                                @if(substr($import->shipment_bulletin, -3) == 'pdf')
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif((substr($import->shipment_bulletin, -3) == 'doc') or (substr($import->shipment_bulletin, -4) == 'docx'))
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @elseif(substr($import->shipment_bulletin, -3) == 'txt')
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+
+                                @else
+                                <a href="{{ route('worker.imports.deltio.download', ['filename' => basename($import->shipment_bulletin)]) }}" download>
+                                    <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                </a>&nbsp;{{ substr(basename($import->shipment_bulletin), 15) }}<br/>
+                                @endif
+                            @endif
+                        </td>
+
+
+						<td>{{ $import->discrete_description }}</td>
+                        <!-- <td>{{ $import->product_id }}</td> -->
+                        <!-- <td>{{ $import->import_assignment->import_assignment_text }}</td> -->
+
+                        <td>
+                        <ul>
+                            @foreach($import->products as $product)
+                                <li>{{ $product->name }}:&nbsp;{{ $product->pivot->quantity }}&nbsp;{{ $product->measureunit->name }}</li>
+                            @endforeach
+                        </ul>
+                        </td>
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-iid="{{ $import->id }}"
+									data-employeeid="{{ $import->employee_id }}"
+                                    data-employeesall="{{ $employees }}"
+                                    data-usersall="{{ $users }}"
+                                    data-warehousesall="{{ $warehouses }}"
+                                    data-warehouseid="{{ $import->import_assignment->warehouse_id }}"
+                                    data-employeesperwarehouse="{{ $employees_per_warehouse }}"
+									data-companyid="{{ $import->company_id }}"
+									data-deliveredon="{{ $import->delivered_on->format('d-m-Y H:i') }}"
+									data-vehicleregno="{{ $import->vehicle_reg_no }}"
+									data-transportid="{{ $import->transport_id }}"
+									data-deliveryaddress="{{ $import->delivery_address }}"
+									data-chargeablehours="{{ $import->chargeable_hours_worked }}"
+									data-hours="{{ $import->hours_worked }}"
+									data-bulletin="{{ basename($import->shipment_bulletin) }}"
+									data-description="{{ $import->discrete_description }}"
+                                    data-importassignmentid="{{ $import->importassignment_id }}"
+                                    data-importassignment="{{ $import->import_assignment }}"
+                                    data-iacode="{{ $import->import_assignment->import_assignment_code }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-iid="{{ $import->id }}"
+                                    data-iacode="{{ $import->import_assignment->import_assignment_code }}"
+                                    data-warehouse="{{ $import->import_assignment->warehouse->name }}"
+                                    data-deliveredon="{{ $import->delivered_on->format('l, d-m-Y H:i') }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-import-btn">Προσθήκη Στοιχείων Ανάθεσης Εισαγωγής</button>
+
+            <br/><br/>
+
+            @endcanany
+            <!-- 'isWarehouseForeman', 'isWarehouseWorker' -->
+
+
+
 
 
 			@can('isSuperAdmin')
@@ -266,7 +401,7 @@
 
 
 
-			@canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+			@canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
             <!-- The 3 Modals, Add/Update/Delete -->
 
             <!-- the Add/Create new Import Assignment, Modal popup window -->
@@ -302,6 +437,9 @@
 
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-iid-create" name="modal-input-iid-create" value="">
+
+                                    <!-- also another id, for the warehouse this time -->
+                                    <!-- <input type="hidden" id="modal-input-whid-create" name="modal-input-whid-create" value=""> -->
 
 
                                     <!-- import_assignment -->
@@ -462,6 +600,47 @@
 									</div>
                                     -->
 									<!-- /products -->
+
+                                    <hr/>
+
+
+                                    <!-- product in Import Assignment -->
+                                    <div class="form-group row">
+
+                                        <div class="col">
+
+                                        <div class="wrapper-newprodqty">
+
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-lg-3 text-right" for="modal-input-prod-create">Προϊόν & Ποσότητα</label>
+
+                                                <div class="col-lg-7">
+                                                    <select name="modal-input-prod-create[]" id="modal-input-prod-create" class="form-control">
+
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-lg-2">
+                                                    <input type="text" name="modal-input-prodqty-create[]" class="form-control" id="modal-input-prodqty-create"
+                                                        value="" placeholder="ποσότητα" />
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group row justify-content-center">
+                                                <button type="button" class="btn btn-info col-lg-9" id="add-prodqty-button-create">
+                                                    <strong>[+]</strong>&nbsp;Πρόσθεσε Προϊόν</button>
+                                            </div>
+
+                                            <!-- append new prodqty div exactly here -->
+
+                                        </div>
+
+                                        </div>
+
+									</div>
+                                    <!-- /product in Import Assignment -->
+
 
 
                                 </div>
@@ -680,7 +859,7 @@
                                             </select>
                                         </div>
 									</div>
-                                    ==>
+                                    -->
 									<!-- /products -->
 
 
@@ -875,7 +1054,31 @@
 
 
 
+
     });
+
+
+    var html1 = '<div class="form-group row newprodqty">'+
+                '<label class="col-form-label col-lg-3 text-right" for="modal-input-prod-create">Προϊόν & Ποσότητα</label>'+
+                '<div class="col-lg-7"><select name="modal-input-prod-create[]" id="modal-input-prod-create" class="form-control createnewdiv">'+
+                '</select>'+
+                '</div><div class="col-lg-2">'+
+                '<input type="text" name="modal-input-prodqty-create[]" class="form-control" id="modal-input-prodqty-create" value="" placeholder="ποσότητα" />'+
+                '</div></div><div class="form-group row justify-content-center">'+
+                '<button type="button" class="btn btn-danger col-lg-9 minus-btn" id="minus-prodqty-button-create"><strong>[&ndash;]</strong>&nbsp;Αφαίρεσε Προϊόν</button></div>';
+
+
+        // $(document).on('click', '#add-prodqty-button-create', function(evt){
+
+        //     evt.preventDefault();
+        //     $('.wrapper-newprodqty').append(html1); //add the new div
+
+        //     console.log('evt:: ', evt);
+
+
+        // });
+
+
 
         $('#modal-input-dtdeliv-create').datetimepicker({
             format:'d-m-Y H:i',
@@ -950,7 +1153,12 @@
             modal.find('.modal-body #modal-input-chargehrs-edit').val(chargeablehours);
             modal.find('.modal-body #modal-input-hours-edit').val(hours);
 
-            modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin);
+
+            // modal.find('.modal-body #modal-input-bulletin-edit').val(bulletin); //this very line caused the ERROR of
+                                                                                   // bootstrap update modal NOT showing up!!
+                                                                                   //for security reasons!! input type=file!!!!
+                                                                                   //hence cannot do this!
+
 
             modal.find('.modal-body #modal-input-dtitle-edit').val(description);
             // modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
@@ -971,9 +1179,6 @@
             //console.log(export_assignment);
             // modal.find('.modal-body #modal-input-importassignment-edit').val('['+import_assignment.import_assignment_code+']/['+import_assignment.warehouse.name +'],[' + import_assignment.import_deadline+']');
             modal.find('.modal-body #modal-input-importassignment-edit').val(importassignmentid);
-
-
-
 
 
             // $.each(import_assignment, function(key,val){
@@ -1183,6 +1388,11 @@
             $('.alert-danger').hide();
             $('.alert-danger').html('');
 
+
+
+
+            //Need to do some Checks here for the Products? No, ONLY in the exports info.
+
             $.ajax({
                 method: "POST",
                 data: formData,
@@ -1239,7 +1449,14 @@
 
 
 
+
+
+
         //ajax for dropdown lists in add and edit modals
+
+        var z = 1;
+
+
 
         //ajax add modal
         $(document).on('change', '#modal-input-importassignment-create', function(evt){
@@ -1247,6 +1464,23 @@
             console.log('Event: ',evt);
 
             var wh_id = evt.target.value;
+
+
+            //when i re-change, I want the NEW divs removed!
+            $('.modal-body .newprodqty').each(function(){
+                $(this).remove();
+                $('.minus-btn').remove();
+                // $(this).parent().remove();
+
+                // z--;
+            });
+
+            $('.modal-body select.createnewdiv').val('');
+            $('.modal-body .createnewdiv').empty();
+
+
+
+
 
             if(wh_id){
                 $.ajax({
@@ -1258,20 +1492,215 @@
 
                         console.log('Data: ',data);
 
-                        $('#modal-input-recipient-create').empty();
+                        // $('#modal-input-recipient-create').empty();
+                        // $.each(data, function(key, value){
+
+                        //     $('#modal-input-recipient-create').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                        //     //console.log('key='+key+ ', value='+value);
+                        // });
+                        $('.modal-body #modal-input-recipient-create').empty();
+                        $('.modal-body #modal-input-prod-create').empty();
+
+
                         $.each(data, function(key, value){
 
-                            $('#modal-input-recipient-create').append('<option value="'+ value.id +'">'+ value.name +'</option>');
-                            //console.log('key='+key+ ', value='+value);
+                            console.log('data_again', data);
+                            // console.log('key=', key);
+                            // console.log('value= ', value);
+                            // console.log('value_length', value.length);
+
+                            //value.forEach((item, index) =>  $('#modal-input-recipient-create').append('<option value="'+ item.id +'">'+ item.name +'</option>'));
+
+                            if(key == 0){
+                                $.each(value, function(k,v){
+                                    $('.modal-body #modal-input-recipient-create').append('<option value="'+ v.id +'">'+ v.name +'</option>');
+                                });
+                            }
+
+                            if(key == 1){
+                                $.each(value, function(k,v){
+                                    $('.modal-body #modal-input-prod-create').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
+                                });
+                            }
+
+
                         });
+
+                        // <<here>> to add create & delete divs as NESTED functions,
+                        // so that they receive the DATA parameter from success function!
+
+                        var product_count = data[1].length; //{{ count($products_in_wh) }}; //
+                        console.log('product_count=', product_count);
+                        var len = $('.modal-body .newprodqty').length;
+                        // var len1 = $('.wrapper-newprodqty').length;
+                        var diff = product_count - len;
+                        // var diff1 = product_count - len1;
+                        // var z = 1;
+
+                        // console.log('z = '+z+', diff ='+diff);
+                        // console.log('difference = ', diff);
+
+
+                        //REMOVE the new div  //NESTED function too
+                        $(document).on('click', '.minus-btn', function(evt1){
+                            // console.log(evt1);
+                            // evt1.preventDefault();
+                            // console.log('z = '+z+', diff ='+diff);
+                            // $(this).closest('.wrapper-newprodqty').find('.newprodqty').remove(); //removes ALL  .newprodqty subDIVs!
+
+                            // if(z >= diff){
+                                //removes the immediately previous sibling which is the div .newprodqty, test it extensively after you will have added products
+                                $(this).parent().prev().remove(); //ok, this works but adds empty divs (div class="form-group row justify-content-center"), as i remove them
+                                $(this).parent().remove(); //ok. this line removes the empty div as well:)
+                                $(this).remove(); //removes the button itself!
+
+                                z--;
+                            // }
+
+                        });
+
+
+                        // var product_count = data[1].length;
+                        // console.log('product_count=', product_count);
+                        // var len = $('.modal-body .newprodqty').length;
+                        // var diff = product_count - len;
+                        // z = 1; //my counter for new products
+
+                        //this NESTED function did the trick  //ADD new divs WITH the products.
+                        //gets its 'data' parameter from AJAX success function
+                        $(document).on('click', '#add-prodqty-button-create', function(evt){
+                            // console.log('EVENT= ', evt.target.value);
+                            // console.log('EVENT= ', $(evt.target).text());
+                            // evt.preventDefault();
+
+                            if(z < diff){
+
+                                z++;
+                                $('.wrapper-newprodqty').append(html1); //ADD the new div
+                                // $('#add-form').find('select.createnewdiv').val('');
+
+                                $('.modal-body .createnewdiv').empty();
+                                // console.log("Data-Create = ", data);
+
+                                $.each(data, function(key, value){
+                                    // console.log('keyc=', key);
+                                    // console.log('valuec= ', value);
+                                    $.each(value, function(k,v){
+                                        if(key == 1){
+                                            // console.log('kc=', k);
+                                            // console.log('vc= ', v);
+                                            $('.modal-body .createnewdiv').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
+                                            $('#add-form').find('select.createnewdiv').val('');
+                                        }
+                                    });
+                                });
+
+
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    type: "error",
+                                    title: 'Προσοχή!',
+                                    text: 'Δεν μπορείτε να προσθέσετε περισσότερα Προϊόντα!',
+                                });
+
+                                // return false;
+                            }
+
+                        });
+
+
+                        //check for duplicate products! important!
+                        //works perfectly!! do NOT modify it!!
+                        $(document).on('change', 'select.createnewdiv', function(){
+
+                            var valueOfChangedInput = $(this).val();
+                            var timeRepeated = 0;
+                            var tR = 0;
+
+                            //"old" select VS. "new" select
+                            $("select#modal-input-prod-create").each(function(){
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            //"new" select VS. "new" select
+                            $('select.createnewdiv').each(function(){ //this == select.selc1
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    tR++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            if((timeRepeated > 1) || (tR > 1)){ //changed from timeRepeated > 1 TO timeRepeated >= 1, and it worked!
+
+                                $('#add-form').find('select.createnewdiv').val('');
+
+                                Swal.fire({
+                                    icon: "error",
+                                    type: "error",
+                                    title: 'Προσοχή!',
+                                    text: 'Τα προϊόντα πρέπει να είναι διαφορετικά μεταξύ τους! Παρακαλώ επανεπιλέξτε Προϊόντα!',
+                                });
+                            }
+
+                        });
+
+                        $(document).on('change', 'select#modal-input-prod-create', function(){
+
+                            var valueOfChangedInput = $(this).val();
+                            var timeRepeated = 0;
+                            var tR = 0;
+
+                            //"old" select VS. "new" select
+                            $("select#modal-input-prod-create").each(function(){
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            //"new" select VS. "new" select
+                            $('select.createnewdiv').each(function(){ //this == select.selc1
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    tR++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            if((timeRepeated > 1) || (tR > 1)){ //changed from timeRepeated > 1 TO timeRepeated >= 1, and it worked!
+
+                                $('#add-form').find('select.createnewdiv').val('');
+
+                                Swal.fire({
+                                    icon: "error",
+                                    type: "error",
+                                    title: 'Προσοχή!',
+                                    text: 'Τα προϊόντα πρέπει να είναι διαφορετικά μεταξύ τους! Παρακαλώ επανεπιλέξτε Προϊόντα!',
+                                });
+                            }
+
+                        });
+
+
+
                     },
 
                 });
             } else {
                 $('#modal-input-recipient-create').empty();
+                $('#modal-input-prod-create').empty();
             }
 
         });
+
+
+
+
+
+
 
 
         //ajax edit modal
@@ -1306,7 +1735,31 @@
         });
 
 
+
         //necessary additions for when the modals get hidden
+
+        $('#add-modal').on('show.bs.modal', function(e){
+            //when i open the add modal i want no values in there, it will be populated by ajax instead!
+            $('.modal-body #modal-input-prod-create').empty();
+            // $('.modal .wrapper-newprodqty').empty();
+
+            $('.modal-body .newprodqty').each(function(){
+                $(this).remove();
+                $('.minus-btn').remove();
+                // $(this).parent().remove();
+
+                z--; //added the counter here as well
+            });
+        });
+
+
+        $('#add-modal').on('hidden.bs.modal', function(e){
+            //so as not to add anymore product/qty divs AFTER the modal is re-opened
+            $(document).off('click', '#add-prodqty-button-create');
+        });
+
+
+
 
         $('#edit-modal').on('hidden.bs.modal', function(e){
             $(document).off('submit', '#edit-form');

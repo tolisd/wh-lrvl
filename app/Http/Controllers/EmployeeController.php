@@ -277,15 +277,66 @@ class EmployeeController extends Controller
 
             if ($request->ajax()){
 
+                // $employee = Employee::findOrFail($id);
+                // // Should check if employee/user is logged out (or not logged in) first?
+                // // or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
+                // // I DID the above in UserController.php, first user is logged out and afterwards he/she is deleted from the DB
+                // // VERY IMPORTANT!
+                // // Before deleting an Employee, check if he/she is involved in other activities in the program!!!
+                // $employee->delete();
+
+
+                $employee_has_charged_tools = DB::table('employees')
+                ->where('employees.id', '=', $id)
+                ->whereExists(function($query){
+                // ->whereNotExists(function($query){
+                    //$query->select(DB::raw(1))
+                        $query->select('tools.employee_id')
+                            ->from('tools')
+                            ->whereRaw('tools.employee_id = employees.id');
+                })->get();
+
+
+                $employee_has_import_assignments_info = DB::table('employees')
+                                                ->where('employees.id', '=', $id)
+                                                ->whereExists(function($query){
+                                                // ->whereNotExists(function($query){
+                                                    //$query->select(DB::raw(1))
+                                                    $query->select('imports.employee_id')
+                                                            ->from('imports')
+                                                            ->whereRaw('imports.employee_id = employees.id');
+                                                })->get();
+
+
+                // $employee_belongsto_warehouse = DB::table('employees')
+                //                         ->where('employees.id', '=', $id)
+                //                         // ->whereNotExists(function($query){
+                //                         ->whereExists(function($query){
+                //                             //$query->select(DB::raw(1))
+                //                             $query->select('employee_warehouse.employee_id')
+                //                                     ->from('employee_warehouse')
+                //                                     ->whereRaw('employee_warehouse.employee_id = employees.id');
+                //                         })->get();
+
+
+                if(
+                    ($employee_has_charged_tools->isEmpty()) &&
+                    ($employee_has_import_assignments_info->isEmpty())
+                    // ($employee_belongsto_warehouse->isEmpty())
+                ){
+                        //employee is NOT involved in other tables via its FK, so just GO AHeAD AND DELETE him!!!
+                        // dd($employee_has_charged_tools);
+                        // dd('all seems ok for employee deletion!');
+
+                        //$employee->warehouses->delete(); //delete from the employee_warehouse table (FK), no it doesnt work!
+                                                            //must set onDelete(cascade) in employee-wrehouse
+
+                }
+
                 $employee = Employee::findOrFail($id);
-                // Should check if employee/user is logged out (or not logged in) first!
-                // or BETTER, first should \Auth::logout() user, THEN AFTER delete him from the DB!
-
-                // I DID the above in UserController.php, first user is logged out and afterwards he/she is deleted from the DB
-
-                // VERY IMPORTANT!
-                // Before deleting an Employee, check if he/she is involved in other activities in the program!!!
                 $employee->delete();
+
+
 
                 return \Response::json();
             }

@@ -52,7 +52,7 @@
 
             <p>Όλα τα Προϊόντα</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin', 'isCompanyCEO'])
             <!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
@@ -138,7 +138,114 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-product-btn">Προσθήκη Νέου Προϊόντος</button>
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO -->
+
+
+
+
+
+
+            @canany(['isWarehouseForeman', 'isWarehouseWorker'])
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Αναγνωριστικό</th>
+                        <th class="text-left">Όνομα</th>
+                        <th class="text-left">Περιγραφή</th>
+                        <th class="text-left">Κατηγορία</th>
+                        <th class="text-left">Είδος</th>  <!-- product type -->
+                        <!--  <th class="text-left">Ποσότητα</th> -->
+                        <th class="text-left">Μονάδα</th>
+                        <th class="text-left">Σχόλια</th>
+                        <th class="text-left">Αποθήκη/-ες &amp; Ποσότητα</th>
+                        <!--
+                        <th class="text-left">Κωδικός Ανάθεσης</th>
+                        --> <!-- assignment_code, nullable()? -->
+                        <!--
+                        <th class="text-left">Τύπος Ανάθεσης</th>
+                        --> <!-- assignment_type -->
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($products as $product)
+                @foreach($product->warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                @if(   ($warehouse->pivot->warehouse_id == $employee->pivot->warehouse_id)
+                    && (\Auth::user()->id == $employee->user_id)
+                    && (($employee->user->user_type == 'warehouse_foreman') || ($employee->user->user_type == 'warehouse_worker')))
+
+                        <tr class="user-row" data-pid="{{ $product->id }}">  <!-- necessary additions -->
+                        <td>{{ $product->code }}</td>
+                        <td>{{ $product->name }}</td>
+                        <td>{{ $product->description }}</td>
+                        <td>{{ $product->category->name }}</td> <!-- Was: $product->type, but now, via FK, cell gets its contents from category table -->
+                        <td>{{ $product->type->name }}</td> <!-- eidos proiontos, product type -->
+                        <!-- <td>{{ $product->quantity }}</td> -->
+                        <td>{{ $product->measureunit->name }}</td> <!-- measureunit() in App\Product.php -->
+                        <td>{{ $product->comments }}</td>
+                        <td>
+                            <ul>
+                            @foreach($product->warehouses as $warehouse)
+                                <li>{{ $warehouse->name }}&nbsp;({{ $warehouse->pivot->quantity }}&nbsp;{{ $product->measureunit->name }})</li>
+                            @endforeach
+                            </ul>
+                        </td>
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-pid="{{ $product->id }}"
+                                    data-code="{{ $product->code }}"
+                                    data-name="{{ $product->name }}"
+                                    data-description="{{ $product->description }}"
+                                    data-categoryid="{{ $product->category_id }}"
+                                    data-typeid="{{ $product->type_id }}"
+                                    data-typesall="{{ $types_all }}"
+                                    data-measunitid="{{ $product->measunit_id }}"
+                                    data-comments="{{ $product->comments }}"
+                                    data-warehouses="{{ $product->warehouses }}"
+                                    data-allwarehouses="{{ $warehouses }}"
+                                    data-allquantities="{{ $quantities }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-pid="{{ $product->id }}"
+                                    data-code="{{ $product->code }}"
+                                    data-name="{{ $product->name }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+
+                    </tr>
+
+                @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-product-btn">Προσθήκη Νέου Προϊόντος</button>
+
+            <br/><br/>
+
+            @endcanany
+
+
 
 
 

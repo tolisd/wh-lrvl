@@ -19,7 +19,9 @@ class AddMeasunitIdToProducts extends Migration
 
             $table->foreign('measunit_id')
                     ->references('id')
-                    ->on('measunits');
+                    ->on('measunits')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 

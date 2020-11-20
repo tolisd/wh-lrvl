@@ -19,7 +19,9 @@ class AddExportassignmentIdToExports extends Migration
 
             $table->foreign('exportassignment_id')
                     ->references('id')
-                    ->on('exportassignments');
+                    ->on('exportassignments')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 

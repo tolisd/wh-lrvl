@@ -19,7 +19,9 @@ class AddCategoryIdToTypes extends Migration
 
             $table->foreign('category_id')
                     ->references('id')
-                    ->on('category');
+                    ->on('category')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 

@@ -25,7 +25,7 @@
 
             <p>Όλες οι Αναθέσεις Εξαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isNormalUser'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -115,7 +115,7 @@
 
 
 
-                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                    <!-- @if(\Auth::user()->user_type == 'warehouse_foreman')
                                         @if(substr($att_file, -3) == 'pdf')
                                         <a href="{{ route('foreman.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
                                             <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
@@ -136,7 +136,7 @@
                                             <i class="far fa-file fa-lg" aria-hidden="true"></i>
                                         </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
                                         @endif
-                                    @endif
+                                    @endif -->
 
 
 
@@ -165,7 +165,7 @@
 
 
 
-                                    @if(\Auth::user()->user_type == 'normal_user')
+                                    <!-- @if(\Auth::user()->user_type == 'normal_user')
                                         @if(substr($att_file, -3) == 'pdf')
                                         <a href="{{ route('user.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
                                             <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
@@ -186,7 +186,7 @@
                                             <i class="far fa-file fa-lg" aria-hidden="true"></i>
                                         </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
                                         @endif
-                                    @endif
+                                    @endif -->
 
 
                                 @endforeach
@@ -267,7 +267,321 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-expassgn-btn">Προσθήκη Νέας Ανάθεσης Εξαγωγής</button>
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant -->
+
+
+
+            @canany(['isWarehouseForeman'])
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
+                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Κείμενο Ανάθεσης</th>
+                        <th class="text-left">Deadline (Ημ/νία &amp; Ώρα)</th>
+                        <th class="text-left">Επισυναπτόμενα Αρχεία</th>
+                        <th class="text-left">Σχόλια</th>
+						<th class="text-left">Ανοιχτή?</th>
+
+                        <!-- <th class="text-left">Άνοιγμα</th>
+						<th class="text-left">Κλείσιμο</th> -->
+
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($exportassignments as $exportassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($exportassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && ($employee->user->user_type == 'warehouse_foreman'))
+
+                    <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->export_assignment_code }}</td>
+                        <td>{{ $exportassignment->warehouse->name }}</td>
+                        <td>{{ $exportassignment->export_assignment_text }}</td>
+                        <td>{{ $exportassignment->export_deadline->format('l, d/m/Y @ H:i') }}</td>
+
+                        @php
+                            $attached_files = json_decode($exportassignment->uploaded_files, true);
+                        @endphp
+
+                        <td>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+
+                                    @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('foreman.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('foreman.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('foreman.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('foreman.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+                                @endforeach
+                            @endif
+                        </td>
+
+                        <td>{{ $exportassignment->comments }}</td>
+						<td>
+                            @if($exportassignment->is_open == 1)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Ανοιχτή
+                            @elseif($exportassignment->is_open == 0)
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλειστή
+                            @endif
+                        </td>
+
+
+                        <!-- Κουμπί Ανοίγματος Ανάθεσης Εξαγωγής -->
+                        <!-- <td>
+                            @if($exportassignment->is_open == 0)
+                            <button class="open-modal btn btn-success"
+                               data-toggle="modal" data-target="#open-modal"
+                               data-eid="{{ $exportassignment->id }}"
+                               data-warehousename="{{ $exportassignment->warehouse->name }}"
+                               data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                               data-text="{{ $exportassignment->export_assignment_text }}">
+                            <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Άνοιγμα
+                            </button>
+                            @endif
+                        </td> -->
+
+
+                        <!-- Κουμπί Κλεισίματος Ανάθεσης Εξαγωγής -->
+                        <!-- <td>
+                            @if($exportassignment->is_open == 1)
+                            <button class="close-modal btn btn-warning"
+                                data-toggle="modal" data-target="#close-modal"
+                                data-eid="{{ $exportassignment->id }}"
+                                data-warehousename="{{ $exportassignment->warehouse->name }}"
+                                data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                                data-text="{{ $exportassignment->export_assignment_text }}">
+                            <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
+                            </button>
+                            @endif
+                        </td> -->
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-eid="{{ $exportassignment->id }}"
+									data-warehouse="{{ $exportassignment->warehouse_id }}"
+                                    data-text="{{ $exportassignment->export_assignment_text }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->format('d-m-Y H:i') }}"
+                                    data-files="{{ $exportassignment->uploaded_files }}"
+									data-comments="{{ $exportassignment->comments }}"
+									data-isopen="{{ $exportassignment->is_open }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-eid="{{ $exportassignment->id }}"
+                                    data-warehousename="{{ $exportassignment->warehouse->name }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                                    data-text1="{{ $exportassignment->export_assignment_text }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-expassgn-btn">Προσθήκη Νέας Ανάθεσης Εξαγωγής</button>
+
+            <br/><br/>
+
+            @endcanany
+            <!-- isWarehouseForeman -->
+
+
+
+            @canany(['isNormalUser']) <!-- the table is empty for this user! he is not allowed to see what he just posted! -->
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
+                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Κείμενο Ανάθεσης</th>
+                        <th class="text-left">Deadline (Ημ/νία &amp; Ώρα)</th>
+                        <th class="text-left">Επισυναπτόμενα Αρχεία</th>
+                        <th class="text-left">Σχόλια</th>
+						<th class="text-left">Ανοιχτή?</th>
+
+                        <!-- <th class="text-left">Άνοιγμα</th>
+						<th class="text-left">Κλείσιμο</th> -->
+
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($exportassignments as $exportassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($exportassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && ($employee->user->user_type == 'warehouse_foreman'))
+
+                    <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->export_assignment_code }}</td>
+                        <td>{{ $exportassignment->warehouse->name }}</td>
+                        <td>{{ $exportassignment->export_assignment_text }}</td>
+                        <td>{{ $exportassignment->export_deadline->format('l, d/m/Y @ H:i') }}</td>
+
+                        @php
+                            $attached_files = json_decode($exportassignment->uploaded_files, true);
+                        @endphp
+
+                        <td>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+
+                                    @if(\Auth::user()->user_type == 'normal_user')
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('user.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('user.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('user.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('user.assignment.export.files', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+                                    @endif
+
+                                @endforeach
+                            @endif
+                        </td>
+
+                        <td>{{ $exportassignment->comments }}</td>
+						<td>
+                            @if($exportassignment->is_open == 1)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Ανοιχτή
+                            @elseif($exportassignment->is_open == 0)
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλειστή
+                            @endif
+                        </td>
+
+
+                        <!-- Κουμπί Ανοίγματος Ανάθεσης Εξαγωγής -->
+                        <!-- <td>
+                            @if($exportassignment->is_open == 0)
+                            <button class="open-modal btn btn-success"
+                               data-toggle="modal" data-target="#open-modal"
+                               data-eid="{{ $exportassignment->id }}"
+                               data-warehousename="{{ $exportassignment->warehouse->name }}"
+                               data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                               data-text="{{ $exportassignment->export_assignment_text }}">
+                            <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp; Άνοιγμα
+                            </button>
+                            @endif
+                        </td> -->
+
+
+                        <!-- Κουμπί Κλεισίματος Ανάθεσης Εξαγωγής -->
+                        <!-- <td>
+                            @if($exportassignment->is_open == 1)
+                            <button class="close-modal btn btn-warning"
+                                data-toggle="modal" data-target="#close-modal"
+                                data-eid="{{ $exportassignment->id }}"
+                                data-warehousename="{{ $exportassignment->warehouse->name }}"
+                                data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                                data-text="{{ $exportassignment->export_assignment_text }}">
+                            <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
+                            </button>
+                            @endif
+                        </td> -->
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-eid="{{ $exportassignment->id }}"
+									data-warehouse="{{ $exportassignment->warehouse_id }}"
+                                    data-text="{{ $exportassignment->export_assignment_text }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->format('d-m-Y H:i') }}"
+                                    data-files="{{ $exportassignment->uploaded_files }}"
+									data-comments="{{ $exportassignment->comments }}"
+									data-isopen="{{ $exportassignment->is_open }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-eid="{{ $exportassignment->id }}"
+                                    data-warehousename="{{ $exportassignment->warehouse->name }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
+                                    data-text1="{{ $exportassignment->export_assignment_text }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-expassgn-btn">Προσθήκη Νέας Ανάθεσης Εξαγωγής</button>
+
+            <br/><br/>
+
+            @endcanany
+            <!-- isNormalUser -->
 
 
 			@can('isSuperAdmin')

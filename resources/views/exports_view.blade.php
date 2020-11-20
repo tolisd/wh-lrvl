@@ -25,7 +25,7 @@
 
             <p>Στοιχεία Αναθέσεων Εξαγωγής</p>
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
 
 			<!-- insert here the main products table-->
             <table class="table data-table display table-striped table-bordered"
@@ -43,7 +43,7 @@
 						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
 						<!-- <th class="text-left">Δελτίο Αποστολής</th> -->
 						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
-                        <th class="text-left">Προϊόντα</th>
+                        <th class="text-left">Εξαγόμενα Προϊόντα</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -66,13 +66,15 @@
                         <td>{{ $export->hours_worked }}/{{ $export->chargeable_hours_worked }}</td>
                         <!-- <td>{{ substr(basename($export->shipment_bulletin), 15) }}</td> attached pdf file -->
                         <td>{{ $export->item_description }}</td>
+
                         <td>
                             <ul>
                             @foreach($export->products as $product)
-                                <li>{{ $product->name }}</li>
+                                <li>{{ $product->name }}:&nbsp;{{ $product->pivot->quantity }}&nbsp;{{ $product->measureunit->name }}</li>
                             @endforeach
                             </ul>
                         </td>
+
                         <!-- <td>{{ $export->export_assignment->export_assignment_text }}</td> -->
 
                         <td>
@@ -96,7 +98,8 @@
                                     data-allproducts="{{ $products }}"
                                     data-productsinwarehouse="{{ $products_in_warehouse }}"
                                     data-exportassignmentid="{{ $export->exportassignment_id }}"
-                                    data-exportassignment="{{ $export->export_assignment }}">
+                                    data-exportassignment="{{ $export->export_assignment }}"
+                                    data-eacode="{{ $export->export_assignment->export_assignment_code }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
@@ -105,7 +108,8 @@
                                     data-toggle="modal" data-target="#delete-modal"
                                     data-eid="{{ $export->id }}"
                                     data-warehouse="{{ $export->export_assignment->warehouse->name }}"
-                                    data-deliveredon="{{ $export->delivered_on->format('l, d-m-Y H:i') }}">
+                                    data-deliveredon="{{ $export->delivered_on->format('l, d-m-Y H:i') }}"
+                                    data-eacode="{{ $export->export_assignment->export_assignment_code }}">
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
@@ -121,7 +125,133 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-export-btn">Προσθήκη Στοιχείων Ανάθεσης Εξαγωγής</button>
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant  -->
+
+
+
+
+            @canany(['isWarehouseForeman', 'isWarehouseWorker'])
+
+            <table class="table data-table display table-striped table-bordered"
+                     data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Ανάθεση Εξαγωγής</th>
+						<th class="text-left">Υπεύθυνος Παράδοσης</th>
+                        <th class="text-left">Εταιρεία Παράδοσης</th>
+                        <th class="text-left">Ημ/νία &amp; Ώρα Παράδοσης</th>
+                        <th class="text-left">Αρ.Κυκλ. Μετ.Μέσου</th>
+                        <th class="text-left">Μεταφορική Εταιρεία</th>
+						<th class="text-left">Τόπος Αποστολής</th>
+						<th class="text-left">Τόπος Προορισμού</th>
+						<th class="text-left">ΩΕ/ ΧρΩΕ</th>
+						<!-- <th class="text-left">Δελτίο Αποστολής</th> -->
+						<th class="text-left">Διακριτός Τίτλος Παραλαβής</th>
+                        <th class="text-left">Εξαγόμενα Προϊόντα</th>
+
+                        <th class="text-left">Μεταβολή</th>
+                        <th class="text-left">Διαγραφή</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($exports as $export)
+                @foreach($exportassignments as $exportassignment)
+                @foreach($warehouses as $warehouse)
+                @foreach($warehouse->employees as $employee)
+
+                    @if(($export->exportassignment_id == $exportassignment->id)
+                     && ($exportassignment->warehouse_id == $warehouse->id)
+                     && (\Auth::user()->id == $employee->user_id)
+                     && (($employee->user->user_type == 'warehouse_foreman') || ($employee->user->user_type == 'warehouse_worker')))
+
+
+
+                    <tr class="user-row" data-eid="{{ $export->id }}">  <!-- necessary additions -->
+                        <td>[{{ $export->export_assignment->export_assignment_code }}] <br/>
+                            [{{ $export->export_assignment->warehouse->name }}] <br/>
+                            [{{ $export->export_assignment->export_deadline->isoFormat('llll') }}]</td>
+                        <td>{{ $export->employee->user->name }}</td>
+                        <td>{{ $export->company->name }}</td>
+                        <td>{{ $export->delivered_on->format('l d/m/Y @ H:i') }}</td>
+                        <td>{{ $export->vehicle_reg_no }}</td>
+                        <td>{{ $export->transport->name }}</td>
+                        <td>{{ $export->shipment_address }}</td>
+                        <td>{{ $export->destination_address }}</td>
+                        <td>{{ $export->hours_worked }}/{{ $export->chargeable_hours_worked }}</td>
+                        <!-- <td>{{ substr(basename($export->shipment_bulletin), 15) }}</td> attached pdf file -->
+                        <td>{{ $export->item_description }}</td>
+
+                        <td>
+                            <ul>
+                            @foreach($export->products as $product)
+                                <li>{{ $product->name }}:&nbsp;{{ $product->pivot->quantity }}&nbsp;{{ $product->measureunit->name }}</li>
+                            @endforeach
+                            </ul>
+                        </td>
+
+                        <!-- <td>{{ $export->export_assignment->export_assignment_text }}</td> -->
+
+                        <td>
+                            <button class="edit-modal btn btn-info"
+                                    data-toggle="modal" data-target="#edit-modal"
+                                    data-eid="{{ $export->id }}"
+                                    data-employeeid="{{ $export->employee_id }}"
+                                    data-employeesperwarehouse="{{ $employees_per_warehouse }}"
+                                    data-warehouseid="{{ $export->export_assignment->warehouse_id }}"
+                                    data-companyid="{{ $export->company_id }}"
+                                    data-transportid="{{ $export->transport_id }}"
+                                    data-vehicleregno="{{ $export->vehicle_reg_no }}"
+                                    data-deliveredon="{{ $export->delivered_on->format('d-m-Y H:i') }}"
+                                    data-shipmentaddress="{{ $export->shipment_address }}"
+                                    data-destinationaddress="{{ $export->destination_address }}"
+                                    data-chargeablehours="{{ $export->chargeable_hours_worked }}"
+                                    data-hours="{{ $export->hours_worked }}"
+                                    data-shipmentbulletin="{{ $export->shipment_bulletin }}"
+                                    data-itemdescription="{{ $export->item_description }}"
+                                    data-products="{{ $export->products }}"
+                                    data-allproducts="{{ $products }}"
+                                    data-productsinwarehouse="{{ $products_in_warehouse }}"
+                                    data-exportassignmentid="{{ $export->exportassignment_id }}"
+                                    data-exportassignment="{{ $export->export_assignment }}"
+                                    data-eacode="{{ $export->export_assignment->export_assignment_code }}">
+                                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-modal btn btn-danger"
+                                    data-toggle="modal" data-target="#delete-modal"
+                                    data-eid="{{ $export->id }}"
+                                    data-warehouse="{{ $export->export_assignment->warehouse->name }}"
+                                    data-deliveredon="{{ $export->delivered_on->format('l, d-m-Y H:i') }}"
+                                    data-eacode="{{ $export->export_assignment->export_assignment_code }}">
+                                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
+
+                @endforeach
+                @endforeach
+                @endforeach
+                @endforeach
+                </tbody>
+
+            </table>
+
+            <br/><br/>
+
+            <!--Create New User button -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add-modal" id="add-export-btn">Προσθήκη Στοιχείων Ανάθεσης Εξαγωγής</button>
+
+            <br/><br/>
+
+            @endcanany
+            <!-- isWarehouseWorker, isWarehouseForeman -->
+
+
+
+
 
 
 			@can('isSuperAdmin')
@@ -148,7 +278,7 @@
 
 
 
-			@canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+			@canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant', 'isWarehouseWorker'])
             <!-- The 3 Modals, Add/Update/Delete -->
 
             <!-- the Add/Create new Export Assignment, Modal popup window -->
@@ -331,15 +461,53 @@
 									<!-- /delivery_description -->
 
                                     <!-- products -->
-									<div class="form-group row">
+									<!-- <div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-create">Προϊόντα</label>
                                         <div class="col-lg-9">
                                             <select name="modal-input-products-create[]" id="modal-input-products-create" class="form-control" multiple="multiple">
 
                                             </select>
                                         </div>
-									</div>
+									</div> -->
 									<!-- /products -->
+
+                                    <!-- product in Import Assignment -->
+                                    <div class="form-group row">
+
+                                        <div class="col">
+
+                                            <div class="wrapper-newprodqty">
+
+                                                <div class="form-group row">
+                                                    <label class="col-form-label col-lg-3 text-right" for="modal-input-prod-create">Προϊόν & Ποσότητα</label>
+
+                                                    <div class="col-lg-7">
+                                                        <select name="modal-input-prod-create[]" id="modal-input-prod-create" class="form-control">
+
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-lg-2">
+                                                        <input type="text" name="modal-input-prodqty-create[]" class="form-control" id="modal-input-prodqty-create"
+                                                            value="" placeholder="ποσότητα" />
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group row justify-content-center">
+                                                    <button type="button" class="btn btn-info col-lg-9" id="add-prodqty-button-create">
+                                                        <strong>[+]</strong>&nbsp;Πρόσθεσε Προϊόν</button>
+                                                </div>
+
+                                                <!-- append new prodqty div exactly here -->
+
+                                            </div>
+
+                                        </div>
+
+									</div>
+                                    <!-- /product in Import Assignment -->
+
 
 
 
@@ -557,7 +725,7 @@
 
 
                                     <!-- products -->
-									<div class="form-group row">
+									<!-- <div class="form-group row">
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-products-edit">Προϊόντα</label>
                                         <div class="col-lg-9">
                                             <select name="modal-input-products-edit[]" id="modal-input-products-edit" class="form-control" multiple="multiple">
@@ -566,7 +734,7 @@
                                             @endforeach
                                             </select>
                                         </div>
-									</div>
+									</div> -->
 									<!-- /products -->
 
 
@@ -620,10 +788,17 @@
                                 <div class="card-body">
                                     <p class="text-center">Είστε σίγουρος ότι θέλετε να διαγράψετε τα παρακάτω Στοιχεία Ανάθεσης Εξαγωγής;</p>
 
+
                                     <!-- added hidden input for ID -->
                                     <div class="form-group">
                                         <input type="hidden" id="modal-input-eid-del" name="modal-input-eid-del" value="" />
                                     </div>
+
+                                    <div class="form-group">
+										<label class="col-form-label" for="modal-input-code-del">Κωδικός Ανάθεσης</label>
+										<input type="text" name="modal-input-code-del" class="form-control-plaintext" id="modal-input-code-del"
+											value="" />
+									</div>
 
                                     <div class="form-group">
 										<label class="col-form-label" for="modal-input-warehouse-del">Αποθήκη</label>
@@ -688,8 +863,10 @@
     $(document).ready(function(){
 
         //initialise the two select2 components.
-        $('#modal-input-products-create').select2();
-        $('#modal-input-products-edit').select2();
+        //I disabled them both because now I need the quantities as well by <them class="">
+        //so it's going to be a separate div with a single-select and a text input
+        // $('#modal-input-products-create').select2();
+        // $('#modal-input-products-edit').select2();
 
 
          //configure & initialise the (Export Assignments) DataTable
@@ -766,6 +943,17 @@
     });
 
 
+    var html1 = '<div class="form-group row newprodqty">'+
+                '<label class="col-form-label col-lg-3 text-right" for="modal-input-prod-create">Προϊόν & Ποσότητα</label>'+
+                '<div class="col-lg-7"><select name="modal-input-prod-create[]" id="modal-input-prod-create" class="form-control createnewdiv">'+
+                '</select>'+
+                '</div><div class="col-lg-2">'+
+                '<input type="text" name="modal-input-prodqty-create[]" class="form-control" id="modal-input-prodqty-create" value="" placeholder="ποσότητα" />'+
+                '</div></div><div class="form-group row justify-content-center">'+
+                '<button type="button" class="btn btn-danger col-lg-9 minus-btn" id="minus-prodqty-button-create"><strong>[&ndash;]</strong>&nbsp;Αφαίρεσε Προϊόν</button></div>';
+
+
+
         $('#modal-input-dtdeliv-create').datetimepicker({
             format:'d-m-Y H:i',
             timepicker: true,
@@ -822,6 +1010,7 @@
             var products_in_warehouse = button.data('productsinwarehouse');
             //var allwarehouseproducts = button.data('warehouseproductsall');
             //var prodwh = button.data('prodwh');
+            var eacode = button.data('eacode');
 
             //console.log('deltio apostolis: ', shipmentbulletin);
 
@@ -1002,12 +1191,14 @@
             //var export_text = button.data('text1');
             var warehouse = button.data('warehouse');
             var datetime1 = button.data('deliveredon');
+            var eacode = button.data('eacode');
 
 
             var modal = $(this);
             //modal.find('.modal-title').text('New message to ' + recipient);
             //modal.find('.modal-body .card .card-body #modal-input-eid-del').val(eid); //change the value to...
             //modal.find('.modal-body .card .card-body #modal-input-text-del').val(export_text);
+            modal.find('.modal-body .card .card-body #modal-input-code-del').val(eacode);
             modal.find('.modal-body .card .card-body #modal-input-warehouse-del').val(warehouse);
             modal.find('.modal-body .card .card-body #modal-input-dtdeliv-del').val(datetime1);
 
@@ -1140,6 +1331,7 @@
 
 
         //ajax for dropdown lists in add and edit modals
+        var z = 1;
 
         //ajax add modal
         $(document).on('change', '#modal-input-exportassignment-create', function(evt){
@@ -1147,6 +1339,21 @@
             console.log('Event: ',evt);
 
             var wh_id = evt.target.value;
+
+            //when i re-change, I want the NEW divs removed!
+            $('.modal-body .newprodqty').each(function(){
+                $(this).remove();
+                $('.minus-btn').remove();
+                // $(this).parent().remove();
+
+                // z--;
+            });
+
+            $('.modal-body select.createnewdiv').val('');
+            $('.modal-body .createnewdiv').empty();
+
+
+
 
             if(wh_id){
                 $.ajax({
@@ -1159,7 +1366,8 @@
                         // console.log('Data: ', data);
 
                         $('.modal-body #modal-input-recipient-create').empty();
-                        $('.modal-body #modal-input-products-create').empty();
+
+                        $('.modal-body #modal-input-prod-create').empty();
 
                         $.each(data, function(key, value){
 
@@ -1178,17 +1386,176 @@
 
                             if(key == 1){
                                 $.each(value, function(k,v){
-                                    $('.modal-body #modal-input-products-create').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
+                                    $('.modal-body #modal-input-prod-create').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
                                 });
                             }
 
                         });
+
+                        // <here go> 3 nested functions
+                        var product_count = data[1].length;
+                        console.log('product_count=', product_count);
+                        var len = $('.modal-body .newprodqty').length;
+                        // var len1 = $('.wrapper-newprodqty').length;
+                        var diff = product_count - len;
+                        // var diff1 = product_count - len1;
+                        // var z = 1;
+
+                        // console.log('z = '+z+', diff ='+diff);
+                        // console.log('difference = ', diff);
+
+
+                        //REMOVE the new div  //NESTED function too
+                        $(document).on('click', '.minus-btn', function(evt1){
+                            // console.log(evt1);
+                            // evt1.preventDefault();
+                            // console.log('z = '+z+', diff ='+diff);
+                            // $(this).closest('.wrapper-newprodqty').find('.newprodqty').remove(); //removes ALL  .newprodqty subDIVs!
+
+                            // if(z >= diff){
+                                //removes the immediately previous sibling which is the div .newprodqty, test it extensively after you will have added products
+                                $(this).parent().prev().remove(); //ok, this works but adds empty divs (div class="form-group row justify-content-center"), as i remove them
+                                $(this).parent().remove(); //ok. this line removes the empty div as well:)
+                                $(this).remove(); //removes the button itself!
+
+                                z--;
+                            // }
+
+                        });
+
+
+                        // var product_count = data[1].length;
+                        // console.log('product_count=', product_count);
+                        // var len = $('.modal-body .newprodqty').length;
+                        // var diff = product_count - len;
+                        // z = 1; //my counter for new products
+
+                        //this NESTED function did the trick  //ADD new divs WITH the products.
+                        //gets its 'data' parameter from AJAX success function
+                        $(document).on('click', '#add-prodqty-button-create', function(evt){
+                            // console.log('EVENT= ', evt.target.value);
+                            // console.log('EVENT= ', $(evt.target).text());
+                            // evt.preventDefault();
+
+                            if(z < diff){
+
+                                z++;
+                                $('.wrapper-newprodqty').append(html1); //ADD the new div
+                                // $('#add-form').find('select.createnewdiv').val('');
+
+                                $('.modal-body .createnewdiv').empty();
+                                // console.log("Data-Create = ", data);
+
+                                $.each(data, function(key, value){
+                                    // console.log('keyc=', key);
+                                    // console.log('valuec= ', value);
+                                    $.each(value, function(k,v){
+                                        if(key == 1){
+                                            // console.log('kc=', k);
+                                            // console.log('vc= ', v);
+                                            $('.modal-body .createnewdiv').append('<option value="'+ v.product_id +'">' + v.name+ '</option>');
+                                            $('#add-form').find('select.createnewdiv').val('');
+                                        }
+                                    });
+                                });
+
+
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    type: "error",
+                                    title: 'Προσοχή!',
+                                    text: 'Δεν μπορείτε να προσθέσετε περισσότερα Προϊόντα!',
+                                });
+
+                                // return false;
+                            }
+
+                        });
+
+
+                        //check for duplicate products! important!
+                        //works perfectly!! do NOT modify it!!
+                        $(document).on('change', 'select.createnewdiv', function(){
+
+                            var valueOfChangedInput = $(this).val();
+                            var timeRepeated = 0;
+                            var tR = 0;
+
+                            //"old" select VS. "new" select
+                            $("select#modal-input-prod-create").each(function(){
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            //"new" select VS. "new" select
+                            $('select.createnewdiv').each(function(){ //this == select.selc1
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    tR++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            if((timeRepeated > 1) || (tR > 1)){ //changed from timeRepeated > 1 TO timeRepeated >= 1, and it worked!
+
+                                $('#add-form').find('select.createnewdiv').val('');
+
+                                Swal.fire({
+                                    icon: "error",
+                                    type: "error",
+                                    title: 'Προσοχή!',
+                                    text: 'Τα προϊόντα πρέπει να είναι διαφορετικά μεταξύ τους! Παρακαλώ επανεπιλέξτε Προϊόντα!',
+                                });
+                            }
+
+                        });
+
+                        //the inverse of the above!
+                        $(document).on('change', 'select#modal-input-prod-create', function(){
+
+                            var valueOfChangedInput = $(this).val();
+                            var timeRepeated = 0;
+                            var tR = 0;
+
+                            //"old" select VS. "new" select
+                            $("select#modal-input-prod-create").each(function(){
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    timeRepeated++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            //"new" select VS. "new" select
+                            $('select.createnewdiv').each(function(){ //this == select.selc1
+                                //Inside each() check the 'valueOfChangedInput' with all other existing input
+                                if ($(this).val() == valueOfChangedInput) {
+                                    tR++; //this will be executed at least 1 time because of the input, which is changed just now
+                                }
+                            });
+
+                            if((timeRepeated > 1) || (tR > 1)){ //changed from timeRepeated > 1 TO timeRepeated >= 1, and it worked!
+
+                                $('#add-form').find('select.createnewdiv').val('');
+
+                                Swal.fire({
+                                    icon: "error",
+                                    type: "error",
+                                    title: 'Προσοχή!',
+                                    text: 'Τα προϊόντα πρέπει να είναι διαφορετικά μεταξύ τους! Παρακαλώ επανεπιλέξτε Προϊόντα!',
+                                });
+                            }
+
+                        });
+
 
                     },
 
                 });
             } else {
                 $('#modal-input-recipient-create').empty();
+                $('#modal-input-prod-create').empty();
             }
 
         });
@@ -1246,6 +1613,25 @@
 
 
 
+        $('#add-modal').on('show.bs.modal', function(e){
+            //when i open the add modal i want no values in there, it will be populated by ajax instead!
+            $('.modal-body #modal-input-prod-create').empty();
+            // $('.modal .wrapper-newprodqty').empty();
+
+            $('.modal-body .newprodqty').each(function(){
+                $(this).remove();
+                $('.minus-btn').remove();
+                // $(this).parent().remove();
+
+                z--; //added the counter here as well
+            });
+        });
+
+
+        $('#add-modal').on('hidden.bs.modal', function(e){
+            //so as not to add anymore product/qty divs AFTER the modal is re-opened
+            $(document).off('click', '#add-prodqty-button-create');
+        });
 
 
         //necessary additions for when the modals get hidden

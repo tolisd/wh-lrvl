@@ -311,7 +311,21 @@ class WarehouseController extends Controller
                                 ->select('users.name', 'employees.id')
                                 ->get();
 
-            return json_encode($user_names_imp); //ajax data
+            $products_in_warehouse = DB::table('product_warehouse')
+                                ->join('products', 'products.id', '=', 'product_warehouse.product_id')
+                                ->join('importassignments', 'importassignments.warehouse_id', '=', 'product_warehouse.warehouse_id')
+                                ->where('importassignments.id', $id)
+                                ->select('product_warehouse.product_id', 'products.name')
+                                ->get();
+
+            // $products_count_in_warehouse = DB::table('product_warehouse')
+            //                                 ->join('products', 'products.id', '=', 'product_warehouse.product_id')
+            //                                 ->join('importassignments', 'importassignments.warehouse_id', '=', 'product_warehouse.warehouse_id')
+            //                                 ->where('importassignments.id', $id)
+            //                                 ->count();
+
+
+            return json_encode([$user_names_imp, $products_in_warehouse]); //ajax data
 
         } else {
             return abort(403, 'Sorry you cannot view this page');

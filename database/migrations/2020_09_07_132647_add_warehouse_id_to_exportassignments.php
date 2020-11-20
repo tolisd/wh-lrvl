@@ -19,7 +19,9 @@ class AddWarehouseIdToExportassignments extends Migration
 
             $table->foreign('warehouse_id')
                     ->references('id')
-                    ->on('warehouse');
+                    ->on('warehouse')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
         });
     }
 
