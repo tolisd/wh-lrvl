@@ -32,4 +32,8 @@ class Tool extends Model
     public function employee(){
         return $this->belongsTo('App\Employee', 'employee_id');
     }
+
+    public function toolshistory(){
+        return $this->hasMany('App\Toolhistory');
+    }
 }

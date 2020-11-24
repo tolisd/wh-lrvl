@@ -309,6 +309,12 @@ return [
                                         'icon' => 'fas fa-tools',
                                     ],
                                     [
+                                        'text' => 'Ιστορικό Εργαλείων',
+                                        'route'  => 'admin.tools.history.view',
+                                        'can' => 'isSuperAdmin',
+                                        'icon' => 'fas fa-tools',
+                                    ],
+                                    [
                                         'text' => 'Χρεωμένα Εργαλεία',
                                         'route'  => 'admin.tools.charged.view',
                                         'can' => 'isSuperAdmin',
@@ -337,6 +343,12 @@ return [
                                         'icon' => 'fas fa-tools',
                                     ],
                                     [
+                                        'text' => 'Ιστορικό Εργαλείων',
+                                        'route'  => 'manager.tools.history.view',
+                                        'can' => 'isCompanyCEO',
+                                        'icon' => 'fas fa-tools',
+                                    ],
+                                    [
                                         'text' => 'Χρεωμένα Εργαλεία',
                                         'route'  => 'manager.tools.charged.view',
                                         'can' => 'isCompanyCEO',
@@ -361,6 +373,12 @@ return [
                                     [
                                         'text' => 'Όλα τα Εργαλεία',
                                         'route'  => 'foreman.tools.view',
+                                        'can' => 'isWarehouseForeman',
+                                        'icon' => 'fas fa-tools',
+                                    ],
+                                    [
+                                        'text' => 'Ιστορικό Εργαλείων',
+                                        'route'  => 'foreman.tools.history.view',
                                         'can' => 'isWarehouseForeman',
                                         'icon' => 'fas fa-tools',
                                     ],

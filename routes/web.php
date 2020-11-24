@@ -83,6 +83,7 @@ Route::middleware(['auth', 'administrator'])->prefix('admin')->group(function(){
     Route::delete('/tools/delete/{id}', 'ToolController@delete_tool')->name('admin.tools.delete');
     Route::get('/tools/download/{filename?}', 'ToolController@get_file')->where('filename', '(.*)')->name('admin.tools.download.file'); //download xrewstiko arxeio/file
     //Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('admin.chargetoolkit'); //charge toolkit
+    Route::get('tools/history/view', 'ToolController@view_history')->name('admin.tools.history.view');
 
     Route::post('/invoice/create', 'DashboardController@create_invoice')->name('admin.invoicecreate');  //create invoice (should be ::post NOT ::get)
 
@@ -250,6 +251,7 @@ Route::middleware(['auth', 'companymanager'])->prefix('manager')->group(function
    Route::delete('/tools/delete/{id}', 'ToolController@delete_tool')->name('manager.tools.delete');
    Route::get('/tools/download/{filename?}', 'ToolController@get_file')->where('filename', '(.*)')->name('manager.tools.download.file'); //download xrewstiko arxeio/file
    //Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('manager.chargetoolkit'); //charge toolkit
+   Route::get('tools/history/view', 'ToolController@view_history')->name('manager.tools.history.view');
 
    Route::post('/invoice/create', 'DashboardController@create_invoice')->name('manager.invoicecreate');  //create invoice
 
@@ -517,6 +519,7 @@ Route::middleware(['auth', 'foreman'])->prefix('foreman')->group(function(){
     Route::delete('/tools/delete/{id}', 'ToolController@delete_tool')->name('foreman.tools.delete');
     Route::get('/tools/download/{filename?}', 'ToolController@get_file')->where('filename', '(.*)')->name('foreman.tools.download.file'); //download xrewstiko arxeio/file
     //Route::get('/charge-toolkit', 'DashboardController@charge_toolkit')->name('foreman.chargetoolkit');
+    Route::get('tools/history/view', 'ToolController@view_history')->name('foreman.tools.history.view');
 
     Route::get('/assignments/view', 'AssignmentController@view_all_assignments')->name('foreman.assignments.view'); //view assignments
     //Route::get('/assignments/import/view', 'AssignmentController@view_import_assignments')->name('foreman.assignments.import.view');

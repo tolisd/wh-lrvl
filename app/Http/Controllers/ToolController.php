@@ -9,6 +9,8 @@ use Validator;
 use App\Tool;
 use App\User;
 use App\Employee;
+use App\Toolshistory;
+use Carbon\Carbon; //for Dates entry, formatting, etc.
 
 
 class ToolController extends Controller
@@ -46,6 +48,39 @@ class ToolController extends Controller
         }
 
     }
+
+
+
+    public function view_history(){
+
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
+
+            $tools_history_data = Toolshistory::all();
+            $employees = Employee::with('user', 'tool')->get();
+
+            $tool_empl_names = DB::table('employees')
+                                ->join('tools','tools.employee_id','=','employees.id')
+                                ->join('users', 'employees.user_id','=','users.id')
+                                ->join('toolshistory', 'toolshistory.tool_id','=','tools.id')
+                                ->select('users.name')
+                                ->get();
+
+
+
+            return view('tools_history_view', ['tools_history_data' => $tools_history_data,
+                                               'tool_empl_names'    => $tool_empl_names,
+                                               'employees'          => $employees]);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
+
+
+
 
     //CHARGE a tool, a SPECIAL case of Update/Edit PUT Request
     //Only the Warehouse Foreman CAN do this kind of update, i.e. Charge A Tool to somebody
@@ -120,6 +155,76 @@ class ToolController extends Controller
 
                         $tool_for_charging->update($request->all());
                         //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
+
+
+                        // $album = Album::where('hash', $request->album_hash)->firstOrFail();
+                        // $images = json_decode($album->images);
+                        // array_push($images,  $request->image->name);
+                        // $album->update(['images' => $images]);
+                        // $album->save();
+
+                        //Insert relevant data into 'toolshistory' table here
+                        //CREATE the NEW object (or not?) NO! it's already been created in the other method, just FIND it!
+                        $th = Toolshistory::where('tool_id', $tool_for_charging->id)->firstOrFail();
+                        // $th = Toolshistory::findOrFail($id);
+
+                        // $th->tool_id = $tool_for_charging->id;
+                        // $th->charged_at = $tool_for_charging->updated_at;
+                        // $th->to_whom = $tool_for_charging->employee_id;
+                        // $th->file_url = $tool_for_charging->file_url;
+
+                        // Toolshistory::where('tool_id', $id)->firstOrFail();
+
+                        //json_decode(,true)  returns ARRAY, json_decode() returns PHP OBJECT
+                        $charged_at = ($th->charged_at != null) ? json_decode($th->charged_at) : json_encode(json_decode("{}")); //''; //json_decode expects parameter 1
+                                                                                                                                       //to be string, array given
+
+
+                        // $emp_name = Employee::findOrFail('id', $tool_for_charging->employee_id)->user->name;
+
+                        $charged_at->date = $tool_for_charging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
+                        $charged_at->whom = $tool_for_charging->employee_id;
+                        $charged_at->file = substr(basename($tool_for_charging->file_url), 15);
+
+                        // $charged_arr = json_decode($charged_at, true);
+
+                        // array_push($charged_arr, [
+                        //                           'date' => $charged_at->date,
+                        //                           'whom' => $charged_at->date,
+                        //                           'file' => $charged_at->date
+                        //                          ]);
+
+
+                        $append_arr = [
+                            'date' => $charged_at->date,
+                            'whom' => $charged_at->whom,
+                            'file' => $charged_at->file,
+                        ];
+
+                        $charged_arr = (array)$charged_at;
+
+                        array_push($charged_arr, $append_arr);
+
+                        // dd($charged_arr);
+
+                        // $th->charged_at = json_encode($charged_arr, JSON_FORCE_OBJECT);
+
+                        $charged_at_jsonObject = json_encode($charged_arr, JSON_FORCE_OBJECT);
+
+
+                        // $th->charged_at->date = $tool_for_charging->updated_at;
+                        // $th->charged_at->whom = $tool_for_charging->employee_id;
+                        // $th->charged_at->file = $tool_for_charging->file_url;
+
+                        $th->update(['charged_at' => $charged_at_jsonObject]);
+
+                        $th->save();
+
+
+
+
+
+
 
 
                         DB::commit();
@@ -209,6 +314,25 @@ class ToolController extends Controller
 
                         $tool_for_uncharging->update($request->all());
                         //$tool_for_uncharging->update($request->only(['modal-input-ischarged-uncharge']));
+
+
+
+                        //Add the uncharging to the 'toolshistory' table as well!
+                        $th = Toolshistory::where('tool_id', $tool_for_uncharging->id)->firstOrFail();
+
+                        //json_decode(,true)  returns ARRAY, json_decode() returns PHP OBJECT
+                        $uncharged_at = ($th->uncharged_at != null) ? json_decode($th->uncharged_at) : json_encode(json_decode("{}"));
+
+                        $uncharged_at->date = $tool_for_uncharging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
+                        // $uncharged_at->whom = $tool_for_uncharging->employee_id;
+
+                        $uncharged_at_jsonObject = json_encode($uncharged_at, JSON_FORCE_OBJECT);
+
+                        $th->update(['uncharged_at' => $uncharged_at_jsonObject]);
+
+                        $th->save();
+
+
 
 
                         DB::commit();
@@ -306,6 +430,21 @@ class ToolController extends Controller
                         //$tool->employee_id  = //$request->input('modal-input-towhom-create');
                         //$tool->file_url     = $request->input('modal-input-file-create');
                         $tool->save();
+
+
+
+                        //HERE create the NEW $toolshistory object, and in the OTHER methods just update it!
+                        $th = new Toolshistory();
+
+                        $th->tool_id      = $tool->id; //and that's about it!
+                        $th->charged_at   = json_encode(json_decode("{}"));  //[]; //It is not yet charged as it is newly created tool
+                        $th->uncharged_at = json_encode(json_decode("{}"));  //[]; //It is not yet uncharged as it is newly created tool
+
+                        //this DID the trick!!  json_encode(json_decode("{}")); <<== EMPTY JSON OBJECT!
+
+                        $th->save();
+
+
 
 
                         DB::commit();
