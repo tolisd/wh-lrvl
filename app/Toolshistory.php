@@ -23,8 +23,18 @@ class Toolshistory extends Model
         'uncharged_at' => 'array',
     ];
 
+
     public function tool(){
         return $this->belongsTo('App\Tool', 'tool_id');
+    }
+
+
+    // hasManyThrough works only for relations like this:
+    // A hasMany/hasOne B, B hasMany/hasOne C, THEN ==> A hasManyThrough C (through B)
+
+    //hasManyThrough, the intermediary being 'Tool' model
+    public function employee_mt(){
+        return $this->hasManyThrough('App\Employee', 'App\Tool', 'employee_id', 'user_id', 'id', 'id');
     }
 
 }

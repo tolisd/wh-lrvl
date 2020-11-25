@@ -5,7 +5,7 @@
 @section('title', 'Αποθήκη - Ιστορικό Εργαλείων')
 
 @section('content_header')
-    <h1>Warehouse / Ιστορικό Εργαλείων</h1>
+    <h1>Αποθήκη/Warehouse | Ιστορικό Εργαλείων</h1>
 @stop
 
 
@@ -30,8 +30,8 @@
                     <tr>
                         <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
-                        <th class="text-left">Χρεώθηκε Στις/Από</th>
-                        <th class="text-left">Ξεχρεώθηκε Στις</th>
+                        <th class="text-left">Χρεώθηκε Στις/Στον</th>
+                        <th class="text-left">Ξεχρεώθηκε Στις/Από</th>
                     </tr>
                 </thead>
 
@@ -47,13 +47,27 @@
                         <td>
                             <ul>
                             @foreach($charged as $ch)
-                            @if($ch != null)
-                                <li>
-                                    {{ $ch->date ?? 'Δ/Υ' }},&nbsp;
-                                    {{ $ch->whom ?? 'Δ/Υ' }},&nbsp;
-                                    {{ $ch->file ?? 'Δ/Υ' }}
-                                </li>
-                            @endif
+
+                                @if((!empty($ch->date))
+                                  &&(!empty($ch->whom))
+                                  &&(!empty($ch->file)))
+
+                                    @foreach($employees as $emp)
+                                        @if($emp->id == $ch->whom)
+
+                                            <li>
+                                                {{ $ch->date ?? 'n/a' }},&nbsp;
+                                                (
+                                                    {{ $emp->find($ch->whom)->user->name ?? 'n/a' }},&nbsp;
+                                                    {{ $ch->file ?? 'n/a' }}
+                                                )
+                                            </li>
+
+                                        @endif
+                                    @endforeach
+
+                                @endif
+
                             @endforeach
                             </ul>
                         </td>
@@ -64,11 +78,20 @@
                         <td>
                             <ul>
                             @foreach($uncharged as $unch)
-                            @if($unch != null)
-                                <li>
-                                    {{ $unch->date ?? 'Δ/Υ' }}
-                                </li>
+
+                            @if(!empty($unch->date))
+
+                                @foreach($employees as $emp)
+                                    @if($emp->id == $unch->whom)
+                                    <li>
+                                        {{ $unch->date ?? 'n/a' }},&nbsp;
+                                        {{ $emp->find($unch->whom)->user->name ?? 'n/a'  }}
+                                    </li>
+                                    @endif
+                                @endforeach
+
                             @endif
+
                             @endforeach
                             </ul>
                         </td>

@@ -185,7 +185,8 @@
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
-                                    data-towhom="{{ $employees->find($tool->employee_id)->user->name ?? '' }}">
+                                    data-towhom="{{ $employees->find($tool->employee_id)->user->name ?? '' }}"
+                                    data-emplid="{{ $tool->employee_id }}">
                                     <i class="far fa-circle" aria-hidden="true"></i>&nbsp;Ξεχρέωση
                                 </button>
                                 @endif
@@ -433,6 +434,10 @@
                                         <input type="text" name="modal-input-towhom-uncharge" class="form-control-plaintext" id="modal-input-towhom-uncharge"
                                             value="" readonly />
                                     </div>
+
+
+                                    <!-- also a hidden input here -->
+                                    <input type="hidden" id="modal-input-employeeid-uncharge" name="modal-input-employeeid-uncharge" value="">
                                     <!-- /onoma xrewmenou -->
 
                                 </div>
@@ -904,6 +909,8 @@
             var quantity = button.data('quantity');
             var towhom = button.data('towhom');
 
+            var emplid = button.data('emplid');
+
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 
@@ -918,6 +925,8 @@
             modal.find('.modal-body #modal-input-towhom-uncharge').val(towhom);
 
             modal.find('.modal-footer #uncharge-button').attr("data-tid", tid);  //SET product id value in data-tid attribute
+
+            modal.find('#modal-input-employeeid-uncharge').val(emplid); //added for tools history @ uncharge tool, iot add the name (by his id)
 
 
 

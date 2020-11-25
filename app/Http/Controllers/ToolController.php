@@ -55,21 +55,24 @@ class ToolController extends Controller
 
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman'])){
 
-            $tools_history_data = Toolshistory::all();
+            $tools_history_data = Toolshistory::with('employee_mt')->get(); //all();
             $employees = Employee::with('user', 'tool')->get();
+            // $tools = Tool::with('employee')->get();
 
-            $tool_empl_names = DB::table('employees')
-                                ->join('tools','tools.employee_id','=','employees.id')
-                                ->join('users', 'employees.user_id','=','users.id')
-                                ->join('toolshistory', 'toolshistory.tool_id','=','tools.id')
-                                ->select('users.name')
-                                ->get();
+            // $tool_empl_names = DB::table('employees')
+            //                     ->join('tools','tools.employee_id','=','employees.id')
+            //                     ->join('users', 'employees.user_id','=','users.id')
+            //                     ->join('toolshistory', 'toolshistory.tool_id','=','tools.id')
+            //                     ->select('users.name')
+            //                     ->get();
 
 
 
             return view('tools_history_view', ['tools_history_data' => $tools_history_data,
-                                               'tool_empl_names'    => $tool_empl_names,
-                                               'employees'          => $employees]);
+                                            //    'tool_empl_names'    => $tool_empl_names,
+                                               'employees'          => $employees,
+                                            //    'tools'              => $tools,
+                                               ]);
 
         } else {
             return abort(403, 'Sorry you cannot view this page');
@@ -181,7 +184,7 @@ class ToolController extends Controller
 
 
                         // $emp_name = Employee::findOrFail('id', $tool_for_charging->employee_id)->user->name;
-
+                        $charged_at->tool = $tool_for_charging->id;
                         $charged_at->date = $tool_for_charging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
                         $charged_at->whom = $tool_for_charging->employee_id;
                         $charged_at->file = substr(basename($tool_for_charging->file_url), 15);
@@ -196,6 +199,7 @@ class ToolController extends Controller
 
 
                         $append_arr = [
+                            'tool' => $charged_at->tool,
                             'date' => $charged_at->date,
                             'whom' => $charged_at->whom,
                             'file' => $charged_at->file,
@@ -325,8 +329,23 @@ class ToolController extends Controller
 
                         $uncharged_at->date = $tool_for_uncharging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
                         // $uncharged_at->whom = $tool_for_uncharging->employee_id;
+                        // $uncharged_at_jsonObject = json_encode($uncharged_at, JSON_FORCE_OBJECT);
 
-                        $uncharged_at_jsonObject = json_encode($uncharged_at, JSON_FORCE_OBJECT);
+                        $append_arr = [
+                            'whom' => $request->input('modal-input-employeeid-uncharge'),  //a hidden input, gets the id of the employee when uncharging a tool
+                            'date' => $uncharged_at->date,
+                        ];
+
+                        $uncharged_arr = (array)$uncharged_at;
+
+                        array_push($uncharged_arr, $append_arr);
+
+                        // dd($charged_arr);
+
+                        // $th->charged_at = json_encode($charged_arr, JSON_FORCE_OBJECT);
+
+                        $uncharged_at_jsonObject = json_encode($uncharged_arr, JSON_FORCE_OBJECT);
+
 
                         $th->update(['uncharged_at' => $uncharged_at_jsonObject]);
 

@@ -312,7 +312,7 @@ return [
                                         'text' => 'Ιστορικό Εργαλείων',
                                         'route'  => 'admin.tools.history.view',
                                         'can' => 'isSuperAdmin',
-                                        'icon' => 'fas fa-tools',
+                                        'icon' => 'fas fa-history',
                                     ],
                                     [
                                         'text' => 'Χρεωμένα Εργαλεία',
@@ -346,7 +346,7 @@ return [
                                         'text' => 'Ιστορικό Εργαλείων',
                                         'route'  => 'manager.tools.history.view',
                                         'can' => 'isCompanyCEO',
-                                        'icon' => 'fas fa-tools',
+                                        'icon' => 'fas fa-history',
                                     ],
                                     [
                                         'text' => 'Χρεωμένα Εργαλεία',
@@ -380,7 +380,7 @@ return [
                                         'text' => 'Ιστορικό Εργαλείων',
                                         'route'  => 'foreman.tools.history.view',
                                         'can' => 'isWarehouseForeman',
-                                        'icon' => 'fas fa-tools',
+                                        'icon' => 'fas fa-history',
                                     ],
                                     [
                                         'text' => 'Χρεωμένα Εργαλεία',

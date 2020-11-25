@@ -34,6 +34,6 @@ class Tool extends Model
     }
 
     public function toolshistory(){
-        return $this->hasMany('App\Toolhistory');
+        return $this->hasOne('App\Toolhistory');
     }
 }
