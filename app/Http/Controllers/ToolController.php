@@ -160,12 +160,6 @@ class ToolController extends Controller
                         //$tool_for_charging->update($request->only(['modal-input-ischarged-charge', 'modal-input-towhom-charge']));
 
 
-                        // $album = Album::where('hash', $request->album_hash)->firstOrFail();
-                        // $images = json_decode($album->images);
-                        // array_push($images,  $request->image->name);
-                        // $album->update(['images' => $images]);
-                        // $album->save();
-
                         //Insert relevant data into 'toolshistory' table here
                         //CREATE the NEW object (or not?) NO! it's already been created in the other method, just FIND it!
                         $th = Toolshistory::where('tool_id', $tool_for_charging->id)->firstOrFail();
@@ -185,7 +179,7 @@ class ToolController extends Controller
 
                         // $emp_name = Employee::findOrFail('id', $tool_for_charging->employee_id)->user->name;
                         $charged_at->tool = $tool_for_charging->id;
-                        $charged_at->date = $tool_for_charging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
+                        $charged_at->date = $tool_for_charging->updated_at->isoFormat('llll'); //was(ENGLISH): ->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
                         $charged_at->whom = $tool_for_charging->employee_id;
                         $charged_at->file = substr(basename($tool_for_charging->file_url), 15);
 
@@ -205,7 +199,8 @@ class ToolController extends Controller
                             'file' => $charged_at->file,
                         ];
 
-                        $charged_arr = (array)$charged_at;
+                        $charged_arr = (array)$charged_at; //take whatever content is stored already into $charged_at
+                                                           //because later (in a bit!) i will append new content to that content
 
                         array_push($charged_arr, $append_arr);
 
@@ -213,6 +208,7 @@ class ToolController extends Controller
 
                         // $th->charged_at = json_encode($charged_arr, JSON_FORCE_OBJECT);
 
+                        //create a JSON object out of $charged_arr array
                         $charged_at_jsonObject = json_encode($charged_arr, JSON_FORCE_OBJECT);
 
 
@@ -327,7 +323,9 @@ class ToolController extends Controller
                         //json_decode(,true)  returns ARRAY, json_decode() returns PHP OBJECT
                         $uncharged_at = ($th->uncharged_at != null) ? json_decode($th->uncharged_at) : json_encode(json_decode("{}"));
 
-                        $uncharged_at->date = $tool_for_uncharging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
+                        // $uncharged_at->date = $tool_for_uncharging->updated_at->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
+                        $uncharged_at->date = $tool_for_uncharging->updated_at->isoFormat('llll');
+
                         // $uncharged_at->whom = $tool_for_uncharging->employee_id;
                         // $uncharged_at_jsonObject = json_encode($uncharged_at, JSON_FORCE_OBJECT);
 

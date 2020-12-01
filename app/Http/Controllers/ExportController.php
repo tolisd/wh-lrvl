@@ -256,7 +256,7 @@ class ExportController extends Controller
                         //subtraction!
                         $new_quantities = array_map(function($o, $q){
                             if($o < $q){
-                                return 0;
+                                return $o;
                             }
                             return $o - $q;
                         }, $old_qtys, $qty_arr);

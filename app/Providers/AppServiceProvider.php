@@ -17,6 +17,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        // config(['app.locale' => 'el_GR']);
+        // \Carbon\Carbon::setLocale('el_GR');
+        // \Carbon\Carbon::setLocale(LC_ALL, app()->getLocale());
     }
 
     /**
@@ -27,6 +30,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $events)
     {
         //
+
+        // Localization Carbon, added this line as el_GR in app.locale
+        // \Carbon\Carbon::setLocale(config('app.locale'));
+        // \Carbon\Carbon::setLocale(LC_ALL, 'el_GR');
+        setlocale(LC_ALL, "el_GR.UTF-8");
+        \Carbon\Carbon::setLocale(config('app.locale'));
+
+
         $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
             /*
             $event->menu->add('MAIN NAVIGATION');
@@ -123,31 +134,31 @@ class AppServiceProvider extends ServiceProvider
             $event->menu->add([
                 'text' => 'Create New User',
                 'url' => '/profile/create',
-                'can' => 'isSuperAdmin',                
+                'can' => 'isSuperAdmin',
             ]);
             $event->menu->add([
                 'text' => 'Edit Existing User',
                 'url' => '/profile/{id}/edit',
-                'can' => 'isSuperAdmin',                
+                'can' => 'isSuperAdmin',
             ]);
             $event->menu->add([
                 'text' => 'Delete Existing User',
                 'url' => '/profile/{id}/delete',
-                'can' => 'isSuperAdmin',                
+                'can' => 'isSuperAdmin',
             ]);
 
             $event->menu->add(['header'=>'ACCOUNT SETTINGS', 'can'=>['isSuperAdmin']]);
             $event->menu->add([
                 'text' => 'View User Profile',
                 'url' => '/profile/{id}/view',
-                'can' => 'isSuperAdmin', 
-                'icon' => 'fas fa-fw fa-user',               
+                'can' => 'isSuperAdmin',
+                'icon' => 'fas fa-fw fa-user',
             ]);
             $event->menu->add([
                 'text' => 'Change User Password',
                 'url' => '/password/{id}/change-password',
-                'can' => 'isSuperAdmin', 
-                'icon' => 'fas fa-fw fa-lock',               
+                'can' => 'isSuperAdmin',
+                'icon' => 'fas fa-fw fa-lock',
             ]);
             */
 

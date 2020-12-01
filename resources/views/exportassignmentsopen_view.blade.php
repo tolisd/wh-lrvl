@@ -46,7 +46,11 @@
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
-                        <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td>
+
+                        <!-- <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td> -->
+                        <td>{{ $exportassignment->export_deadline->isoFormat('llll') }}</td>
+
+
                         @php
                             $attached_files = json_decode($exportassignment->uploaded_files, true);
                         @endphp
@@ -232,7 +236,10 @@
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
-                        <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td>
+
+                        <!-- <td>{{ $exportassignment->export_deadline->format('l d/m/Y @ H:i') }}</td> -->
+                        <td>{{ $exportassignment->export_deadline->isoFormat('llll') }}</td>
+
                         @php
                             $attached_files = json_decode($exportassignment->uploaded_files, true);
                         @endphp

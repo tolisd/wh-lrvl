@@ -31,7 +31,7 @@
                         <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
                         <th class="text-left">Χρεώθηκε Στις/Στον</th>
-                        <th class="text-left">Ξεχρεώθηκε Στις/Από</th>
+                        <th class="text-left">Ξεχρεώθηκε Στις/Από Τον</th>
                     </tr>
                 </thead>
 
@@ -45,7 +45,7 @@
                             $charged = json_decode($th->charged_at);
                         @endphp
                         <td>
-                            <ul>
+                            <ol>
                             @foreach($charged as $ch)
 
                                 @if((!empty($ch->date))
@@ -56,11 +56,9 @@
                                         @if($emp->id == $ch->whom)
 
                                             <li>
-                                                {{ $ch->date ?? 'n/a' }},&nbsp;
-                                                (
-                                                    {{ $emp->find($ch->whom)->user->name ?? 'n/a' }},&nbsp;
-                                                    {{ $ch->file ?? 'n/a' }}
-                                                )
+                                                 {{ $ch->date ?? 'n/a' }},&nbsp;
+                                                ({{ $emp->find($ch->whom)->user->name ?? 'n/a' }},&nbsp;
+                                                 {{ $ch->file ?? 'n/a' }})
                                             </li>
 
                                         @endif
@@ -69,14 +67,14 @@
                                 @endif
 
                             @endforeach
-                            </ul>
+                            </ol>
                         </td>
 
                         @php
                             $uncharged = json_decode($th->uncharged_at);
                         @endphp
                         <td>
-                            <ul>
+                            <ol>
                             @foreach($uncharged as $unch)
 
                             @if(!empty($unch->date))
@@ -93,7 +91,7 @@
                             @endif
 
                             @endforeach
-                            </ul>
+                            </ol>
                         </td>
 
                     </tr>
@@ -162,7 +160,7 @@
                         {
                             "extend" : "csv",
                             "text"   : "Εξαγωγή σε CSV",
-                            "title"  : "Χρεωμένα Εργαλεία",
+                            "title"  : "Ιστορικό Εργαλείων",
                             exportOptions: {
                                 columns: [0,1,2,3]
                             }
@@ -170,7 +168,7 @@
                         {
                             "extend" : "excel",
                             "text"   : "Εξαγωγή σε Excel",
-                            "title"  : "Χρεωμένα Εργαλεία",
+                            "title"  : "Ιστορικό Εργαλείων",
                             exportOptions: {
                                 columns: [0,1,2,3]
                             }
@@ -178,8 +176,8 @@
                         {
                             "extend" : "pdf",
                             "text"   : "Εξαγωγή σε PDF",
-                            "title"  : "Χρεωμένα Εργαλεία",
-                            "orientation" : "portrait",
+                            "title"  : "Ιστορικό Εργαλείων",
+                            "orientation" : "landscape",
                             exportOptions: {
                                 columns: [0,1,2,3]
                             }

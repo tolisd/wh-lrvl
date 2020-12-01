@@ -46,7 +46,9 @@
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
-                        <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td>
+
+                        <!-- <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td> -->
+                        <td>{{ $importassignment->import_deadline->isoFormat('llll') }}</td>
 
                         @php
                             $attached_files = json_decode($importassignment->uploaded_files, true);

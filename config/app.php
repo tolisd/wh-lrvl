@@ -83,7 +83,7 @@ return [
     */
 
     //'locale' => 'en',
-    'locale' => 'gr', //changed the above locale line, to this line
+    'locale' => 'el_GR', //changed the above locale line, to this line ('el_GR')
 
     /*
     |--------------------------------------------------------------------------
@@ -96,7 +96,8 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    // 'fallback_locale' => 'en',
+    'fallback_locale' => 'gr', //else with 'en' the login screen went to english!
 
     /*
     |--------------------------------------------------------------------------
