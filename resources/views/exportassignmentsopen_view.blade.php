@@ -30,6 +30,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης Εξαγωγής</th>
@@ -43,6 +44,7 @@
                 <tbody>
                 @foreach($exportassignments as $exportassignment)
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->user->name }}</td>
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
@@ -213,6 +215,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης Εξαγωγής</th>
@@ -224,7 +227,7 @@
                 </thead>
 
                 <tbody>
-                @foreach($exportassignments as $exportassignment)
+                @foreach($open_export_assignments_frmn_wrkr as $exportassignment)
                 @foreach($warehouses as $warehouse)
                 @foreach($warehouse->employees as $employee)
 
@@ -233,6 +236,7 @@
                      && (($employee->user->user_type == 'warehouse_foreman') || ($employee->user->user_type == 'warehouse_worker')))
 
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->user->name }}</td>
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
@@ -389,7 +393,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -397,7 +401,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Ανοιχτές Αναθέσεις Εξαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -405,7 +409,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Ανοιχτές Αναθέσεις Εξαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -414,14 +418,14 @@
                             "title"  : "Ανοιχτές Αναθέσεις Εξαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                     ],

@@ -30,6 +30,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
@@ -43,6 +44,7 @@
                 <tbody>
                 @foreach($importassignments as $importassignment)
                     <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
@@ -207,7 +209,7 @@
 
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, -->
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant -->
 
 
 
@@ -217,6 +219,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
@@ -228,7 +231,7 @@
                 </thead>
 
                 <tbody>
-                @foreach($importassignments as $importassignment)
+                @foreach($open_import_assignments_frmn_wrkr as $importassignment)
                 @foreach($warehouses as $warehouse)
                 @foreach($warehouse->employees as $employee)
 
@@ -237,6 +240,7 @@
                      && (($employee->user->user_type == 'warehouse_foreman') || ($employee->user->user_type == 'warehouse_worker')))
 
                     <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
@@ -393,7 +397,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -401,7 +405,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -409,7 +413,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -418,14 +422,14 @@
                             "title"  : "Ανοιχτές Αναθέσεις Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                     ],

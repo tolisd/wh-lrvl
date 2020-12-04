@@ -30,6 +30,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
@@ -43,6 +44,7 @@
                 <tbody>
                 @foreach($importassignments as $importassignment)
                     <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
@@ -154,10 +156,104 @@
             </table>
 
 
+            <br/><br/>
+            @endcanany <!-- isSuperAdmin, isCompanyCEO, isAccountant -->
+
+
+
+
+
+            @canany(['isNormalUser'])
+
+            <!-- insert here the main products table-->
+            <table class="table data-table display table-striped table-bordered"
+                    data-order='[[ 0, "asc" ]]' data-page-length="10">
+                <thead>
+                    <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
+                        <th class="text-left">Κωδ.Ανάθεσης</th>
+                        <th class="text-left">Αποθήκη</th>
+                        <th class="text-left">Κείμενο Ανάθεσης Εισαγωγής</th>
+                        <th class="text-left">Deadline</th>
+                        <th class="text-left">Επισυναπτόμενα Αρχεία</th>
+                        <th class="text-left">Σχόλια</th>
+                        <th class="text-left">Ανοιχτή?</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @foreach($importassignments as $importassignment)
+                    <tr class="user-row" data-eid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
+                        <td>{{ $importassignment->import_assignment_code }}</td>
+                        <td>{{ $importassignment->warehouse->name }}</td>
+                        <td>{{ $importassignment->import_assignment_text }}</td>
+
+                        <!-- <td>{{ $importassignment->import_deadline->format('l d/m/Y @ H:i') }}</td> -->
+                        <td>{{ $importassignment->import_deadline->isoFormat('llll') }}</td>
+
+                        @php
+                            $attached_files = json_decode($importassignment->uploaded_files, true);
+                        @endphp
+
+                        <td>
+                            @if($attached_files == null)
+                                <i class="fas fa-file fa-lg" aria-hidden="true"></i>&nbsp;Χωρίς αρχείο
+                            @else
+                                @foreach($attached_files as $att_file)
+
+                                    @if(\Auth::user()->user_type == 'normal_user')
+
+                                        @if(substr($att_file, -3) == 'pdf')
+                                        <a href="{{ route('user.assignments.import.close.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif((substr($att_file, -3) == 'doc') or (substr($att_file, -4) == 'docx'))
+                                        <a href="{{ route('user.assignments.import.close.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @elseif(substr($att_file, -3) == 'txt')
+                                        <a href="{{ route('user.assignments.import.close.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+
+                                        @else
+                                        <a href="{{ route('user.assignments.import.close.getfiles', ['filenames' => basename($att_file)]) }}" download>
+                                            <i class="far fa-file fa-lg" aria-hidden="true"></i>
+                                        </a>&nbsp;{{ substr(basename($att_file), 15) }}<br/>
+                                        @endif
+
+                                    @endif
+
+                                @endforeach
+                            @endif
+                        </td>
+
+                        <td>{{ $importassignment->comments }}</td>
+                        <td>
+                            @if($importassignment->is_open == 1)
+                                <i class="fas fa-lock-open" aria-hidden="true"></i>&nbsp;Ανοιχτή
+                            @elseif($importassignment->is_open == 0)
+                                <i class="fas fa-lock" aria-hidden="true"></i>&nbsp;Κλειστή
+                            @endif
+                        </td>
+
+                    </tr>
+                @endforeach
+                </tbody>
+
+            </table>
+
+
 
 
             <br/><br/>
-            @endcanany <!-- isSuperAdmin, isCompanyCEO, isWarehouseForeman, isWarehouseWorker -->
+            @endcanany <!-- isNormalUser -->
+
+
+
 
 
 			@can('isSuperAdmin')
@@ -170,6 +266,10 @@
 
             @can('isAccountant')
                 <a href="{{ route('accountant.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
+            @can('isNormalUser')
+                <a href="{{ route('normaluser.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
 
@@ -213,7 +313,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -221,7 +321,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Κλειστές Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -229,7 +329,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Κλειστές Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -238,14 +338,14 @@
                             "title"  : "Κλειστές Αναθέσεις Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                     ],

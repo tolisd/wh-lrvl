@@ -32,6 +32,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
@@ -50,6 +51,7 @@
                 <tbody>
                 @foreach($exportassignments as $exportassignment)
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->user->name }}</td>
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
@@ -241,7 +243,7 @@
                                     data-eid="{{ $exportassignment->id }}"
 									data-warehouse="{{ $exportassignment->warehouse_id }}"
                                     data-text="{{ $exportassignment->export_assignment_text }}"
-                                    data-deadline="{{ $exportassignment->export_deadline->format('d-m-Y H:i') }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
                                     data-files="{{ $exportassignment->uploaded_files }}"
 									data-comments="{{ $exportassignment->comments }}"
 									data-isopen="{{ $exportassignment->is_open }}">
@@ -279,6 +281,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
@@ -287,8 +290,8 @@
                         <th class="text-left">Σχόλια</th>
 						<th class="text-left">Ανοιχτή?</th>
 
-                        <!-- <th class="text-left">Άνοιγμα</th>
-						<th class="text-left">Κλείσιμο</th> -->
+                        <!-- <th class="text-left">Άνοιγμα</th> -->
+						<th class="text-left">Κλείσιμο</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -296,15 +299,17 @@
                 </thead>
 
                 <tbody>
-                @foreach($exportassignments as $exportassignment)
+                @foreach($export_assignments_perUser as $exportassignment)
                 @foreach($warehouses as $warehouse)
                 @foreach($warehouse->employees as $employee)
 
                     @if(($exportassignment->warehouse_id == $warehouse->id)
                      && (\Auth::user()->id == $employee->user_id)
-                     && ($employee->user->user_type == 'warehouse_foreman'))
+                     && ($employee->user->user_type == 'warehouse_foreman')
+                     && ($exportassignment->is_open == 1))
 
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->user->name }}</td>
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
@@ -375,7 +380,7 @@
 
 
                         <!-- Κουμπί Κλεισίματος Ανάθεσης Εξαγωγής -->
-                        <!-- <td>
+                        <td>
                             @if($exportassignment->is_open == 1)
                             <button class="close-modal btn btn-warning"
                                 data-toggle="modal" data-target="#close-modal"
@@ -386,7 +391,7 @@
                             <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
                             </button>
                             @endif
-                        </td> -->
+                        </td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
@@ -394,13 +399,14 @@
                                     data-eid="{{ $exportassignment->id }}"
 									data-warehouse="{{ $exportassignment->warehouse_id }}"
                                     data-text="{{ $exportassignment->export_assignment_text }}"
-                                    data-deadline="{{ $exportassignment->export_deadline->format('d-m-Y H:i') }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
                                     data-files="{{ $exportassignment->uploaded_files }}"
 									data-comments="{{ $exportassignment->comments }}"
 									data-isopen="{{ $exportassignment->is_open }}">
                                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
                             </button>
                         </td>
+
                         <td>
                             <button class="delete-modal btn btn-danger"
                                     data-toggle="modal" data-target="#delete-modal"
@@ -411,6 +417,7 @@
                                 <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Διαγραφή
                             </button>
                         </td>
+
                     </tr>
                     @endif
 
@@ -438,6 +445,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
@@ -455,7 +463,7 @@
                 </thead>
 
                 <tbody>
-                @foreach($exportassignments as $exportassignment)
+                @foreach($export_assignments_perUser as $exportassignment)
                 @foreach($warehouses as $warehouse)
                 @foreach($warehouse->employees as $employee)
 
@@ -464,6 +472,7 @@
                      && ($employee->user->user_type == 'warehouse_foreman'))
 
                     <tr class="user-row" data-eid="{{ $exportassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $exportassignment->user->name }}</td>
                         <td>{{ $exportassignment->export_assignment_code }}</td>
                         <td>{{ $exportassignment->warehouse->name }}</td>
                         <td>{{ $exportassignment->export_assignment_text }}</td>
@@ -553,7 +562,7 @@
                                     data-eid="{{ $exportassignment->id }}"
 									data-warehouse="{{ $exportassignment->warehouse_id }}"
                                     data-text="{{ $exportassignment->export_assignment_text }}"
-                                    data-deadline="{{ $exportassignment->export_deadline->format('d-m-Y H:i') }}"
+                                    data-deadline="{{ $exportassignment->export_deadline->isoFormat('llll') }}"
                                     data-files="{{ $exportassignment->uploaded_files }}"
 									data-comments="{{ $exportassignment->comments }}"
 									data-isopen="{{ $exportassignment->is_open }}">
@@ -1085,7 +1094,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -1093,7 +1102,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Αναθέσεις Εξαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -1101,7 +1110,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Αναθέσεις Εξαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -1110,14 +1119,14 @@
                             "title"  : "Αναθέσεις Εξαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                     ],

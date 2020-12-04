@@ -20,6 +20,7 @@ class AddToolIdToToolshistoryTable extends Migration
             $table->foreign('tool_id')
                   ->references('id')
                   ->on('tools')
+                  ->onUpdate('cascade')
                   ->onDelete('cascade');
         });
     }

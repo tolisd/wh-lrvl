@@ -8,6 +8,7 @@ use Auth; //added for Auth
 use Validator;
 use App\Importassignment;
 use App\Warehouse;
+use App\User;
 use Carbon\Carbon;
 
 class ImportAssignmentController extends Controller
@@ -19,9 +20,38 @@ class ImportAssignmentController extends Controller
 
             $importassignments = ImportAssignment::all();
             $warehouses = Warehouse::all();
+            $users = User::all();
+
+
+            // $u_id                        = Auth::user()->id;
+            // $user                        = User::findOrFail($u_id);
+            // $import_assignments_perUser  = ImportAssignment::where('user_id', '=', $user->id)->get();
+
+            $wh_ids = [];
+            foreach($importassignments as $ia){
+                array_push($wh_ids, $ia->warehouse_id);
+            }
+
+            // $import_assignments_perUser = DB::table('importassignments')
+            //                             ->join('users', 'users.id','=','importassignments.user_id')
+            //                             ->join('warehouse', 'warehouse.id','=','importassignments.warehouse_id')
+            //                             ->join('employee_warehouse', 'employee_warehouse.id','=','importassignments.warehouse_id')
+            //                             // ->join('employees','','=','')
+            //                             ->whereIn('importassignments.warehouse_id', $wh_ids)
+            //                             // ->where('users.user_type', 'warehouse_foreman')
+            //                             // ->where('importassignments.user_id', '=', $user->id)
+            //                             ->get();
+
+
+            $import_assignments_perUser = ImportAssignment::whereIn('warehouse_id', $wh_ids)
+                                                          ->get();
+
 
             return view('importassignments_view', ['importassignments' => $importassignments,
-                                                    'warehouses' => $warehouses]);
+                                                    'warehouses' => $warehouses,
+                                                    'users' => $users,
+                                                    'import_assignments_perUser' => $import_assignments_perUser,
+                                                ]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -33,9 +63,36 @@ class ImportAssignmentController extends Controller
 
             $importassignments = ImportAssignment::where('is_open', '=', 1)->get();
             $warehouses = Warehouse::all();
+            $users = User::all();
+
+
+            // $u_id                   = Auth::user()->id;
+            // $open_import_assignments = DB::table('importassignments')
+            //                             ->where('user_id', '=', $u_id)
+            //                             ->where('is_open', '=', 1)
+            //                             ->get();
+            // $user                    = User::findOrFail($u_id);
+            // $open_import_assignments = ImportAssignment::where('is_open', '=', 1)->where('user_id', '=', $user->id)->get();
+            // $open_import_assignments = ImportAssignment::where('is_open', '=', 1)->get();
+
+            $wh_ids = [];
+            foreach($importassignments as $ia){
+                array_push($wh_ids, $ia->warehouse_id);
+            }
+
+            $open_import_assignments_frmn_wrkr = ImportAssignment::whereIn('warehouse_id', $wh_ids)
+                                                                ->where('is_open', '=', 1)
+                                                                ->get();
+
+
+
 
             return view('importassignmentsopen_view', ['importassignments' => $importassignments,
-                                                        'warehouses' => $warehouses]);
+                                                        'warehouses' => $warehouses,
+                                                        'users' => $users,
+                                                        'open_import_assignments_frmn_wrkr' => $open_import_assignments_frmn_wrkr,
+                                                       ]);
+
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -48,9 +105,12 @@ class ImportAssignmentController extends Controller
 
             $importassignments = ImportAssignment::where('is_open', '=', 0)->get();
             $warehouses = Warehouse::all();
+            $users = User::all();
 
             return view('importassignmentsclosed_view', ['importassignments' => $importassignments,
-                                                        'warehouses' => $warehouses]);
+                                                            'warehouses' => $warehouses,
+                                                            'users' => $users,
+                                                        ]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -138,12 +198,14 @@ class ImportAssignmentController extends Controller
                         $importassignment->comments               = $request->input('modal-input-comments-create');
                         $importassignment->is_open                = 1; //true
 
+                        $importassignment->user_id                = Auth::user()->id; //$request->input('modal-input-user-create');
+                        //the assigner, who created the assignment, the currently authenticated user
+
                         //Create a code for this assignment, 10 digits long, and get it from the input text as hashed text!
                         //$importassignment->import_assignment_code = strtoupper(substr(\Hash::make($request->input('modal-input-text-create')), -10));
 
                         $digits = 5; //a random integer between 10,000 and 99,999 as my assignment code
                         $importassignment->import_assignment_code = rand(pow(10, $digits-1), pow(10, $digits)-1);
-
 
                         $importassignment->save();
 
@@ -267,6 +329,8 @@ class ImportAssignmentController extends Controller
                         $importassignment->uploaded_files         = json_encode($files_data);
                         $importassignment->comments               = $request->input('modal-input-comments-edit');
                         $importassignment->is_open                = $request->input('modal-input-isopen-edit');
+                        $importassignment->user_id                = Auth::user()->id;  //$request->input('modal-input-user-edit');
+                        //the assigner, the currently authenticated user
 
                         $importassignment->update($request->all());
 
@@ -550,7 +614,7 @@ class ImportAssignmentController extends Controller
     public function get_files_closed_imp(Request $request, $filenames){
 
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isNormalUser'])){
 
 
             $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eisagwgi'.DIRECTORY_SEPARATOR . $filenames;
@@ -718,4 +782,47 @@ class ImportAssignmentController extends Controller
         }
 
     }
+
+
+    //normal user can view all his/her open import assignments
+    public function view_my_import_assignments(){
+
+        if(\Gate::any(['isNormalUser'])){
+
+            $u_id        = Auth::user()->id;  //get the authenticated user's ID
+
+            //the following is 2 queries, it looks much shorter and cleaner!
+            $user                  = User::findOrFail($u_id);
+            $my_import_assignments = ImportAssignment::where('user_id', $user->id)->where('is_open', '=', 1)->get();   //via its FK
+
+
+            return view('importassignments_my_view', ['my_import_assignments' => $my_import_assignments]);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+    //normal user can view his/her closed (finished) import assignments
+    public function view_my_closed_import_assignments(){
+
+        if(\Gate::any(['isNormalUser'])){
+
+            $u_id        = Auth::user()->id;  //get the authenticated user's ID
+
+            //the following is 2 queries, it looks much shorter and cleaner!
+            $user                         = User::findOrFail($u_id);
+            $my_closed_import_assignments = ImportAssignment::where('user_id', $user->id)->where('is_open', '=', 0)->get();   //via its FK
+
+
+            return view('importassignments_myclosed_view', ['my_closed_import_assignments' => $my_closed_import_assignments]);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
 }

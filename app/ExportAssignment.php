@@ -10,7 +10,7 @@ class ExportAssignment extends Model
     protected $table = 'exportassignments';
 
     protected $fillable = [
-        'export_assignment_text', 'export_deadline', 'comments', 'uploaded_files', 'is_open', 'warehouse_id',
+        'export_assignment_text', 'export_deadline', 'comments', 'uploaded_files', 'is_open', 'warehouse_id', 'user_id',
     ];
 
     protected $casts = [
@@ -26,6 +26,10 @@ class ExportAssignment extends Model
 
     public function warehouse(){
         return $this->belongsTo('App\Warehouse', 'warehouse_id');
+    }
+
+    public function user(){
+        return $this->belongsTo('App\User', 'user_id');
     }
 
 }

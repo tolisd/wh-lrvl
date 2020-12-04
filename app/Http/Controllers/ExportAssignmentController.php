@@ -8,6 +8,7 @@ use Auth; //added for Auth
 use Validator;
 use App\Exportassignment;
 use App\Warehouse;
+use App\User;
 use Carbon\Carbon;
 
 
@@ -20,9 +21,29 @@ class ExportAssignmentController extends Controller
 
             $exportassignments = ExportAssignment::all();
             $warehouses = Warehouse::all();
+            $users = User::all();
+
+            // $u_id                        = Auth::user()->id;
+            // $user                        = User::findOrFail($u_id);
+            // $export_assignments_perUser  = ExportAssignment::where('user_id', '=', $user->id)->get();
+
+            $wh_ids = [];
+            foreach($exportassignments as $ea){
+                array_push($wh_ids, $ea->warehouse_id);
+            }
+
+
+
+            $export_assignments_perUser = ExportAssignment::whereIn('warehouse_id', $wh_ids)
+                                                          ->get();
+
+
 
             return view('exportassignments_view', ['exportassignments' => $exportassignments,
-                                                    'warehouses' => $warehouses]);
+                                                    'warehouses' => $warehouses,
+                                                    'users' => $users,
+                                                    'export_assignments_perUser' => $export_assignments_perUser,
+                                                ]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -34,9 +55,30 @@ class ExportAssignmentController extends Controller
 
             $exportassignments = ExportAssignment::where('is_open', '=', 1)->get();
             $warehouses = Warehouse::all();
+            $users = User::all();
+
+
+            // $u_id                    = Auth::user()->id;
+            // $user                    = User::findOrFail($u_id);
+            // $open_export_assignments = ExportAssignment::where('is_open', '=', 1)->where('user_id', '=', $user->id)->get();
+
+
+            $wh_ids = [];
+            foreach($exportassignments as $ea){
+                array_push($wh_ids, $ea->warehouse_id);
+            }
+
+            $open_export_assignments_frmn_wrkr = ExportAssignment::whereIn('warehouse_id', $wh_ids)
+                                                                ->where('is_open', '=', 1)
+                                                                ->get();
+
+
 
             return view('exportassignmentsopen_view', ['exportassignments' => $exportassignments,
-                                                    'warehouses' => $warehouses]);
+                                                    'warehouses' => $warehouses,
+                                                    'users' => $users,
+                                                    'open_export_assignments_frmn_wrkr' => $open_export_assignments_frmn_wrkr,
+                                                    ]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -49,9 +91,11 @@ class ExportAssignmentController extends Controller
 
             $exportassignments = ExportAssignment::where('is_open', '=', 0)->get();
             $warehouses = Warehouse::all();
+            $users = User::all();
 
             return view('exportassignmentsclosed_view', ['exportassignments' => $exportassignments,
-                                                        'warehouses' => $warehouses]);
+                                                        'warehouses' => $warehouses,
+                                                        'users' => $users]);
         } else {
             return abort(403, 'Sorry you cannot view this page');
         }
@@ -126,6 +170,8 @@ class ExportAssignmentController extends Controller
                         $exportassignment->uploaded_files         = json_encode($files_data);
                         $exportassignment->comments               = $request->input('modal-input-comments-create');
                         $exportassignment->is_open                = 1;
+
+                        $exportassignment->user_id                = Auth::user()->id;
 
                         //Create a code for this assignment, 10 digits long, and get it from the input text as hashed text!
                         // $exportassignment->export_assignment_code = strtoupper(substr(\Hash::make($request->input('modal-input-text-create')), -10));
@@ -250,6 +296,8 @@ class ExportAssignmentController extends Controller
                         $exportassignment->uploaded_files         = json_encode($files_data);
                         $exportassignment->comments               = $request->input('modal-input-comments-edit');
                         $exportassignment->is_open                = $request->input('modal-input-isopen-edit');
+
+                        $exportassignment->user_id                = Auth::user()->id;
 
 
                         $exportassignment->update($request->all());
@@ -514,7 +562,7 @@ class ExportAssignmentController extends Controller
     public function get_files_closed_exp(Request $request, $filenames){
 
 
-        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])){
+        if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isAccountant', 'isNormalUser'])){
 
 
             $path_to_file = 'arxeia'.DIRECTORY_SEPARATOR.'eksagwgi'.DIRECTORY_SEPARATOR . $filenames;
@@ -683,6 +731,47 @@ class ExportAssignmentController extends Controller
         }
 
     }
+
+
+    public function view_my_export_assignments(){
+
+        if(\Gate::any(['isNormalUser'])){
+
+            $u_id        = Auth::user()->id;  //get the authenticated user's ID
+
+            //the following is 2 queries, it looks much shorter and cleaner!
+            $user                  = User::findOrFail($u_id);
+            $my_export_assignments = ExportAssignment::where('user_id', $user->id)->where('is_open', '=', 1)->get();   //via its FK
+
+
+            return view('exportassignments_my_view', ['my_export_assignments' => $my_export_assignments]);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+    public function view_my_closed_export_assignments(){
+
+        if(\Gate::any(['isNormalUser'])){
+
+            $u_id        = Auth::user()->id;  //get the authenticated user's ID
+
+            //the following is 2 queries, it looks much shorter and cleaner!
+            $user                         = User::findOrFail($u_id);
+            $my_closed_export_assignments = ExportAssignment::where('user_id', $user->id)->where('is_open', '=', 0)->get();   //via its FK
+
+
+            return view('exportassignments_myclosed_view', ['my_closed_export_assignments' => $my_closed_export_assignments]);
+
+        } else {
+            return abort(403, 'Sorry you cannot view this page');
+        }
+
+    }
+
+
 
 
 }

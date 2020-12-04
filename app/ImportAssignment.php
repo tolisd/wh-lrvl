@@ -10,7 +10,7 @@ class ImportAssignment extends Model
     protected $table = 'importassignments';
 
     protected $fillable = [
-        'import_assignment_text', 'import_deadline', 'comments', 'uploaded_files', 'is_open', 'warehouse_id',
+        'import_assignment_text', 'import_deadline', 'comments', 'uploaded_files', 'is_open', 'warehouse_id', 'user_id',
     ];
 
     protected $casts = [
@@ -26,6 +26,10 @@ class ImportAssignment extends Model
 
     public function warehouse(){
         return $this->belongsTo('App\Warehouse', 'warehouse_id');
+    }
+
+    public function user(){
+        return $this->belongsTo('App\User', 'user_id');
     }
 
 

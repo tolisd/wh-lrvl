@@ -53,12 +53,98 @@ class DashboardController extends Controller
         if(\Gate::any(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman' ,'isAccountant', 'isWarehouseWorker', 'isNormalUser', 'isTechnician'])){
 
             $usersCount = User::count();
+            // $users      = User::all();
+
             $productsCount = Product::count(); //added: 'use App\Product;'
+
+
+            //for the normal user
+            $u_id   = Auth::user()->id;
+            $user   = User::findOrFail($u_id);
+
+
+            $importassignments = ImportAssignment::all();
+            $exportassignments = ExportAssignment::all();
+
+
+
+
+            $open_importAssignments_perUser_count = DB::table('importassignments')
+                                                    ->where('user_id', $user->id)
+                                                    // ->whereIn('warehouse_id', $imp_wh_ids)
+                                                    ->where('is_open', 1)
+                                                    ->count();
+
+            $open_exportAssignments_perUser_count = DB::table('exportassignments')
+                                                    ->where('user_id', $user->id)
+                                                    // ->whereIn('warehouse_id', $exp_wh_ids)
+                                                    ->where('is_open', 1)
+                                                    ->count();
+
+
+
+
+            $closed_importAssignments_perUser_count = DB::table('importassignments')
+                                                    ->where('user_id', $user->id)
+                                                    // ->whereIn('warehouse_id', $imp_wh_ids)
+                                                    ->where('is_open', 0)
+                                                    ->count();
+
+            $closed_exportAssignments_perUser_count = DB::table('exportassignments')
+                                                    ->where('user_id', $user->id)
+                                                    // ->whereIn('warehouse_id', $exp_wh_ids)
+                                                    ->where('is_open', 0)
+                                                    ->count();
+
+
+
+
+
+
+
+            $warehouse_foreman_id = DB::table('employees')
+                                    ->join('users', 'users.id','=','employees.user_id')
+                                    ->where('users.id', $user->id)
+                                    ->pluck('employees.id')
+                                    ->first(); //the employee_id of the currently authenticated user
+
+            // dd($warehouse_foreman_id);
+
+            $whs = DB::table('employee_warehouse')
+                    ->join('employees', 'employees.id','=','employee_warehouse.employee_id')
+                    ->where('employees.id', $warehouse_foreman_id)
+                    ->pluck('employee_warehouse.warehouse_id');
+                      //the warehouse(s) of this employee
+
+
+            $open_importAssignments_perForeman_count = DB::table('importassignments')
+                                                        ->whereIn('warehouse_id', $whs)
+                                                        ->where('is_open', 1)
+                                                        ->count();
+
+
+            $open_exportAssignments_perForeman_count = DB::table('exportassignments')
+                                                        ->whereIn('warehouse_id', $whs)
+                                                        ->where('is_open', 1)
+                                                        ->count();
+
+
+
+
+
+
 
             //$assignmentsCount = Assignment::count(); //I do NOT use this table anymore..
             //...instead, I use the 2 following tables
+
+            // $import_assignments_count_frmn = ImportAssignment::where('is_open', '=', 1)->whereIn('warehouse_id', $imp_wh_ids)->count();
+            // $export_assignments_count_frmn = ExportAssignment::where('is_open', '=', 1)->whereIn('warehouse_id', $exp_wh_ids)->count();
+
             $import_assignments_count = ImportAssignment::where('is_open', '=', 1)->count();
             $export_assignments_count = ExportAssignment::where('is_open', '=', 1)->count();
+
+            $import_assignments_closed_count = ImportAssignment::where('is_open', '=', 0)->count();
+            $export_assignments_closed_count = ExportAssignment::where('is_open', '=', 0)->count();
 
             $tools_count = Tool::count();
 
@@ -176,11 +262,34 @@ class DashboardController extends Controller
 
 
 
+            // $user_open_import_assignments_count = DB::table('importassignments')
+            //                                     ->where('is_open', 1)
+            //                                     ->count();
+
+            // $user_closed_import_assignments_count = DB::table('importassignments')
+            //                                         ->where('is_open', 0)
+            //                                         ->count();
+
+
+
+            // $user_open_export_assignments_count = DB::table('exportassignments')
+            //                                     ->where('is_open', 1)
+            //                                     ->count();
+
+            // $user_closed_export_assignments_count = DB::table('exportassignments')
+            //                                         ->where('is_open', 0)
+            //                                         ->count();
+
+
+
+
             return view('dashboard', [ 'usersCount' => $usersCount,
                                         'prodCount'  => $productsCount,
                                         //'assignCount' => $assignmentsCount,
                                         'import_assignments_count' => $import_assignments_count,
                                         'export_assignments_count' => $export_assignments_count,
+                                        'import_assignments_closed_count' => $import_assignments_closed_count,
+                                        'export_assignments_closed_count' => $export_assignments_closed_count,
                                         'tools_count' => $tools_count,
                                         'warehouses' => $warehouses,
                                         'my_warehouses' => $my_warehouses,
@@ -191,6 +300,13 @@ class DashboardController extends Controller
                                         'worker_employees' => $worker_employees,
                                         'users' => $users,
                                         //'products' => $products,
+                                        'open_importAssignments_perUser_count'   => $open_importAssignments_perUser_count,
+                                        'open_exportAssignments_perUser_count'   => $open_exportAssignments_perUser_count,
+                                        'closed_importAssignments_perUser_count' => $closed_importAssignments_perUser_count,
+                                        'closed_exportAssignments_perUser_count' => $closed_exportAssignments_perUser_count,
+
+                                        'open_importAssignments_perForeman_count' => $open_importAssignments_perForeman_count,
+                                        'open_exportAssignments_perForeman_count' => $open_exportAssignments_perForeman_count,
                                         ]);
         }
         else {

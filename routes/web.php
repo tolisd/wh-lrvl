@@ -681,6 +681,8 @@ Route::middleware(['auth', 'technician'])->prefix('technician')->group(function(
 });
 
 
+
+
 Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::get('/home', 'UserController@home');
     Route::get('/dashboard', 'DashboardController@index')->name('normaluser.dashboard');
@@ -688,8 +690,27 @@ Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::get('/users/show/pic/{photo?}', 'UserController@show_userpic')->where('photo', '(.*)')->name('user.user.show.userpic');
 
 
+    // Route::get('assignments/import/close/view', 'ImportAssignmentController@view_closed_import_assignments')->name('user.assignments.import.close.view');
+    // Route::get('assignments/export/close/view', 'ExportAssignmentController@view_closed_export_assignments')->name('user.assignments.export.close.view');
+    // Route::get('assignments/export/close/download/{filenames?}', 'ExportAssignmentController@get_files_closed_exp')->where('filenames', '(.*)')->name('user.assignments.export.close.getfiles');
+    // Route::get('assignments/import/close/download/{filenames?}', 'ImportAssignmentController@get_files_closed_imp')->where('filenames', '(.*)')->name('user.assignments.import.close.getfiles');
+
+    Route::get('assignments/import/my/view', 'ImportAssignmentController@view_my_import_assignments')->name('user.assignments.import.my.view');
+    Route::get('assignments/export/my/view', 'ExportAssignmentController@view_my_export_assignments')->name('user.assignments.export.my.view');
+    Route::get('assignments/import/my/download/{filenames?}', 'ImportAssignmentController@get_files')->where('filenames', '(.*)')->name('user.assignments.import.getfiles');
+    Route::get('assignments/export/my/download/{filenames?}', 'ExportAssignmentController@get_files')->where('filenames', '(.*)')->name('user.assignments.export.getfiles');
+
+
+
+    Route::get('assignments/import/my/closed/view', 'ImportAssignmentController@view_my_closed_import_assignments')->name('user.assignments.import.my.closed.view');
+    Route::get('assignments/export/my/closed/view', 'ExportAssignmentController@view_my_closed_export_assignments')->name('user.assignments.export.my.closed.view');
+    Route::get('assignments/import/my/closed/download/{filenames?}', 'ImportAssignmentController@get_files_closed_imp')->where('filenames', '(.*)')->name('user.assignments.import.close.getfiles');
+    Route::get('assignments/export/my/closed/download/{filenames?}', 'ExportAssignmentController@get_files_closed_exp')->where('filenames', '(.*)')->name('user.assignments.export.close.getfiles');
+
+
+
     //import assignments
-    Route::get('/assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('user.assignments.import.view');
+    Route::get('assignments/import/view', 'ImportAssignmentController@view_import_assignments')->name('user.assignments.import.view');
     Route::post('assignments/import/create', 'ImportAssignmentController@create_import_assignment')->name('user.assignment.import.create');
     Route::put('assignments/import/update/{id}', 'ImportAssignmentController@update_import_assignment')->name('user.assignment.import.update');
     Route::delete('assignments/import/delete/{id}', 'ImportAssignmentController@delete_import_assignment')->name('user.assignment.import.delete');
@@ -698,13 +719,15 @@ Route::middleware(['auth', 'normaluser'])->prefix('user')->group(function(){
     Route::get('assignments/import/{filenames?}', 'ImportAssignmentController@get_files')->where('filenames','(.*)')->name('user.assignment.import.files');
 
     //export assignments
-    Route::get('/assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('user.assignments.export.view');
+    Route::get('assignments/export/view', 'ExportAssignmentController@view_export_assignments')->name('user.assignments.export.view');
     Route::post('assignments/export/create', 'ExportAssignmentController@create_export_assignment')->name('user.assignment.export.create');
     Route::put('assignments/export/update/{id}', 'ExportAssignmentController@update_export_assignment')->name('user.assignment.export.update');
     Route::delete('assignments/export/delete/{id}', 'ExportAssignmentController@delete_export_assignment')->name('user.assignment.export.delete');
     Route::put('assignments/export/open/{id}', 'ExportAssignmentController@open_export_assignment')->name('user.assignment.export.open');
     Route::put('assignments/export/close/{id}', 'ExportAssignmentController@close_export_assignment')->name('user.assignment.export.close');
     Route::get('assignments/export/download/{filenames?}', 'ExportAssignmentController@get_files')->where('filenames','(.*)')->name('user.assignment.export.files');
+
+
 
 
 });

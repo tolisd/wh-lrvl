@@ -30,8 +30,8 @@
                     <tr>
                         <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
-                        <th class="text-left">Χρεώθηκε Στις/Στον</th>
-                        <th class="text-left">Ξεχρεώθηκε Στις/Από Τον</th>
+                        <th class="text-left">Χρεώθηκε Στις</th>
+                        <th class="text-left">Ξεχρεώθηκε Στις</th>
                     </tr>
                 </thead>
 
@@ -57,8 +57,9 @@
 
                                             <li>
                                                  {{ $ch->date ?? 'n/a' }},&nbsp;
-                                                ({{ $emp->find($ch->whom)->user->name ?? 'n/a' }},&nbsp;
-                                                 {{ $ch->file ?? 'n/a' }})
+                                                 {{ $ch->file ?? 'n/a' }},&nbsp;
+                                                 (Από:&nbsp;<strong>{{ $emp->find($ch->from)->user->name ?? 'n/a' }}</strong>,&nbsp;
+                                                  Στον:&nbsp;<strong>{{ $emp->find($ch->whom)->user->name ?? 'n/a' }}</strong>),&nbsp;
                                             </li>
 
                                         @endif
@@ -83,7 +84,7 @@
                                     @if($emp->id == $unch->whom)
                                     <li>
                                         {{ $unch->date ?? 'n/a' }},&nbsp;
-                                        {{ $emp->find($unch->whom)->user->name ?? 'n/a'  }}
+                                        Από τον:&nbsp;<strong>{{ $emp->find($unch->whom)->user->name ?? 'n/a'  }}</strong>
                                     </li>
                                     @endif
                                 @endforeach

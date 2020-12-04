@@ -31,6 +31,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
@@ -50,6 +51,7 @@
                 <tbody>
                 @foreach($importassignments as $importassignment)
                     <tr class="user-row" data-iid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
@@ -186,9 +188,10 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-iid="{{ $importassignment->id }}"
+                                    data-user="{{ $importassignment->user_id }}"
 									data-warehouse="{{ $importassignment->warehouse_id }}"
                                     data-text="{{ $importassignment->import_assignment_text }}"
-                                    data-deadline="{{ $importassignment->import_deadline->format('d-m-Y H:i') }}"
+                                    data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
                                     data-files="{{ $importassignment->uploaded_files }}"
 									data-comments="{{ $importassignment->comments }}"
 									data-isopen="{{ $importassignment->is_open }}">
@@ -228,6 +231,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
@@ -236,8 +240,8 @@
                         <th class="text-left">Σχόλια</th>
 						<th class="text-left">Ανοιχτή?</th>
 
-                        <!-- <th class="text-left">Άνοιγμα</th>
-						<th class="text-left">Κλείσιμο</th> -->
+                        <!-- <th class="text-left">Άνοιγμα</th> -->
+						<th class="text-left">Κλείσιμο</th>
 
                         <th class="text-left">Μεταβολή</th>
                         <th class="text-left">Διαγραφή</th>
@@ -245,15 +249,20 @@
                 </thead>
 
                 <tbody>
-                @foreach($importassignments as $importassignment)
+                <!-- dd here, import_assignments_perUser  -->
+
+
+                @foreach($import_assignments_perUser as $importassignment)
                 @foreach($warehouses as $warehouse)
                 @foreach($warehouse->employees as $employee)
 
                     @if(($importassignment->warehouse_id == $warehouse->id)
                      && (\Auth::user()->id == $employee->user_id)
-                     && ($employee->user->user_type == 'warehouse_foreman'))
+                     && ($employee->user->user_type == 'warehouse_foreman')
+                     && ($importassignment->is_open == 1))
 
                     <tr class="user-row" data-iid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
@@ -322,7 +331,7 @@
                         </td> -->
 
                         <!-- Κουμπί Κλεισίματος Ανάθεσης Εισαγωγής -->
-                        <!-- <td>
+                        <td>
                             @if($importassignment->is_open == 1)
                             <button class="close-modal btn btn-warning"
                                 data-toggle="modal" data-target="#close-modal"
@@ -333,15 +342,16 @@
                             <i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Κλείσιμο
                             </button>
                             @endif
-                        </td> -->
+                        </td>
 
                         <td>
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-iid="{{ $importassignment->id }}"
+                                    data-user="{{ $importassignment->user_id }}"
 									data-warehouse="{{ $importassignment->warehouse_id }}"
                                     data-text="{{ $importassignment->import_assignment_text }}"
-                                    data-deadline="{{ $importassignment->import_deadline->format('d-m-Y H:i') }}"
+                                    data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
                                     data-files="{{ $importassignment->uploaded_files }}"
 									data-comments="{{ $importassignment->comments }}"
 									data-isopen="{{ $importassignment->is_open }}">
@@ -385,6 +395,7 @@
                      data-order='[[ 0, "asc" ]]' data-page-length="10">
                 <thead>
                     <tr>
+                        <th class="text-left">Όνομα Αναθέτη</th>
                         <th class="text-left">Κωδ.Ανάθεσης</th>
                         <th class="text-left">Αποθήκη</th>
                         <th class="text-left">Κείμενο Ανάθεσης</th>
@@ -402,7 +413,7 @@
                 </thead>
 
                 <tbody>
-                @foreach($importassignments as $importassignment)
+                @foreach($import_assignments_perUser as $importassignment)
                 @foreach($warehouses as $warehouse)
                 @foreach($warehouse->employees as $employee)
 
@@ -411,10 +422,13 @@
                      && ($employee->user->user_type == 'normal_user'))
 
                     <tr class="user-row" data-iid="{{ $importassignment->id }}">  <!-- necessary additions -->
+                        <td>{{ $importassignment->user->name }}</td>
                         <td>{{ $importassignment->import_assignment_code }}</td>
                         <td>{{ $importassignment->warehouse->name }}</td>
                         <td>{{ $importassignment->import_assignment_text }}</td>
-                        <td>{{ $importassignment->import_deadline->format('l, d/m/Y @ H:i') }}</td>
+
+                        <!-- <td>{{ $importassignment->import_deadline->format('l, d/m/Y @ H:i') }}</td> -->
+                        <td>{{ $importassignment->import_deadline->isoFormat('llll') }}</td>
 
                         @php
                             $attached_files = json_decode($importassignment->uploaded_files, true);
@@ -494,9 +508,10 @@
                             <button class="edit-modal btn btn-info"
                                     data-toggle="modal" data-target="#edit-modal"
                                     data-iid="{{ $importassignment->id }}"
+                                    data-user="{{ $importassignment->user_id }}"
 									data-warehouse="{{ $importassignment->warehouse_id }}"
                                     data-text="{{ $importassignment->import_assignment_text }}"
-                                    data-deadline="{{ $importassignment->import_deadline->format('d-m-Y H:i') }}"
+                                    data-deadline="{{ $importassignment->import_deadline->isoFormat('llll') }}"
                                     data-files="{{ $importassignment->uploaded_files }}"
 									data-comments="{{ $importassignment->comments }}"
 									data-isopen="{{ $importassignment->is_open }}">
@@ -592,6 +607,9 @@
 
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-iid-create" name="modal-input-iid-create" value="">
+
+                                    <!-- added hidden input for User_ID -->
+                                    <input type="hidden" id="modal-input-user-create" name="modal-input-user-create" value="">
 
                                     <!-- warehouse name -->
                                     <div class="form-group">
@@ -691,6 +709,9 @@
 
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-iid-edit" name="modal-input-iid-edit" value="">
+
+                                    <!-- added hidden input for User_ID -->
+                                    <input type="hidden" id="modal-input-user-edit" name="modal-input-user-edit" value="">
 
 									<!-- warehouse name -->
                                     <div class="form-group">
@@ -1033,7 +1054,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5,6]
+                                columns: [ 0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -1041,7 +1062,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -1049,7 +1070,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Αναθέσεις Εισαγωγής",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
@@ -1058,14 +1079,14 @@
                             "title"  : "Αναθέσεις Εισαγωγής",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6]
+                                columns: [0, 1, 2, 3, 4, 5,6,7]
                             }
                         },
                     ],
@@ -1123,6 +1144,8 @@
 			var files = button.data('files'); //i omit this line for now
             var comments = button.data('comments');
 			var isopen = button.data('isopen');
+
+            var userid = button.data('user'); //do i need this value here in edit?
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.

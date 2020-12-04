@@ -61,6 +61,7 @@
                             <th class="text-left">Σχόλια</th>
                             <th class="text-left">Τμχ.</th>
                             <th class="text-left">Χρεωμένο?</th> <!-- boolean, is_charged [0,1] -->
+                            <th class="text-left">Όνομα Χρεώστη</th>
                             <th class="text-left">Όνομα Χρεωμένου</th>
                             <th class="text-left">Χρεωστικό</th>
 
@@ -87,6 +88,10 @@
                                     <i class="fas fa-fw fa-circle" aria-hidden="true"></i>&nbsp;Ναι
                                 @endif
                             </td>
+
+                            <td>
+                                {{ $employees->find($tool->charger_id)->user->name ?? '' }}
+                            </td> <!-- I need the employee's name here... -->
 
                             <td>
                                 {{ $employees->find($tool->employee_id)->user->name ?? '' }}
@@ -169,6 +174,7 @@
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
+                                    data-fromwhom="{{ $tool->charger_id }}"
                                     data-towhom="{{ $tool->employee_id }}"> <!-- name of the employee via user() here.. -->
                                     <i class="fas fa-circle" aria-hidden="true"></i>&nbsp;Χρέωση
                                 </button>
@@ -185,6 +191,7 @@
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
                                     data-ischarged="{{ $tool->is_charged }}"
+                                    data-fromwhom="{{ $employees->find($tool->charger_id)->user->name ?? '' }}"
                                     data-towhom="{{ $employees->find($tool->employee_id)->user->name ?? '' }}"
                                     data-emplid="{{ $tool->employee_id }}">
                                     <i class="far fa-circle" aria-hidden="true"></i>&nbsp;Ξεχρέωση
@@ -200,6 +207,7 @@
                                     data-description="{{ $tool->description }}"
                                     data-comments="{{ $tool->comments }}"
                                     data-quantity="{{ $tool->quantity }}"
+                                    data-fromwhom="{{ $tool->charger_id }}"
                                     data-ischarged="{{ $tool->is_charged }}"
                                     data-towhom="{{ $tool->employee_id }}">
                                     <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;Διόρθωση
@@ -282,6 +290,9 @@
 
                                     <!-- added hidden input for ID -->
                                     <input type="hidden" id="modal-input-tid-charge" name="modal-input-tid-charge" value="">
+
+                                    <!-- added hidden input for (employee) charger_id -->
+                                    <!-- <input type="hidden" id="modal-input-uid-charge" name="modal-input-uid-charge" value=""> -->
 
                                     <!-- tool-code, non-editable -->
                                     <div class="form-group">
@@ -436,7 +447,7 @@
                                     </div>
 
 
-                                    <!-- also a hidden input here -->
+                                    <!-- also a hidden input here onoma xrewmenou -->
                                     <input type="hidden" id="modal-input-employeeid-uncharge" name="modal-input-employeeid-uncharge" value="">
                                     <!-- /onoma xrewmenou -->
 
@@ -619,7 +630,7 @@
 
                                     <!-- quantity -->
                                     <div class="form-group">
-                                        <label class="col-form-label" for="modal-input-quantity-edit">Τμχ.</label>
+                                        <label class="col-form-label" for="modal-input-quantity-edit">Ποσότητα(τμχ.)</label>
                                         <input type="text" name="modal-input-quantity-edit" class="form-control" id="modal-input-quantity-edit"
                                             value=""/>
                                     </div>
@@ -717,11 +728,11 @@
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.css" /> -->
 @stop
 
 @section('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js" type="text/javascript" defer></script> -->
 
     <script type="text/javascript">
      //console.log('Hi!');
@@ -748,7 +759,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0,1,2,3,4,5,6,7]
+                                columns: [0,1,2,3,4,5,6,7,8]
                             }
                         },
                         {
@@ -756,7 +767,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Εργαλεία",
                             exportOptions: {
-                                columns: [0,1,2,3,4,5,6,7]
+                                columns: [0,1,2,3,4,5,6,7,8]
                             }
                         },
                         {
@@ -764,7 +775,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Εργαλεία",
                             exportOptions: {
-                                columns: [0,1,2,3,4,5,6,7]
+                                columns: [0,1,2,3,4,5,6,7,8]
                             }
                         },
                         {
@@ -773,14 +784,14 @@
                             "title"  : "Εργαλεία",
                             "orientation" : "landscape",
                             exportOptions: {
-                                columns: [0,1,2,3,4,5,6,7]
+                                columns: [0,1,2,3,4,5,6,7,8]
                             }
                         },
                         {
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0,1,2,3,4,5,6,7]
+                                columns: [0,1,2,3,4,5,6,7,8]
                             }
                         },
                     ],
@@ -810,6 +821,7 @@
             var description = button.data('description');
             var comments = button.data('comments');
             var quantity = button.data('quantity');
+            // var fromwhom = button.data('fromwhom');
             var towhom = button.data('towhom');
 
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).

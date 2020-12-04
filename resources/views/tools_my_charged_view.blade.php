@@ -31,6 +31,7 @@
                         <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
                         <th class="text-left">Περιγραφή Εργαλείου</th>
+                        <th class="text-left">Ημ/νία &amp; Ώρα Χρέωσης</th>
                     </tr>
                 </thead>
 
@@ -40,6 +41,7 @@
                         <td>{{ $tool->code }}</td>
                         <td>{{ $tool->name }}</td>
                         <td>{{ $tool->description }}</td>
+                        <td>{{ $tool->updated_at->isoFormat('llll') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -66,6 +68,10 @@
 
             @can('isWarehouseWorker')
                 <a href="{{ route('worker.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
+            @endcan
+
+            @can('isTechnician')
+                <a href="{{ route('technician.dashboard') }}">Πίσω στην κυρίως οθόνη</a>
             @endcan
 
         </div>

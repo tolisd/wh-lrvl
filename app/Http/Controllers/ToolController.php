@@ -133,6 +133,12 @@ class ToolController extends Controller
 
                         $tool_for_charging->is_charged    = 1; //$request->input('modal-input-ischarged-charge');
                         $tool_for_charging->employee_id   = $request->input('modal-input-towhom-charge');
+
+                        $u_id                             = Auth::user()->id;
+                        $user                             = User::where('id', $u_id)->first();
+                        $employee_id                      = Employee::where('user_id', $user->id)->pluck('id')->first();
+                        $tool_for_charging->charger_id    = $employee_id; //---- I need the employee_id here NOT the user_id
+
                         $tool_for_charging->comments      = $request->input('modal-input-comments-charge');
                         //also, now upload the xrewstiko eggrafo...it is NECESSARY for the charging to be completed successfully
                         //uncomment the following block for the file to be uploaded!
@@ -180,6 +186,7 @@ class ToolController extends Controller
                         // $emp_name = Employee::findOrFail('id', $tool_for_charging->employee_id)->user->name;
                         $charged_at->tool = $tool_for_charging->id;
                         $charged_at->date = $tool_for_charging->updated_at->isoFormat('llll'); //was(ENGLISH): ->format('l, d-m-Y H:i'); //here use \Carbon for formatting the date correctly!
+                        $charged_at->from = $tool_for_charging->charger_id;
                         $charged_at->whom = $tool_for_charging->employee_id;
                         $charged_at->file = substr(basename($tool_for_charging->file_url), 15);
 
@@ -195,6 +202,7 @@ class ToolController extends Controller
                         $append_arr = [
                             'tool' => $charged_at->tool,
                             'date' => $charged_at->date,
+                            'from' => $charged_at->from,
                             'whom' => $charged_at->whom,
                             'file' => $charged_at->file,
                         ];
@@ -308,6 +316,7 @@ class ToolController extends Controller
                         $tool_for_uncharging = Tool::findOrFail($id);
 
                         $tool_for_uncharging->is_charged  = 0; //$request->input('modal-input-ischarged-uncharge');
+                        $tool_for_uncharging->charger_id  = null;
                         $tool_for_uncharging->employee_id = null;
                         $tool_for_uncharging->file_url    = null; //Important! Also, delete the actual xrewstiko arxeio/file here!!
                         $tool_for_uncharging->comments    = $request->input('modal-input-comments-uncharge');
@@ -408,7 +417,7 @@ class ToolController extends Controller
                 'modal-input-code-create' => 'required|unique:tools,code',
                 'modal-input-description-create' => 'required',
                 'modal-input-comments-create' => 'required',
-                'modal-input-quantity-create' => 'required',
+                'modal-input-quantity-create' => 'required|numeric|gte:0',
             ];
 
             $custom_messages = [
@@ -417,6 +426,8 @@ class ToolController extends Controller
                 'modal-input-description-create.required' => 'Η περιγραφή απαιτείται',
                 'modal-input-comments-create.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-quantity-create.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-quantity-create.numeric' => 'Η ποσότητα πρέπει να είναι αριθμητική',
+                'modal-input-quantity-create.gte' => 'Η ποσότητα πρέπει να είναι θετικός αριθμός',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);
@@ -520,7 +531,7 @@ class ToolController extends Controller
                 'modal-input-code-edit' => ['required', \Illuminate\Validation\Rule::unique('tools', 'code')->ignore($id)],
                 'modal-input-description-edit' => ['required'],
                 'modal-input-comments-edit' => ['required'],
-                'modal-input-quantity-edit' => ['required'],
+                'modal-input-quantity-edit' => ['required', 'numeric', 'gte:0'],
             ];
 
             $custom_messages = [
@@ -529,6 +540,8 @@ class ToolController extends Controller
                 'modal-input-description-edit.required' => 'Η περιγραφή απαιτείται',
                 'modal-input-comments-edit.required' => 'Τα σχόλια απαιτούνται',
                 'modal-input-quantity-edit.required' => 'Η ποσότητα απαιτείται',
+                'modal-input-quantity-edit.numeric' => 'Η ποσότητα πρέπει να είναι αριθμός',
+                'modal-input-quantity-edit.gte' => 'Η ποσότητα πρέπει να είναι θετικός αριθμός',
             ];
 
             $validator = Validator::make($request->all(), $validation_rules, $custom_messages);

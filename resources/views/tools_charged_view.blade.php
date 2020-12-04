@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη - Χρεωμένα Εργαλεία')
 
 @section('content_header')
-    <h1>Warehouse / Χρεωμένα Εργαλεία</h1>
+    <h1>Αποθήκη/Warehouse | Χρεωμένα Εργαλεία</h1>
 @stop
 
 
@@ -31,7 +31,10 @@
                         <th class="text-left">Κωδικός Εργαλείου</th>
                         <th class="text-left">Όνομα Εργαλείου</th>
                         <th class="text-left">Περιγραφή Εργαλείου</th>
+                        <!-- <th class="text-left">Ημ/νία &amp; Ώρα Χρέωσης</th> -->
+                        <th class="text-left">Όνομα Χρεώστη</th>
                         <th class="text-left">Όνομα Χρεωμένου Χρήστη</th>
+
                     </tr>
                 </thead>
 
@@ -41,6 +44,8 @@
                         <td>{{ $tool->code }}</td>
                         <td>{{ $tool->name }}</td>
                         <td>{{ $tool->description }}</td>
+
+                        <td>{{ $employees->find($tool->charger_id)->user->name ?? ''}}</td>
                         <td>{{ $employees->find($tool->employee_id)->user->name ?? ''}}</td>
                     </tr>
                     @endforeach
@@ -107,7 +112,7 @@
                             "extend" : "copy",
                             "text"   : "Αντιγραφή",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4]
                             }
                         },
                         {
@@ -115,7 +120,7 @@
                             "text"   : "Εξαγωγή σε CSV",
                             "title"  : "Χρεωμένα Εργαλεία",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4]
                             }
                         },
                         {
@@ -123,7 +128,7 @@
                             "text"   : "Εξαγωγή σε Excel",
                             "title"  : "Χρεωμένα Εργαλεία",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4]
                             }
                         },
                         {
@@ -132,7 +137,7 @@
                             "title"  : "Χρεωμένα Εργαλεία",
                             "orientation" : "portrait",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4]
                             }
 
 
@@ -141,7 +146,7 @@
                             "extend" : "print",
                             "text"   : "Εκτύπωση",
                             exportOptions: {
-                                columns: [0,1,2,3]
+                                columns: [0,1,2,3,4]
                             }
                         },
                     ],

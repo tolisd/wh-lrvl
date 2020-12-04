@@ -98,6 +98,7 @@ return [
 
     // 'fallback_locale' => 'en',
     'fallback_locale' => 'gr', //else with 'en' the login screen went to english!
+    //I changed the resources/lang/en/auth.php failed & throttle messages for this to take effect. It's a hack!
 
     /*
     |--------------------------------------------------------------------------

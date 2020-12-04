@@ -41,7 +41,7 @@
         <div class="col-lg-3 col-xs-6">
 
 
-            @canany(['isSuperAdmin', 'isCompanyCEO', 'isWarehouseForeman', 'isAccountant'])
+            @canany(['isSuperAdmin', 'isCompanyCEO', 'isAccountant'])
               <!-- small box -->
               <div class="small-box bg-yellow">
 
@@ -60,10 +60,6 @@
 
                 @can('isCompanyCEO')
                   <a href="{{ route('manager.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                @endcan
-
-                @can('isWarehouseForeman')
-                  <a href="{{ route('foreman.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
                 @can('isAccountant')
@@ -94,18 +90,150 @@
                   <a href="{{ route('manager.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
-                @can('isWarehouseForeman')
-                  <a href="{{ route('foreman.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
-                @endcan
-
                 @can('isAccountant')
                   <a href="{{ route('accountant.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                 @endcan
 
               </div>
 
+            @endcanany
+            <!-- 'isSuperAdmin', 'isCompanyCEO', 'isAccountant' -->
+
+
+
+
+
+            <!-- Warehouse Foreman can only view his own assignments (import or export) -->
+            @canany(['isWarehouseForeman'])
+
+                <div class="small-box bg-yellow">
+
+                    <div class="inner">
+                        <h3>{{ $open_importAssignments_perForeman_count }}</h3>
+                        <p>Ανοιχτές Αναθέσεις Εισαγωγής</p>
+                    </div>
+
+                    <div class="icon">
+                    <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                    </div>
+
+                    @can('isWarehouseForeman')
+                        <a href="{{ route('foreman.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                </div>
+
+
+                <div class="small-box bg-orange">
+
+                    <div class="inner">
+                        <h3>{{ $open_exportAssignments_perForeman_count }}</h3>
+                        <p>Ανοιχτές Αναθέσεις Εξαγωγής</p>
+                    </div>
+
+                    <div class="icon">
+                    <i class="fas fa-arrow-right fa-sm" aria-hidden="true"></i>
+                    </div>
+
+                    @can('isWarehouseForeman')
+                        <a href="{{ route('foreman.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                </div>
 
             @endcanany
+            <!-- isWarehouseForeman -->
+
+
+
+
+
+
+
+
+            <!-- Normal User can only view his own assignments (import or export) -->
+            @canany(['isNormalUser'])
+
+            <!-- οι ΔΙΚΕΣ μου Ανοιχτες αναθεσεις εισαγωγης -->
+            <div class="small-box bg-yellow">
+
+                <div class="inner">
+                      <h3>{{ $open_importAssignments_perUser_count }}</h3>
+                      <p>Ανοιχτές Αναθέσεις Εισαγωγής</p>
+                </div>
+
+                <div class="icon">
+                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                </div>
+
+                @can('isNormalUser')
+                  <a href="{{ route('user.assignments.import.my.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+            </div>
+
+
+            <!-- οι ΔΙΚΕΣ μου Ανοιχτες αναθεσεις εξαγωγης -->
+            <div class="small-box bg-orange">
+
+                <div class="inner">
+                      <h3>{{ $open_exportAssignments_perUser_count }}</h3>
+                      <p>Ανοιχτές Αναθέσεις Εξαγωγής</p>
+                </div>
+
+                <div class="icon">
+                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                </div>
+
+                @can('isNormalUser')
+                  <a href="{{ route('user.assignments.export.my.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+            </div>
+
+
+            <!-- οι ΔΙΚΕΣ μου αποπερατωμενες-κλειστες αναθέσεις εισαγωγης -->
+            <div class="small-box bg-yellow">
+
+                <div class="inner">
+                      <h3>{{ $closed_importAssignments_perUser_count }}</h3>
+                      <p>Αποπερατωμένες Αναθέσεις Εισαγωγής</p>
+                </div>
+
+                <div class="icon">
+                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                </div>
+
+                @can('isNormalUser')
+                  <a href="{{ route('user.assignments.import.my.closed.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+            </div>
+
+
+            <!-- οι ΔΙΚΕΣ μου αποπερατωμενες-κλειστες αναθέσεις εξαγωγης -->
+            <div class="small-box bg-orange">
+
+                <div class="inner">
+                      <h3>{{ $closed_exportAssignments_perUser_count }}</h3>
+                      <p>Αποπερατωμένες Αναθέσεις Εξαγωγής</p>
+                </div>
+
+                <div class="icon">
+                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                </div>
+
+                @can('isNormalUser')
+                  <a href="{{ route('user.assignments.export.my.closed.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                @endcan
+
+            </div>
+
+            @endcanany
+            <!-- isNormaUser -->
+
+
+
 
             @canany(['isSuperAdmin', 'isCompanyCEO'])
               <!-- small box -->
