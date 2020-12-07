@@ -6,7 +6,7 @@
 
 @section('content_header')
     <div id="products-heading">
-        <h1><strong>Αποθήκη/Warehouse</strong> | Όλα τα Προϊόντα</h1>
+        <h1>Αποθήκη/Warehouse | Όλα τα Προϊόντα</h1>
     </div>
     <div class="parallax"></div>
 @stop
@@ -50,7 +50,7 @@
     <div class="row">
         <div class="col-lg-12 col-xs-6">
 
-            <p>Όλα τα Προϊόντα</p>
+            <p>Διαχείριση Προϊόντων</p>
 
             @canany(['isSuperAdmin', 'isCompanyCEO'])
             <!-- insert here the main products table-->
@@ -1591,6 +1591,8 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+            $('#add-form').find("select#modal-input-type-create").empty();
+
 
             //also, reset the error field(s).
             $('.alert-danger').hide();

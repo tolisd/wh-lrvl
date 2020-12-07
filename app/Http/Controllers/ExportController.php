@@ -11,6 +11,7 @@ use App\Exportassignment;
 use App\Company;
 use App\Transport; //transport_companies
 use App\Employee;
+use App\User;
 use App\Product;
 use App\Warehouse;
 use Carbon\Carbon;
@@ -74,7 +75,39 @@ class ExportController extends Controller
             //$all_products_in_warehouse = Product::with('warehouses')->get(); //this is correct but returns ALL products from ALL warehouses...
             //dd($all_products_in_warehouse);
 
+
+            // $wh_ids = [];
+            // foreach($exportassignments as $ea){
+            //     array_push($wh_ids, $ea->warehouse_id);
+            // }
+
+            //for the foreman or worker, to display his own warehouses/assignments
+            $u_id   = Auth::user()->id;
+            $user   = User::findOrFail($u_id);
+
+            //foreman OR worker, I just had to name it something..
+            $warehouse_employee_id = DB::table('employees')
+                                    ->join('users', 'users.id','=','employees.user_id')
+                                    ->where('users.id', $user->id)
+                                    ->pluck('employees.id')
+                                    ->first(); //the employee_id of the currently authenticated user
+
+            $whs = DB::table('employee_warehouse')
+                    ->join('employees', 'employees.id','=','employee_warehouse.employee_id')
+                    ->where('employees.id', $warehouse_employee_id)
+                    ->pluck('employee_warehouse.warehouse_id');
+                      //the warehouse(s) of this employee
+
+            $open_export_assignments_frmn_wrkr = ExportAssignment::whereIn('warehouse_id', $whs)
+                                                                 ->where('is_open', '=', 1)
+                                                                 ->get();
+
+
+
+
+
             return view('exports_view', ['exportassignments' => $exportassignments,
+                                        'open_export_assignments_frmn_wrkr' => $open_export_assignments_frmn_wrkr,
                                         'companies' => $companies,
                                         'employees' => $employees,
                                         'employees_per_warehouse' => $employees_per_warehouse,

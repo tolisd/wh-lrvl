@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Dashboard')
+@section('title', 'Αποθήκη - Κατηγορίες Προϊόντων')
 
 @section('content_header')
-    <h1>Warehouse / Κατηγορίες Προϊόντων</h1>
+    <h1>Αποθήκη/Warehouse | Κατηγορίες Προϊόντων</h1>
 @stop
 
 

@@ -772,6 +772,41 @@ return [
         ],
 
 
+        [
+            'text' => 'Ανοιχτές/Περατωμένες',
+            'url' => '',
+            'can' => 'isNormalUser',
+            'icon' => 'fas fa-briefcase',
+
+            'submenu' => [
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εισαγωγής',
+                                    'route' => 'user.assignments.import.my.view',
+                                    'can' => 'isNormalUser',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Ανοιχτές Αναθ.Εξαγωγής',
+                                    'route' => 'user.assignments.export.my.view',
+                                    'can' => 'isNormalUser',
+                                    'icon' => 'fas fa-fw fa-lock-open',
+                                ],
+                                [
+                                    'text' => 'Περατωμένες Αναθ.Εισαγ.',
+                                    'route' => 'user.assignments.import.my.closed.view',
+                                    'can' => 'isNormalUser',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                                [
+                                    'text' => 'Περατωμένες Αναθ.Εξαγ.',
+                                    'route' => 'user.assignments.export.my.closed.view',
+                                    'can' => 'isNormalUser',
+                                    'icon' => 'fas fa-fw fa-lock',
+                                ],
+                         ],
+        ],
+
+
         /*
         [
             'text' => 'Δημιουργία Ανάθεσης',

@@ -57,9 +57,72 @@
 
                                             <li>
                                                  {{ $ch->date ?? 'n/a' }},&nbsp;
-                                                 {{ $ch->file ?? 'n/a' }},&nbsp;
+
                                                  (Από:&nbsp;<strong>{{ $emp->find($ch->from)->user->name ?? 'n/a' }}</strong>,&nbsp;
                                                   Στον:&nbsp;<strong>{{ $emp->find($ch->whom)->user->name ?? 'n/a' }}</strong>),&nbsp;
+
+                                                <!-- xrewstiko arxeio download -->
+                                                 @if(\Auth::user()->user_type == 'super_admin')
+                                                    @if(substr($ch->file, -3) == 'pdf')
+                                                    <a href="{{ route('admin.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @elseif((substr($ch->file, -3) == 'doc') or (substr($ch->file, -4) == 'docx'))
+                                                    <a href="{{ route('admin.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @elseif(substr($ch->file, -3) == 'txt')
+                                                    <a href="{{ route('admin.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @else
+                                                    <a href="{{ route('admin.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ $ch->file }}
+                                                    </a>
+                                                    @endif
+                                                @endif
+
+                                                @if(\Auth::user()->user_type == 'company_ceo')
+                                                    @if(substr($ch->file, -3) == 'pdf')
+                                                    <a href="{{ route('manager.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @elseif((substr($ch->file, -3) == 'doc') or (substr($ch->file, -4) == 'docx'))
+                                                    <a href="{{ route('manager.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @elseif(substr($ch->file, -3) == 'txt')
+                                                    <a href="{{ route('manager.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @else
+                                                    <a href="{{ route('manager.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ $ch->file }}
+                                                    </a>
+                                                    @endif
+                                                @endif
+
+                                                @if(\Auth::user()->user_type == 'warehouse_foreman')
+                                                    @if(substr($ch->file, -3) == 'pdf')
+                                                    <a href="{{ route('foreman.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-pdf fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @elseif((substr($ch->file, -3) == 'doc') or (substr($ch->file, -4) == 'docx'))
+                                                    <a href="{{ route('foreman.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-word fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @elseif(substr($ch->file, -3) == 'txt')
+                                                    <a href="{{ route('foreman.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file-alt fa-lg" aria-hidden="true"></i>
+                                                    </a>&nbsp;{{ $ch->file }}<br/>
+                                                    @else
+                                                    <a href="{{ route('foreman.tools.download.file', ['filename' => $ch->file]) }}" download>
+                                                        <i class="far fa-file fa-lg" aria-hidden="true"></i>&nbsp;{{ $ch->file }}
+                                                    </a>
+                                                    @endif
+                                                @endif
+
+
                                             </li>
 
                                         @endif

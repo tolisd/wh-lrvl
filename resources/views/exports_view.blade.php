@@ -58,7 +58,7 @@
                             [{{ $export->export_assignment->export_deadline->isoFormat('llll') }}]</td>
                         <td>{{ $export->employee->user->name }}</td>
                         <td>{{ $export->company->name }}</td>
-                        <td>{{ $export->delivered_on->format('l d/m/Y @ H:i') }}</td>
+                        <td>{{ $export->delivered_on->isoFormat('llll') }}</td>
                         <td>{{ $export->vehicle_reg_no }}</td>
                         <td>{{ $export->transport->name }}</td>
                         <td>{{ $export->shipment_address }}</td>
@@ -173,7 +173,7 @@
                             [{{ $export->export_assignment->export_deadline->isoFormat('llll') }}]</td>
                         <td>{{ $export->employee->user->name }}</td>
                         <td>{{ $export->company->name }}</td>
-                        <td>{{ $export->delivered_on->format('l d/m/Y @ H:i') }}</td>
+                        <td>{{ $export->delivered_on->isoFormat('llll') }}</td>
                         <td>{{ $export->vehicle_reg_no }}</td>
                         <td>{{ $export->transport->name }}</td>
                         <td>{{ $export->shipment_address }}</td>
@@ -321,7 +321,7 @@
 										<label class="col-form-label col-lg-3 text-right" for="modal-input-exportassignment-create">Ανάθεση Εξαγωγής</label>
                                         <div class="col-lg-9">
                                             <select name="modal-input-exportassignment-create" id="modal-input-exportassignment-create" class="form-control">
-                                            @foreach($exportassignments as $expassgnm)
+                                            @foreach($open_export_assignments_frmn_wrkr as $expassgnm)
                                                 <option value="{{ $expassgnm->id }}">[{{ $expassgnm->export_assignment_code }}]&nbsp;/&nbsp;[{{ $expassgnm->warehouse->name }}],&nbsp;[{{ $expassgnm->export_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
@@ -1647,6 +1647,7 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+            $('#add-form').find("select#modal-input-recipient-create").empty(); //additionally for select to empty it, or else it retains old values!
 
             //reset the error field(s).
             $('.alert-danger').hide();

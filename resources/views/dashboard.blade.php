@@ -36,7 +36,7 @@
     }
 </style>
 
-    <p><em>Καλώς ήλθατε</em> στην εφαρμογή "<strong>Warehouse/Αποθήκη</strong>" της <strong>Ypostirixis Group Constructions</strong>.</p>
+    <p><em>Καλώς ήλθατε</em> στην εφαρμογή "<strong>Αποθήκη/Warehouse</strong>" της <strong>Ypostirixis Group Constructions</strong>.</p>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
 
@@ -103,8 +103,8 @@
 
 
 
-            <!-- Warehouse Foreman can only view his own assignments (import or export) -->
-            @canany(['isWarehouseForeman'])
+            <!-- Warehouse Foreman can only view his warehouse's assignments (import or export), also Warehouse Worker (his warehouse's assignments) -->
+            @canany(['isWarehouseForeman', 'isWarehouseWorker'])
 
                 <div class="small-box bg-yellow">
 
@@ -119,6 +119,10 @@
 
                     @can('isWarehouseForeman')
                         <a href="{{ route('foreman.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                    @can('isWarehouseWorker')
+                        <a href="{{ route('worker.assignments.import.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                     @endcan
 
                 </div>
@@ -137,6 +141,10 @@
 
                     @can('isWarehouseForeman')
                         <a href="{{ route('foreman.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
+
+                    @can('isWarehouseWorker')
+                        <a href="{{ route('worker.assignments.export.open.view') }}" class="small-box-footer">Περισσότερες πληροφορίες... <i class="fa fa-arrow-circle-right"></i></a>
                     @endcan
 
                 </div>
@@ -182,7 +190,7 @@
                 </div>
 
                 <div class="icon">
-                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                  <i class="fas fa-arrow-right fa-sm" aria-hidden="true"></i>
                 </div>
 
                 @can('isNormalUser')
@@ -193,11 +201,11 @@
 
 
             <!-- οι ΔΙΚΕΣ μου αποπερατωμενες-κλειστες αναθέσεις εισαγωγης -->
-            <div class="small-box bg-yellow">
+            <div class="small-box bg-maroon">
 
                 <div class="inner">
                       <h3>{{ $closed_importAssignments_perUser_count }}</h3>
-                      <p>Αποπερατωμένες Αναθέσεις Εισαγωγής</p>
+                      <p>Περατωμένες Αναθέσεις Εισαγωγής</p>
                 </div>
 
                 <div class="icon">
@@ -212,15 +220,15 @@
 
 
             <!-- οι ΔΙΚΕΣ μου αποπερατωμενες-κλειστες αναθέσεις εξαγωγης -->
-            <div class="small-box bg-orange">
+            <div class="small-box bg-purple">
 
                 <div class="inner">
                       <h3>{{ $closed_exportAssignments_perUser_count }}</h3>
-                      <p>Αποπερατωμένες Αναθέσεις Εξαγωγής</p>
+                      <p>Περατωμένες Αναθέσεις Εξαγωγής</p>
                 </div>
 
                 <div class="icon">
-                  <i class="fas fa-arrow-left fa-sm" aria-hidden="true"></i>
+                  <i class="fas fa-arrow-right fa-sm" aria-hidden="true"></i>
                 </div>
 
                 @can('isNormalUser')

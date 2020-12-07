@@ -57,7 +57,7 @@
                             [{{ $import->import_assignment->import_deadline->isoFormat('llll') }}]</td>
 						<td>{{ $import->employee->user->name }}</td>
                         <td>{{ $import->company->name }}</td>
-						<td>{{ $import->delivered_on->format('l d/m/Y @ H:i') }}</td>
+						<td>{{ $import->delivered_on->isoFormat('llll') }}</td>
 						<td>{{ $import->vehicle_reg_no }}</td>
 						<td>{{ $import->transport->name }}</td>
 						<td>{{ $import->delivery_address }}</td>
@@ -247,7 +247,7 @@
                             [{{ $import->import_assignment->import_deadline->isoFormat('llll') }}]</td>
 						<td>{{ $import->employee->user->name }}</td>
                         <td>{{ $import->company->name }}</td>
-						<td>{{ $import->delivered_on->format('l d/m/Y @ H:i') }}</td>
+						<td>{{ $import->delivered_on->isoFormat('llll') }}</td>
 						<td>{{ $import->vehicle_reg_no }}</td>
 						<td>{{ $import->transport->name }}</td>
 						<td>{{ $import->delivery_address }}</td>
@@ -451,7 +451,7 @@
                                                 value="" />
                                             -->
                                             <select name="modal-input-importassignment-create" id="modal-input-importassignment-create" class="form-control">
-                                            @foreach($importassignments as $impassgnm)
+                                            @foreach($open_import_assignments_frmn_wrkr as $impassgnm)
                                                 <option value="{{ $impassgnm->id }}">[{{ $impassgnm->import_assignment_code }}]&nbsp;/&nbsp;[{{ $impassgnm->warehouse->name }}], [{{ $impassgnm->import_deadline->isoFormat('llll') }}]</option>
                                             @endforeach
                                             </select>
@@ -1772,6 +1772,7 @@
         //resets the create/add form. Re-use this code snippet in other blade views!
         $(document).on('click', '[data-dismiss="modal"]', function(e){
             $('#add-form').find("input,textarea,select").val('');
+            $('#add-form').find("select#modal-input-recipient-create").empty(); //additionally for select to empty it, or else it retains old values!
 
             //reset the error field(s) also
             $('.alert-danger').hide();

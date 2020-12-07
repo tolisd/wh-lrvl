@@ -1,10 +1,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Αποθήκη - Μονάδες Μέτρησης')
 
 @section('content_header')
-    <h1>Αποθήκη // Μονάδες Μέτρησης</h1>
+    <h1>Αποθήκη/Warehouse | Μονάδες Μέτρησης Προϊόντων</h1>
 @stop
 
 <!-- Originally, NO sidebar section in this file! I added this section! Beware! -->

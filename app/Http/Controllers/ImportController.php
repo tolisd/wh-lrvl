@@ -80,7 +80,39 @@ class ImportController extends Controller
             //                          ->get();
 
 
+
+            // $wh_ids = [];
+            // foreach($importassignments as $ia){
+            //     array_push($wh_ids, $ia->warehouse_id);
+            // }
+
+             //for the foreman or worker, to display his own warehouses/assignments
+             $u_id   = Auth::user()->id;
+             $user   = User::findOrFail($u_id);
+
+             //foreman OR worker, I just had to name it something..
+             $warehouse_employee_id = DB::table('employees')
+                                     ->join('users', 'users.id','=','employees.user_id')
+                                     ->where('users.id', $user->id)
+                                     ->pluck('employees.id')
+                                     ->first(); //the employee_id of the currently authenticated user
+
+             $whs = DB::table('employee_warehouse')
+                     ->join('employees', 'employees.id','=','employee_warehouse.employee_id')
+                     ->where('employees.id', $warehouse_employee_id)
+                     ->pluck('employee_warehouse.warehouse_id');
+                       //the warehouse(s) of this employee
+
+            $open_import_assignments_frmn_wrkr = ImportAssignment::whereIn('warehouse_id', $whs)
+                                                                ->where('is_open', '=', 1)
+                                                                ->get();
+
+
+
+
+
             return view('imports_view', ['importassignments' => $importassignments,
+                                        'open_import_assignments_frmn_wrkr' => $open_import_assignments_frmn_wrkr,
                                         'companies' => $companies,
                                         'employees' => $employees,
                                         'users' => $users,

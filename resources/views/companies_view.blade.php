@@ -2,10 +2,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Αποθήκη - Πίνακας Ελέγχου')
+@section('title', 'Αποθήκη - Εταιρείες')
 
 @section('content_header')
-    <h1>Warehouse / Όλες οι Εταιρείες</h1>
+    <h1>Αποθήκη/Warehouse | Εταιρείες</h1>
 @stop
 
 
